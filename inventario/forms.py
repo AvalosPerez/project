@@ -6,7 +6,9 @@ class CategoriaForm(forms.ModelForm):
 
     def __init__(self, *args,**kwargs):
         super(CategoriaForm, self).__init__(*args, **kwargs)
-
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = ' form-control   form-row '
+            visible.field.widget.attrs['fieldset_class'] = ' input-style-1'
     class Meta:
         model = Categoria
         fields = '__all__'
@@ -17,7 +19,9 @@ class UnidadMedidaForm(forms.ModelForm):
 
     def __init__(self, *args,**kwargs):
         super(UnidadMedidaForm, self).__init__(*args, **kwargs)
-
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = ' form-control   form-row '
+            visible.field.widget.attrs['fieldset_class'] = ' input-style-1'
     class Meta:
         model = UnidadMedida
         fields = '__all__'
@@ -28,6 +32,11 @@ class InsumoForm(forms.ModelForm):
 
     def __init__(self, *args,**kwargs):
         super(InsumoForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = ' form-control   '
+            visible.field.widget.attrs['fieldset_class'] = ' input-style-1'
+            self.fields['categoria'].widget.attrs['class'] = "form-control form-row  select"
+
     class Meta:
         model = Insumo
         fields = '__all__'
@@ -37,6 +46,9 @@ class ProveedorForm(forms.ModelForm):
 
     def __init__(self, *args,**kwargs):
         super(ProveedorForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = ' form-control   form-row '
+            visible.field.widget.attrs['fieldset_class'] = ' input-style-1'
     class Meta:
         model = Proveedor
         fields = '__all__'

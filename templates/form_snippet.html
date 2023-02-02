@@ -1,7 +1,7 @@
 {% csrf_token %}
 {% for field in form %}
 
-    <fieldset class="input-style-1 {% if field.field.widget.attrs.col %}{{ field.field.widget.attrs.col }}{% else %}col-md-12{% endif %}"
+    <fieldset class=" {% if field.field.widget.attrs.fieldset_class %}{{ field.field.widget.attrs.fieldset_class }}{% else %}col-md-12{% endif %}"
               id="id_{{ field.name }}">
 
         {{ field.label_tag }}
@@ -18,7 +18,7 @@
     </fieldset>
 {% endfor %}
 
- <div class="form-group">
+ <div class="form-group mt-3">
         <button type="submit" id="id_submit" class="btn btn-primary">Guardar cambios</button>
             <a href="javascript:history.back()"  class="btn btn-secondary" >Cancelar</a>
       </div>

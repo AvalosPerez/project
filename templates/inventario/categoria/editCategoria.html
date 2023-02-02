@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Insumos{% endblock %}
+
+{% block content %}
+    <!-- ========== title-wrapper start ========== -->
+    <div class="title-wrapper pt-30">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="title d-flex align-items-center flex-wrap mb-30">
+                    <h2 class="mr-40"></h2>
+
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-md-6">
+                <div class="breadcrumb-wrapper mb-30">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'home' %}">Home</a>
+                            </li>
+
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'inventario:inventario' %}">Inventario</a>
+                            </li>
+
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'inventario:insumo' %}">Insumos</a>
+                            </li>
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'inventario:categoria' %}">Categorias</a>
+                            </li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                edit
+                            </li>
+
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- ========== title-wrapper end ========== -->
+
+    <!-- ========== tables-wrapper start ========== -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="">
+                    <div class="title d-flex align-items-center flex-wrap mb-30">
+                        <h2 class="mr-40">Formulario</h2>
+
+                    </div>
+                    <form action="{% url 'inventario:edit_categoria' categorias.pk %}" method="POST"
+                          enctype="multipart/form-data">
+                        {% include "form_snippet.html" %}
+
+                    </form>
+                </div>
+
+
+            </div>
+
+
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- ========== tables-wrapper end ========== -->
+{% endblock %}

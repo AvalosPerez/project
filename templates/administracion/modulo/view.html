@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+{% endblock %}
+{% block title %}Administración{% endblock %}
+
+{% block content %}
+    <!-- ========== title-wrapper start ========== -->
+    <div class="title-wrapper pt-30">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="title d-flex align-items-center flex-wrap mb-30">
+                    <h2 class="mr-40">Módulos</h2>
+                    <a href="{% url 'administracion:add_modulo' %}" class="main-btn primary-btn btn-hover btn-sm">
+                        <i class="lni lni-plus mr-5"></i> Adicionar</a>
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-md-6">
+                <div class="breadcrumb-wrapper mb-30">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'home' %}">Home</a>
+                            </li>
+
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'administracion:administracion' %}">Administración</a>
+                            </li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Módulos
+                            </li>
+
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- ========== title-wrapper end ========== -->
+
+    <!-- ========== tables-wrapper start ========== -->
+    <div class="tables-wrapper">
+
+        <!-- ========== option-header start ========== -->
+        <div class="row pb-3">
+        </div>
+        <!-- ========== option-header end ========== -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-style mb-30">
+                    <h6 class="mb-10">Módulos</h6>
+                    <p class="text-sm mb-20">
+
+                    </p>
+                    <div class="table-wrapper table-responsive">
+
+                        <table class="table top-selling-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <h6 class="text-sm text-medium">Cod.</h6>
+                                </th>
+                                <th>
+                                    <h6 class="text-sm text-medium">Nombre</h6>
+                                </th>
+
+                                 <th>
+                                    <h6 class="text-sm text-medium">Descripción</h6>
+                                </th>
+
+                                 <th>
+                                    <h6 class="text-sm text-medium">tag</h6>
+                                </th>
+
+                                 <th>
+                                    <h6 class="text-sm text-medium">Estado</h6>
+                                </th>
+                                <th>
+                                    <h6 class="text-sm text-medium text-end">
+                                        Acciones
+                                    </h6>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for modulo in modulos %}
+
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ modulo.nombre }}</p>
+                                    </td>
+                                      <td>
+                                        <p class="text-sm">{{ modulo.descripcion }}</p>
+                                    </td>
+                                      <td>
+                                        <p class="text-sm">{{ modulo.name_tag }}</p>
+                                    </td>
+                                      <td>
+                                        <p class="text-sm">{{ modulo.activo }}</p>
+                                    </td>
+
+                                    <td>
+                                        <div class="action justify-content-end">
+
+                                            <button
+                                                    class="more-btn ml-10 dropdown-toggle"
+                                                    id="moreAction1"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                            >
+                                                <i class="lni lni-more-alt"></i>
+                                            </button>
+                                            <ul
+                                                    class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="moreAction1"
+                                            >
+                                                <li class="dropdown-item">
+                                                    <a href="{% url 'administracion:delete_modulo' modulo.pk %}"
+
+                                                       class="text-gray">Eliminar</a>
+                                                </li>
+                                                <li class="dropdown-item">
+                                                    <a href="{% url 'administracion:edit_modulo' modulo.pk %}"
+                                                       class="text-gray">Editar</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                            {% empty %}
+                                <tr>
+                                    <td>No existen registros</td>
+                                </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                        <!-- End Table -->
+                    </div>
+                    {% include "paginador_snippet.html" %}
+                </div>
+                <!-- end card -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- ========== tables-wrapper end ========== -->
+{% endblock %}
+<!-- Modal Eliminar -->
+<div class="modal fade" id="eliminar" role="dialog">
+
+</div>

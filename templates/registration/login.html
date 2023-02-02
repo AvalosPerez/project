@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="shortcut icon"
+            href={% static 'assets/images/favicon.svg' %}
+                    type="image/x-icon"
+    />
+    <title>PlainAdmin Demo | Bootstrap 5 Admin Template</title>
+
+    <!-- ========== All CSS files linkup ========= -->
+    <link rel="stylesheet" href={% static 'assets/css/bootstrap.min.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/lineicons.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/materialdesignicons.min.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/main.css' %}/>
+</head>
+<body>
+
+
+<!-- ======== main-wrapper start =========== -->
+<main class="container-fluid">
+-
+<!-- ========== signin-section end ========== -->
+<div class="vh-100 d-flex justify-content-center align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+                <div class="d-flex justify-content-center py-4">
+                    <a href="{% url 'login' %}" class="logo d-flex align-items-center w-auto">
+                        <img src="assets/img/logo.png" alt="">
+                        <span class="d-none d-lg-block">Inventario</span>
+                    </a>
+                </div><!-- End Logo -->
+                <div class="row">
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <p>Tu usuario y/o contraseña no son los correctos. Por favor intente de nuevo.</p>
+                        </div>
+
+                    {% endif %}
+
+                    {% if next %}
+                        {% if user.is_authenticated %}
+                            <div class="alert alert-danger" role="alert">
+                                <p>Tu cuenta no tiene acceso a esta página. Para proceder,
+                                    por favor inicie sesión con una cuenta que tenga acceso.</p>
+                            </div>
+
+                        {% else %}
+
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <div class="pt-4 pb-2">
+                            <h5 class="card-title text-center pb-0 fs-4">Inicia sesión con tu cuenta.</h5>
+                            <p class="text-center small">Ingresa tu usuario y contraseña.</p>
+                        </div>
+
+                        <form class="row g-3 needs-validation" novalidate method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="col-12">
+                                <label for="username" class="form-label">Username</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                    <input type="text" name="username" class="form-control" id="id_username" required>
+                                    <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="id_password" required>
+                                <div class="invalid-feedback">Por favor ingrese su contraseña!</div>
+                            </div>
+                            <div class="col-12">
+                                <p class="small mb-0"> <a href="{% url 'password_reset' %}">¿olvido su contraseña?</a></p>
+                            </div>
+
+                            <div class="col-12">
+
+                                <input type="submit" value="login" class="btn btn-primary w-100"/>
+                                <input type="hidden" name="next" value="{{ next }}"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+</main>
+<!-- ======== main-wrapper end =========== -->
+
+
+<!-- ========= All Javascript files linkup ======== -->
+<script src= {% static 'assets/js/bootstrap.bundle.min.js' %}></script>
+<script src= {% static 'assets/js/Chart.min.js' %}></script>
+<script src= {% static 'assets/js/dynamic-pie-chart.js' %}></script>
+<script src= {% static 'assets/js/moment.min.js' %}></script>
+<script src= {% static 'assets/js/fullcalendar.js' %}></script>
+<script src= {% static 'assets/js/jvectormap.min.js' %}></script>
+<script src= {% static 'assets/js/world-merc.js' %}></script>
+<script src= {% static 'assets/js/polyfill.js' %}></script>
+<script src= {% static 'assets/js/main.js' %}></script>
+
+</body>
+</html>

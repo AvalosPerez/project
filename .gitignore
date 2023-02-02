@@ -1,0 +1,8 @@
+/administracion/migrations/
+/inventario/migrations/
+/venv/
+/db.sqlite3
+**/migrations/**
+!**/migrations
+/.idea
+/.idea/**

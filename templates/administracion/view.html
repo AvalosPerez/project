@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Administación{% endblock %}
+
+{% block content %}
+    <!-- ========== title-wrapper start ========== -->
+    <div class="title-wrapper pt-30">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="title mb-30">
+                    <h2>Administración</h2>
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-md-6">
+                <div class="breadcrumb-wrapper mb-30">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'home' %}">Home</a>
+                            </li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Administración
+                            </li>
+
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="item">
+                    <!-- Card -->
+                    <div class="card  mb-4 card-hover">
+                        <a href="pages/course-single.html" class="card-img-top"><img
+                                src='#' alt="" class="card-img-top rounded-top-md"></a>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <h4 class="mb-2 text-truncate-line-2 "><a href="{% url 'administracion:view_modulo' %}"
+                                                                      class="text-inherit">
+                                Módulos</a></h4>
+                            <!-- List -->
+                            <ul class="mb-3 list-inline">
+                                <li class="list-inline-item">
+                                    Creación y configuración de módulos
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+{% endblock %}

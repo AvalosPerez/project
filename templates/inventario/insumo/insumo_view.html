@@ -105,6 +105,7 @@
                                     </h6>
                                 </th>
 
+
                                 <th>
                                     <h6 class="text-sm text-medium text-end">
                                         Acciones
@@ -149,10 +150,12 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreAction1">
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:delete_insumo' insumo.pk %}" class="text-gray">Eliminar</a>
+                                                    <a href="{% url 'inventario:delete_insumo' insumo.pk %}"
+                                                       class="text-gray">Eliminar</a>
                                                 </li>
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:edit_insumo' insumo.pk %}" class="text-gray">Editar</a>
+                                                    <a href="{% url 'inventario:edit_insumo' insumo.pk %}"
+                                                       class="text-gray">Editar</a>
                                                 </li>
                                             </ul>
                                         </div>

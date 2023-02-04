@@ -21,9 +21,6 @@ class Index(LoginRequiredMixin, View):
         #action = request.GET['action']
         return render(request, self.template_name, data)
 
-
-
-
 class ViewInsumo(LoginRequiredMixin,ListView):
     template_name = "inventario/insumo/insumo_view.html"
     model = Insumo

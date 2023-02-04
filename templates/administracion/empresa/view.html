@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+{% endblock %}
+{% block title %}Administración{% endblock %}
+
+{% block content %}
+    <!-- ========== title-wrapper start ========== -->
+    <div class="title-wrapper pt-30">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="title d-flex align-items-center flex-wrap mb-30">
+                    <h2 class="mr-40">Empresa</h2>
+                    <a href="{% url 'administracion:add_empresa' %}" class="main-btn primary-btn btn-hover btn-sm">
+                        <i class="lni lni-plus mr-5"></i> Adicionar</a>
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-md-6">
+                <div class="breadcrumb-wrapper mb-30">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'home' %}">Home</a>
+                            </li>
+
+                            <li class="breadcrumb-item ">
+                                <a href="{% url 'administracion:administracion' %}">Administración</a>
+                            </li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Empresas
+                            </li>
+
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- ========== title-wrapper end ========== -->
+
+    <!-- ========== tables-wrapper start ========== -->
+    <div class="tables-wrapper">
+
+        <!-- ========== option-header start ========== -->
+        <div class="row pb-3">
+        </div>
+        <!-- ========== option-header end ========== -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-style mb-30">
+                    <h6 class="mb-10">Datos de información de la empresas</h6>
+                    <p class="text-sm mb-20">
+                        Mi empresa
+                    </p>
+                    <div class="table-wrapper table-responsive">
+                        <hr>
+                        {% if existe_mi_empresa %}
+                            <form action="{% url 'administracion:edit_empresa' datos_empresa.pk %}" method="POST">
+                                {% include "form_snippet.html" %}
+
+                            </form>
+
+                        {% else %}
+                             <form action="{% url 'administracion:add_empresa' %}" method="POST">
+                                {% include "form_snippet.html" %}
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+                <!-- end card -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- ========== tables-wrapper end ========== -->
+{% endblock %}
+<!-- Modal Eliminar -->
+<div class="modal fade" id="eliminar" role="dialog">
+
+</div>

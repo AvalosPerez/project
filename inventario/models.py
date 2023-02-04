@@ -134,6 +134,7 @@ class Insumo(ModeloBase):
     unidad_medida = models.ForeignKey(UnidadMedida, verbose_name='Unidad de medida', on_delete=models.CASCADE)
     lote = models.CharField(verbose_name="Lote", max_length=10)
     descripcion = models.CharField(verbose_name="Insumo", unique=True, max_length=200)
+    detalle = models.CharField(verbose_name="Descripción",null=True, max_length=300)
     presentacion_comercial = models.CharField(verbose_name="Presentacion Comercial", unique=True, max_length=200)
     fecha_vencimiento = models.DateField(verbose_name="Fecha vencimiento")
     minimo = models.IntegerField(verbose_name="Mínimo")
@@ -142,7 +143,7 @@ class Insumo(ModeloBase):
     cantidad = models.IntegerField(verbose_name="Stock", default=0)
     costo_unitario = models.DecimalField(verbose_name="Costo Unitario",max_digits=4, decimal_places=2)
     precio_venta = models.DecimalField(verbose_name="Precio Venta",max_digits=4, decimal_places=2)
-    aplica_iva = models.BooleanField(verbose_name="¿Aplica IVA?")
+
 
     class Meta:
         verbose_name = "Insumo"
@@ -151,6 +152,13 @@ class Insumo(ModeloBase):
 
     def __str__(self):
         return f'{self.descripcion}'
+
+    def save(self, *args, **kwargs):
+        """Save method for Analisis_Radiografico."""
+        return super(Insumo, self).save(*args, **kwargs)
+
+    def crear_inventario_inicial(self):
+        pass
 
 
 class Kardex(ModeloBase):
@@ -164,7 +172,6 @@ class Kardex(ModeloBase):
 
     def __str__(self):
         return f'{self.insumo}'
-
 
 class DetalleKardex(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha")
@@ -186,7 +193,6 @@ class DetalleKardex(ModeloBase):
     def __str__(self):
         return f'tipo: {self.tipo_movimiento} - producto: {self.kardex}'
 
-
 class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
@@ -202,7 +208,6 @@ class Venta(ModeloBase):
     def __str__(self):
         return f'{self.fecha} - {self.cliente}'
 
-
 class DetalleVenta(ModeloBase):
     venta = models.ForeignKey(Venta, verbose_name="Venta", on_delete=models.CASCADE)
     cantidad = models.IntegerField(verbose_name="Cantidad")
@@ -217,7 +222,6 @@ class DetalleVenta(ModeloBase):
     def __str__(self):
         return f'{self.venta} - {self.insumo}'
 
-
 class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")
     proveedor = models.ForeignKey(Cliente, verbose_name="Proveedor", on_delete=models.CASCADE)
@@ -230,7 +234,6 @@ class Compra(ModeloBase):
 
     def __str__(self):
         return f'{self.fecha} - {self.proveedor}'
-
 
 class DetalleCompra(ModeloBase):
     compra = models.ForeignKey(Compra, verbose_name="Compra", on_delete=models.CASCADE)

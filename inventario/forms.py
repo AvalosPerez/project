@@ -33,9 +33,12 @@ class InsumoForm(forms.ModelForm):
     def __init__(self, *args,**kwargs):
         super(InsumoForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = ' form-control   '
+            visible.field.widget.attrs['class'] = ''
             visible.field.widget.attrs['fieldset_class'] = ' input-style-1'
             self.fields['categoria'].widget.attrs['class'] = "form-control form-row  select"
+            self.fields['proveedor'].widget.attrs['class'] = "form-control form-row  select"
+            self.fields['unidad_medida'].widget.attrs['class'] = "form-control form-row  select"
+            self.fields['metodo_inventario'].widget.attrs['class'] = "form-control "
 
     class Meta:
         model = Insumo

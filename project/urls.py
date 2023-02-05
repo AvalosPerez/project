@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from project.views import Index
+
 app_name = 'base'
 urlpatterns = [
                   path('', Index.as_view(), name="home"),

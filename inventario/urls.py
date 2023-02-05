@@ -3,11 +3,12 @@ from django.urls import path
 from inventario.views import Index, ViewInsumo, EntradaInsumo, SalidaInsumo, ViewCategoria, ViewUnidadMedida, \
     AddCategoria, \
     EditCategoria, DeleteCategoria, AddUnidadMedida, EditUnidadMedida, DeleteUnidadMedida, AddInsumo, EditInsumo, \
-    DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor
+    DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor, MovimientoView
 
 app_name = 'inventario'
 urlpatterns = [
     path('', Index.as_view(), name="inventario"),
+    path('movimientos/<int:pk>', MovimientoView.as_view(), name="movimiento"),
     path('entradas/', EntradaInsumo.as_view(), name="entrada_insumo"),
     path('salidas/', SalidaInsumo.as_view(), name="salida_insumo"),
     path('insumos/', ViewInsumo.as_view(), name="insumo"),

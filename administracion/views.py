@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.gis.geos.prototypes import get_cs
 from django.shortcuts import render
 from django.forms import model_to_dict
 # Create your views here.
@@ -8,8 +7,8 @@ from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
 from administracion.forms import ModuloForm, EmpresaForm
-from administracion.models import Modulo
-from inventario.models import Empresa
+from administracion.models import Modulo,Empresa
+
 
 
 class Index(LoginRequiredMixin, View):
@@ -88,7 +87,7 @@ class ViewEmpresa(LoginRequiredMixin, ListView):
         return context
 
 class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'administracion.add_empresa'
+    permission_required = 'inventario.add_empresa'
     model = Empresa
     template_name = "administracion/empresa/addEmpresa.html"
     form_class = EmpresaForm
@@ -96,7 +95,7 @@ class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     context_object_name = "empresas"
 
 class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'administracion.change_empresa'
+    permission_required = 'inventario.change_empresa'
     model = Empresa
     template_name = "administracion/empresa/editEmpresa.html"
     form_class = EmpresaForm
@@ -104,7 +103,7 @@ class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     context_object_name = "empresas"
 
 class DeleteEmpresa(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'administracion.delete_empresa'
+    permission_required = 'inventario.delete_empresa'
     template_name = "administracion/empresa/deleteEmpresa.html"
     model = Empresa
     success_url = reverse_lazy('administracion:view_empresa')

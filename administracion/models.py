@@ -3,7 +3,19 @@ from django.db import models
 # Create your models here.
 from django.urls import reverse_lazy, reverse
 
-from inventario.models import ModeloBase
+from project.funciones import ModeloBase
+
+
+class Empresa(ModeloBase):
+    nombre = models.CharField(verbose_name="Empresa", max_length=240)
+
+    class Meta:
+        verbose_name = "Empresa"
+        verbose_name_plural = "Empresa"
+        ordering = ['-id']
+
+    def __str__(self):
+        return f'{self.nombre}'
 
 
 class Modulo(ModeloBase):

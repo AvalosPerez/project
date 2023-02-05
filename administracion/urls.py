@@ -1,6 +1,6 @@
 from django.urls import path
 
-from administracion.views import Index, ViewModulo, EditModulo, DeleteModulo, AddModulo, ViewEmpresa, AddEmpresa, \
+from administracion.views import Index, ViewModulo, AddModulo, EditModulo, DeleteModulo, ViewEmpresa, AddEmpresa, \
     EditEmpresa, DeleteEmpresa
 
 app_name = 'administracion'

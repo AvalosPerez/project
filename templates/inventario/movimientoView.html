@@ -20,8 +20,12 @@
                                 <a href="{% url 'home' %}">Home</a>
                             </li>
 
+                             <li class="breadcrumb-item ">
+                                <a href="{% url 'inventario:inventario' %}">Inventario</a>
+                            </li>
+
                             <li class="breadcrumb-item active" aria-current="page">
-                                Inventario
+                                Movimientos
                             </li>
 
                         </ol>
@@ -40,28 +44,10 @@
     <!-- ========== tables-wrapper start ========== -->
     <div class="tables-wrapper">
 
-        <!-- ========== option-header start ========== -->
-        <div class="row pb-3">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Configuraciones
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="{% url 'inventario:insumo' %}">Insumos</a></li>
-                    <li><a class="dropdown-item" href={% url 'inventario:entrada_insumo' %}>Compra</a></li>
-                    <li><a class="dropdown-item" href="{% url 'inventario:salida_insumo' %}">Venta</a></li>
-
-                </ul>
-            </div>
-
-
-        </div>
-        <!-- ========== option-header end ========== -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card-style mb-30">
-                    <h6 class="mb-10">Inventario de insumos</h6>
+                    <h6 class="mb-10">Movimientos: {{ insumo }}</h6>
                     <p class="text-sm mb-20">
 
                     </p>
@@ -74,26 +60,21 @@
                                     <h6 class="text-sm text-medium">Cod.</h6>
                                 </th>
                                 <th>
-                                    <h6 class="text-sm text-medium">Descripción</h6>
+                                    <h6 class="text-sm text-medium">Fecha</h6>
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        unidad de medida
+                                        Movimiento
                                     </h6>
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Mínimo
+                                        Descripción
                                     </h6>
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Máximo
-                                    </h6>
-                                </th>
-                                <th class="min-width">
-                                    <h6 class="text-sm text-medium">
-                                        Existencia
+                                        Cantidad
                                     </h6>
                                 </th>
                                 <th class="min-width">
@@ -103,7 +84,22 @@
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Total
+                                        Valor
+                                    </h6>
+                                </th>
+                                <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                        Existencia
+                                    </h6>
+                                </th>
+                                    <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                        Costo Existencia
+                                    </h6>
+                                </th>
+                                    <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                       Total Existencia
                                     </h6>
                                 </th>
                                 <th>
@@ -116,7 +112,7 @@
                             <tbody>
 
 
-                            {% for foo in inventario %}
+                            {% for foo in movimientos %}
 
 
 
@@ -126,25 +122,31 @@
                                     <p class="text-sm">{{ forloop.counter }}</p>
                                 </td>
                                  <td>
-                                    <p class="text-sm">{{ foo.insumo }}</p>
+                                    <p class="text-sm">{{ foo.fecha }}</p>
                                 </td>
                                  <td>
-                                    <p class="text-sm">{{ foo.insumo.unidad_medida }}</p>
+                                    <p class="text-sm">{{ foo.get_tipo_movimiento_display }}</p>
                                 </td>
                                  <td>
-                                    <p class="text-sm">{{ foo.insumo.minimo }}</p>
+                                    <p class="text-sm">{{ foo.detalle }}</p>
                                 </td>
                                  <td>
-                                    <p class="text-sm">{{ foo.insumo.maximo }}</p>
+                                    <p class="text-sm">{{ foo.cantidad }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ foo.get_existencia }}</p>
+                                    <p class="text-sm">{{ foo.costo_unitario }}</p>
                                 </td>
                                 <td>
-                                    <span class="text-sm">{{ foo.get_costo_existencia }}</span>
+                                    <span class="text-sm">{{ foo.importe }}</span>
                                 </td>
                                 <td>
-                                    <span class="text-sm">{{ foo.get_total_existencia }}</span>
+                                    <span class="text-sm">{{ foo.cantidad_anterior }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-sm">{{ foo.costo_anterior }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-sm">{{ foo.import_anterior }}</span>
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">
@@ -164,7 +166,7 @@
                                                 aria-labelledby="moreAction1"
                                         >
                                             <li class="dropdown-item">
-                                                <a href="{% url 'inventario:movimiento' foo.pk %}" class="text-gray">Movimientos</a>
+                                                <a href="#0" class="text-gray">Movimientos</a>
                                             </li>
 
                                         </ul>

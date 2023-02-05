@@ -9,17 +9,32 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 
 from administracion.models import Modulo
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, DetalleKardex
 
 
 class Index(LoginRequiredMixin, View):
     template_name = "inventario/view.html"
     def get(self, request, *args, **kwargs):
         data = {}
-        modulos = Modulo.objects.filter(status = True, activo=True)
-        data['modulos'] = modulos
+        inventario = Kardex.objects.filter(status = True)
+        data['inventario'] = inventario
         #action = request.GET['action']
         return render(request, self.template_name, data)
+
+
+class MovimientoView(LoginRequiredMixin, View):
+    template_name = "inventario/movimientoView.html"
+
+    def get(self, request, *args, **kwargs):
+        data = {}
+        kardex = Kardex.objects.get(pk=kwargs['pk'])
+        detalleKardex = DetalleKardex.objects.filter(status=True)
+        data['insumo'] = kardex
+        data['movimientos'] = detalleKardex
+        #action = request.GET['action']
+        return render(request, self.template_name, data)
+
+
 
 class ViewInsumo(LoginRequiredMixin,ListView):
     template_name = "inventario/insumo/insumo_view.html"
@@ -38,6 +53,12 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+        self.object.generar_inventario_inicial()
+        return super().form_valid(form)
 
 class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_insumo'

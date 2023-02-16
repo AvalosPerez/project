@@ -1,6 +1,5 @@
 import mimetypes
 from pathlib import Path
-from typing import io
 from urllib.parse import urlparse
 
 import xlsxwriter
@@ -8,20 +7,17 @@ from django.conf.global_settings import MEDIA_ROOT, STATIC_URL
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.staticfiles.finders import find
 from django.core.files.storage import default_storage
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.template.loader import render_to_string, get_template
+from django.template.loader import  get_template
 from django.urls import reverse_lazy, get_script_prefix
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from weasyprint import HTML, default_url_fetcher
-from weasyprint.text.fonts import FontConfiguration
-
-from administracion.models import Modulo
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, DetalleKardex
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex
 from project.settings import MEDIA_URL
 
 
@@ -63,6 +59,40 @@ class Index(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, data)
 
+def reporte_inventario_xlsx(request):
+    # Escribir los datos
+    kardexs = Kardex.objects.filter(status=True)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="reporte_inventario.xlsx"'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    # Escribir los encabezados de columna
+    encabezados = ['Descripción','Unidad de medida',' Mínimo ','Máximo','Existencia','Entradas','Salidas','Costo','Costo total', ]
+    for col_num, encabezado in enumerate(encabezados):
+        worksheet.write(0, col_num, encabezado)
+
+    for row_num, kardex in enumerate(kardexs):
+        worksheet.write(row_num + 1, 0, kardex.insumo.__str__())
+        worksheet.write(row_num + 1, 1, kardex.insumo.unidad_medida.__str__())
+        worksheet.write(row_num + 1, 2, kardex.insumo.minimo.__str__())
+        worksheet.write(row_num + 1, 3, kardex.insumo.maximo.__str__())
+        worksheet.write(row_num + 1, 4, kardex.get_existencia().__str__())
+        worksheet.write(row_num + 1, 5, kardex.get_inventario_entradas().__str__())
+        worksheet.write(row_num + 1, 6, kardex.get_inventario_salidas().__str__())
+        worksheet.write(row_num + 1, 7, kardex.get_costo_existencia().__str__())
+        worksheet.write(row_num + 1, 8, kardex.get_total_existencia().__str__())
+
+
+
+    # Ajustar el ancho de columna
+    worksheet.set_column(0, len(encabezados) - 1, 15)
+
+    workbook.close()
+    return response
+
 def reporte_movimiento_insumo_xlsx(request, pk):
     insumo = Kardex.objects.get(pk=pk)
     movimientos = insumo.detallekardex_set.filter(status=True)
@@ -99,7 +129,6 @@ def reporte_movimiento_insumo_xlsx(request, pk):
     workbook.close()
     return response
 
-
 class MovimientoView(LoginRequiredMixin, View):
     template_name = "inventario/movimientoView.html"
 
@@ -120,7 +149,6 @@ class ViewInsumo(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request)
-
 
 def reporte_insumos_xlsx(request):
     # Escribir los datos
@@ -168,7 +196,6 @@ def reporte_insumo_pdf(request):
 
     return response
 
-
 class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_insumo'
     model = Insumo
@@ -187,7 +214,6 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         self.object.generar_inventario_inicial()
         return super().form_valid(form)
 
-
 class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_insumo'
     model = Insumo
@@ -199,7 +225,6 @@ class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_insumo'
     template_name = "inventario/insumo/deleteInsumo.html"
@@ -207,13 +232,38 @@ class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
 
-
 class ViewProveedor(LoginRequiredMixin, ListView):
     template_name = "inventario/proveedor/view.html"
     model = Proveedor
     paginate_by = 10
     context_object_name = "proveedores"
 
+def reporte_proveedor_xlsx(request):
+    # Escribir los datos
+    proveedores = Proveedor.objects.filter(status=True)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="reporte_proveedor.xlsx"'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    # Escribir los encabezados de columna
+    encabezados = ['Proveedor', 'Email', 'Télefono', ]
+    for col_num, encabezado in enumerate(encabezados):
+        worksheet.write(0, col_num, encabezado)
+
+    for row_num, proveedor in enumerate(proveedores):
+        worksheet.write(row_num + 1, 0, proveedor.razon_social.__str__())
+        worksheet.write(row_num + 1, 1, proveedor.email.__str__())
+        worksheet.write(row_num + 1, 2, proveedor.telefono.__str__())
+
+
+    # Ajustar el ancho de columna
+    worksheet.set_column(0, len(encabezados) - 1, 15)
+
+    workbook.close()
+    return response
 
 class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_proveedor'
@@ -227,7 +277,6 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_proveedor'
     model = Proveedor
@@ -239,14 +288,12 @@ class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_proveedor'
     template_name = "inventario/proveedor/deleteProveedor.html"
     model = Proveedor
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
-
 
 class EntradaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/entrada_insumo_view.html"
@@ -261,7 +308,6 @@ class EntradaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
-
 class SalidaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/salida_insumo_view.html"
 
@@ -275,13 +321,37 @@ class SalidaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
-
 class ViewCategoria(LoginRequiredMixin, ListView):
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
     paginate_by = 10
     context_object_name = "categorias"
 
+def reporte_categoria_xlsx(request):
+    # Escribir los datos
+    categorias = Categoria.objects.filter(status=True)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="reporte_categoria.xlsx"'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    # Escribir los encabezados de columna
+    encabezados = ['Categoria', ]
+    for col_num, encabezado in enumerate(encabezados):
+        worksheet.write(0, col_num, encabezado)
+
+    for row_num, categoria in enumerate(categorias):
+        worksheet.write(row_num + 1, 0, categoria.descripcion.__str__())
+
+
+
+    # Ajustar el ancho de columna
+    worksheet.set_column(0, len(encabezados) - 1, 15)
+
+    workbook.close()
+    return response
 
 class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_categoria'
@@ -295,7 +365,6 @@ class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_categoria'
     model = Categoria
@@ -307,13 +376,11 @@ class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_categoria'
     template_name = "inventario/categoria/deleteCategoria.html"
     model = Categoria
     success_url = reverse_lazy('inventario:categoria')
-
 
 class ViewUnidadMedida(LoginRequiredMixin, ListView):
     template_name = "inventario/unidadMedida/unidad_medida_view.html"
@@ -321,6 +388,32 @@ class ViewUnidadMedida(LoginRequiredMixin, ListView):
     paginate_by = 10
     context_object_name = "unidades_medidas"
 
+def reporte_unidad_medida_xlsx(request):
+    # Escribir los datos
+    unidades_de_medidas = UnidadMedida.objects.filter(status=True)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="reporte_unidad_medida.xlsx"'
+
+    workbook = xlsxwriter.Workbook(response, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    # Escribir los encabezados de columna
+    encabezados = ['Unidad de medida','Alias', ]
+    for col_num, encabezado in enumerate(encabezados):
+        worksheet.write(0, col_num, encabezado)
+
+    for row_num, unidad in enumerate(unidades_de_medidas):
+        worksheet.write(row_num + 1, 0, unidad.descripcion.__str__())
+        worksheet.write(row_num + 1, 1, unidad.alias.__str__())
+
+
+
+    # Ajustar el ancho de columna
+    worksheet.set_column(0, len(encabezados) - 1, 15)
+
+    workbook.close()
+    return response
 
 class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_unidadmedida'

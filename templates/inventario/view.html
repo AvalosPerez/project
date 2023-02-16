@@ -42,21 +42,38 @@
 
         <!-- ========== option-header start ========== -->
         <div class="row pb-3">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Configuraciones
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="{% url 'inventario:insumo' %}">Insumos</a></li>
-                    <li><a class="dropdown-item" href={% url 'inventario:entrada_insumo' %}>Compra</a></li>
-                    <li><a class="dropdown-item" href="{% url 'inventario:salida_insumo' %}">Venta</a></li>
 
-                </ul>
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Configuraciones
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{% url 'inventario:insumo' %}">Insumos</a></li>
+                        <li><a class="dropdown-item" href={% url 'inventario:entrada_insumo' %}>Compra</a></li>
+                        <li><a class="dropdown-item" href="{% url 'inventario:salida_insumo' %}">Venta</a></li>
+
+                    </ul>
+                </div>
+
+
+            </div>
+            <div class="col-md-1">
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Reportes
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{% url 'inventario:reporte_inventario_xlsx' %}">Reporte de inventario</a></li>
+
+                    </ul>
+                </div>
             </div>
 
-
         </div>
+
         <!-- ========== option-header end ========== -->
         <div class="row">
             <div class="col-lg-12">
@@ -96,12 +113,12 @@
                                         Existencia
                                     </h6>
                                 </th>
-                                 <th class="min-width">
+                                <th class="min-width">
                                     <h6 class="text-sm text-medium">
                                         Entradas
                                     </h6>
                                 </th>
-                                 <th class="min-width">
+                                <th class="min-width">
                                     <h6 class="text-sm text-medium">
                                         Salidas
                                     </h6>
@@ -113,7 +130,7 @@
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                       Costo Total
+                                        Costo Total
                                     </h6>
                                 </th>
                                 <th>
@@ -130,67 +147,69 @@
 
 
 
-                            <tr>
+                                <tr>
 
-                                <td>
-                                    <p class="text-sm">{{ forloop.counter }}</p>
-                                </td>
-                                 <td>
-                                    <p class="text-sm">{{ foo.insumo }}</p>
-                                </td>
-                                 <td>
-                                    <p class="text-sm">{{ foo.insumo.unidad_medida }}</p>
-                                </td>
-                                 <td>
-                                    <p class="text-sm">{{ foo.insumo.minimo }}</p>
-                                </td>
-                                 <td>
-                                    <p class="text-sm">{{ foo.insumo.maximo }}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">{{ foo.get_existencia }}</p>
-                                </td>
+                                    <td>
+                                        <p class="text-sm">{{ forloop.counter }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.insumo }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.insumo.unidad_medida }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.insumo.minimo }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.insumo.maximo }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.get_existencia }}</p>
+                                    </td>
 
-                                <td>
-                                    <p class="text-sm">{{ foo.get_inventario_entradas }}</p>
-                                </td>
+                                    <td>
+                                        <p class="text-sm">{{ foo.get_inventario_entradas }}</p>
+                                    </td>
 
 
-                                <td>
-                                    <p class="text-sm">{{ foo.get_inventario_salidas }}</p>
-                                </td>
-                                <td>
-                                    <span class="text-sm">{{ foo.get_costo_existencia }}</span>
-                                </td>
-                                <td>
-                                    <span class="text-sm">{{ foo.get_total_existencia }}</span>
-                                </td>
-                                <td>
-                                    <div class="action justify-content-end">
-                                        <a href="{% url 'inventario:reporte_movimiento_insumo_xlsx' foo.pk %}" class="edit" title="Reporte de movimientos">
-                                            <i class="lni lni-printer"></i>
-                                        </a>
-                                        <button
-                                                class="more-btn ml-10 dropdown-toggle"
-                                                id="moreAction1"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
+                                    <td>
+                                        <p class="text-sm">{{ foo.get_inventario_salidas }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="text-sm">{{ foo.get_costo_existencia }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-sm">{{ foo.get_total_existencia }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="action justify-content-end">
+                                            <a href="{% url 'inventario:reporte_movimiento_insumo_xlsx' foo.pk %}"
+                                               class="edit" title="Reporte de movimientos">
+                                                <i class="lni lni-printer"></i>
+                                            </a>
+                                            <button
+                                                    class="more-btn ml-10 dropdown-toggle"
+                                                    id="moreAction1"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
 
-                                        >
-                                            <i class="lni lni-more-alt"></i>
-                                        </button>
-                                        <ul
-                                                class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="moreAction1"
-                                        >
-                                            <li class="dropdown-item">
-                                                <a href="{% url 'inventario:movimiento' foo.pk %}" class="text-gray">Movimientos</a>
-                                            </li>
+                                            >
+                                                <i class="lni lni-more-alt"></i>
+                                            </button>
+                                            <ul
+                                                    class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="moreAction1"
+                                            >
+                                                <li class="dropdown-item">
+                                                    <a href="{% url 'inventario:movimiento' foo.pk %}"
+                                                       class="text-gray">Movimientos</a>
+                                                </li>
 
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
 
                             {% endfor %}
 

@@ -1,19 +1,57 @@
+import mimetypes
+from pathlib import Path
 from typing import io
+from urllib.parse import urlparse
 
 import xlsxwriter
+from django.conf.global_settings import MEDIA_ROOT, STATIC_URL
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.staticfiles.finders import find
+from django.core.files.storage import default_storage
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.urls import reverse_lazy
+from django.template.loader import render_to_string, get_template
+from django.urls import reverse_lazy, get_script_prefix
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from weasyprint import HTML, default_url_fetcher
+from weasyprint.text.fonts import FontConfiguration
 
 from administracion.models import Modulo
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, DetalleKardex
+from project.settings import MEDIA_URL
 
+
+def url_fetcher(url, *args, **kwargs):
+    # load file:// paths directly from disk
+    if url.startswith('file:'):
+        mime_type, encoding = mimetypes.guess_type(url)
+        url_path = urlparse(url).path
+        data = {
+            'mime_type': mime_type,
+            'encoding': encoding,
+            'filename': Path(url_path).name,
+        }
+
+        default_media_url = MEDIA_URL in ('', get_script_prefix())
+        if not default_media_url and url_path.startswith(MEDIA_URL):
+            media_root = MEDIA_ROOT
+            if isinstance(MEDIA_ROOT, Path):
+                media_root = f'{MEDIA_ROOT}/'
+            path = url_path.replace(MEDIA_URL, media_root, 1)
+            data['file_obj'] = default_storage.open(path)
+            return data
+
+        elif STATIC_URL and url_path.startswith(STATIC_URL):
+            path = url_path.replace(STATIC_URL, '', 1)
+            data['file_obj'] = open(find(path), 'rb')
+            return data
+
+    # fall back to weasyprint default fetcher
+    return default_url_fetcher(url, *args, **kwargs)
 
 class Index(LoginRequiredMixin, View):
     template_name = "inventario/view.html"
@@ -25,7 +63,6 @@ class Index(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, data)
 
-
 def reporte_movimiento_insumo_xlsx(request, pk):
     insumo = Kardex.objects.get(pk=pk)
     movimientos = insumo.detallekardex_set.filter(status=True)
@@ -36,11 +73,12 @@ def reporte_movimiento_insumo_xlsx(request, pk):
     workbook = xlsxwriter.Workbook(response, {'in_memory': True})
     worksheet = workbook.add_worksheet()
     #
-    merge_format = workbook.add_format({ 'align': 'center', 'valign': 'vcenter' })
+    merge_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
 
     # Escribir los encabezados de columna
-    encabezados = ['Fecha', 'Movimiento', 'Descripción', 'Cantidad', 'Costo', 'Valor', 'Existencia', 'Costo Existencia', 'Total existencia', ]
-    worksheet.merge_range('A1:I1', 'Detalle de movimiento: '+insumo.__str__(), merge_format)
+    encabezados = ['Fecha', 'Movimiento', 'Descripción', 'Cantidad', 'Costo', 'Valor', 'Existencia', 'Costo Existencia',
+                   'Total existencia', ]
+    worksheet.merge_range('A1:I1', 'Detalle de movimiento: ' + insumo.__str__(), merge_format)
     for col_num, encabezado in enumerate(encabezados):
         worksheet.write(1, col_num, encabezado)
 
@@ -73,7 +111,6 @@ class MovimientoView(LoginRequiredMixin, View):
         data['movimientos'] = detalleKardex
         # action = request.GET['action']
         return render(request, self.template_name, data)
-
 
 class ViewInsumo(LoginRequiredMixin, ListView):
     template_name = "inventario/insumo/insumo_view.html"
@@ -119,6 +156,16 @@ def reporte_insumos_xlsx(request):
     worksheet.set_column(0, len(encabezados) - 1, 15)
 
     workbook.close()
+    return response
+
+def reporte_insumo_pdf(request):
+    context = {}
+    context['insumos']= Insumo.objects.filter(status=True)
+    html_template = get_template('inventario/report/reporte_insumo_pdf.html').render(context)
+    pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri(), url_fetcher=url_fetcher).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline;filename="reporte_insumo.pdf"'
+
     return response
 
 

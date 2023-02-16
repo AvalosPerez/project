@@ -4,7 +4,7 @@ from inventario.views import Index, ViewInsumo, EntradaInsumo, SalidaInsumo, Vie
     AddCategoria, \
     EditCategoria, DeleteCategoria, AddUnidadMedida, EditUnidadMedida, DeleteUnidadMedida, AddInsumo, EditInsumo, \
     DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor, MovimientoView, reporte_insumos_xlsx, \
-    reporte_movimiento_insumo_xlsx
+    reporte_movimiento_insumo_xlsx, reporte_insumo_pdf
 
 app_name = 'inventario'
 urlpatterns = [
@@ -28,7 +28,8 @@ urlpatterns = [
     path('insumos/proveedor/add/', AddProveedor.as_view(), name="add_proveedor"),
     path('insumos/proveedor/edit/<int:pk>', EditProveedor.as_view(), name="edit_proveedor"),
     path('insumos/proveedor/delete/<int:pk>', DeleteProveedor.as_view(), name="delete_proveedor"),
-    path('insumos/reporte_xlsx/', reporte_insumos_xlsx, name='reporte_insumos_xlsx'),
-    path('inventario/reporte_movimiento_xlsx/<int:pk>', reporte_movimiento_insumo_xlsx, name='reporte_movimiento_insumo_xlsx'),
+    path('insumos/reporte_insumo_xlsx/', reporte_insumos_xlsx, name='reporte_insumos_xlsx'),
+    path('reporte_movimiento_xlsx/<int:pk>', reporte_movimiento_insumo_xlsx, name='reporte_movimiento_insumo_xlsx'),
+    path('reporte_insumo_pdf', reporte_insumo_pdf, name="reporte_insumo_pdf" )
 
 ]

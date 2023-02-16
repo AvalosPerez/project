@@ -1,24 +1,38 @@
 {% csrf_token %}
+<div class="row">
+
 {% for field in form %}
+    <div class="{{ field.field.widget.attrs.col| default:"col-md-12"}}">
+        <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:""}}">
 
-    <fieldset class=" {% if field.field.widget.attrs.fieldset_class %}{{ field.field.widget.attrs.fieldset_class }}{% else %}col-md-12{% endif %}"
-              id="id_{{ field.name }}">
+            {{ field.label_tag }}
+            {% if field.field.widget.input_type == 'select' %}
+                <div class="select-position">
+                    {{ field }}
+                </div>
+            {% else %}
+                {{ field }}
+            {% endif %}
 
-        {{ field.label_tag }}
-        {{ field }}
-        {% if field.help_text %}
-            <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-            <div class="error-message text-danger">
-                {{ error }}
-            </div>
-        {% endfor %}
+            {% if field.help_text %}
+                <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="error-message text-danger">
+                    {{ error }}
+                </div>
+            {% endfor %}
 
-    </fieldset>
+        </fieldset>
+
+    </div>
+
 {% endfor %}
+</div>
 
- <div class="form-group mt-3">
-        <button type="submit" id="id_submit" class="btn btn-primary">Guardar cambios</button>
-            <a href="javascript:history.back()"  class="btn btn-secondary" >Cancelar</a>
-      </div>
+<div class="form-group mt-3">
+    <button type="submit" id="id_submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+</div>
+
+

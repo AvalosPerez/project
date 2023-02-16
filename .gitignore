@@ -6,3 +6,4 @@
 !**/migrations
 /.idea
 /.idea/**
+/bower_components/

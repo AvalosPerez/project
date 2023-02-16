@@ -47,7 +47,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card-style mb-30">
-                    <h6 class="mb-10">Movimientos: {{ insumo }}</h6>
+                    <h6 class="mb-10">Insumo: {{ insumo }}</h6>
                     <p class="text-sm mb-20">
 
                     </p>
@@ -102,11 +102,7 @@
                                        Total Existencia
                                     </h6>
                                 </th>
-                                <th>
-                                    <h6 class="text-sm text-medium text-end">
-                                        Acciones
-                                    </h6>
-                                </th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -146,32 +142,9 @@
                                     <span class="text-sm">{{ foo.costo_anterior }}</span>
                                 </td>
                                 <td>
-                                    <span class="text-sm">{{ foo.import_anterior }}</span>
+                                    <span class="text-sm badge bg-success">{{ foo.import_anterior }}</span>
                                 </td>
-                                <td>
-                                    <div class="action justify-content-end">
-                                        <button class="edit">
-                                            <i class="lni lni-printer"></i>
-                                        </button>
-                                        <button
-                                                class="more-btn ml-10 dropdown-toggle"
-                                                id="moreAction1"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                        >
-                                            <i class="lni lni-more-alt"></i>
-                                        </button>
-                                        <ul
-                                                class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="moreAction1"
-                                        >
-                                            <li class="dropdown-item">
-                                                <a href="#0" class="text-gray">Movimientos</a>
-                                            </li>
 
-                                        </ul>
-                                    </div>
-                                </td>
                             </tr>
 
                             {% endfor %}

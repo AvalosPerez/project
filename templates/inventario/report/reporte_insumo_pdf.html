@@ -1,0 +1,83 @@
+{% extends 'reporte_base.html' %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <h5 class="text-center">Listado de insumos</h5>
+    </div>
+
+    <div class="row">
+        <div class="table-wrapper table-responsive">
+
+            <table class="table top-selling-table">
+                <thead>
+                <tr>
+                    <th>
+                        <h6 class="text-sm text-medium">N°</h6>
+                    </th>
+                    <th class="min-width">
+                        <h6 class="text-sm text-medium">
+                            Categoría
+                        </h6>
+                    </th>
+                    <th class="min-width">
+                        <h6 class="text-sm text-medium">
+                            unidad de medida
+                        </h6>
+                    </th>
+                    <th>
+                        <h6 class="text-sm text-medium">Descripción</h6>
+                    </th>
+
+                    <th class="min-width">
+                        <h6 class="text-sm text-medium">
+                            Mínimo
+                        </h6>
+                    </th>
+                    <th class="min-width">
+                        <h6 class="text-sm text-medium">
+                            Máximo
+                        </h6>
+                    </th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for insumo in insumos %}
+
+                    <tr>
+
+                        <td>
+                            <p class="text-sm">{{ forloop.counter }}</p>
+                        </td>
+                        <td>
+                            <p class="text-sm">{{ insumo.categoria }}</p>
+                        </td>
+
+                        <td>
+                            <p class="text-sm">{{ insumo.unidad_medida }}</p>
+                        </td>
+                        <td>
+                            <p class="text-sm">{{ insumo.descripcion }}</p>
+                        </td>
+                        <td>
+                            <p class="text-sm">{{ insumo.minimo }}</p>
+                        </td>
+                        <td>
+                            <p class="text-sm">{{ insumo.maximo }}</p>
+                        </td>
+
+
+                        {% empty %}
+                    <tr>
+                        <td>No existen registro</td>
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+            <!-- End Table -->
+        </div>
+    </div>
+{% endblock %}

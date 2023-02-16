@@ -102,7 +102,11 @@
                                         <p class="text-sm">{{ modulo.name_tag }}</p>
                                     </td>
                                       <td>
-                                        <p class="text-sm">{{ modulo.activo }}</p>
+                                        {% if modulo.activo %}
+                                             <span class="text-sm badge bg-success">Activo</span>
+                                        {% else %}
+                                             <span class="text-sm badge bg-danger">No activo</span>
+                                        {% endif %}
                                     </td>
 
                                     <td>

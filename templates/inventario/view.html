@@ -96,6 +96,16 @@
                                         Existencia
                                     </h6>
                                 </th>
+                                 <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                        Entradas
+                                    </h6>
+                                </th>
+                                 <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                        Salidas
+                                    </h6>
+                                </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
                                         Costo
@@ -103,7 +113,7 @@
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Total
+                                       Costo Total
                                     </h6>
                                 </th>
                                 <th>
@@ -140,6 +150,15 @@
                                 <td>
                                     <p class="text-sm">{{ foo.get_existencia }}</p>
                                 </td>
+
+                                <td>
+                                    <p class="text-sm">{{ foo.get_inventario_entradas }}</p>
+                                </td>
+
+
+                                <td>
+                                    <p class="text-sm">{{ foo.get_inventario_salidas }}</p>
+                                </td>
                                 <td>
                                     <span class="text-sm">{{ foo.get_costo_existencia }}</span>
                                 </td>
@@ -148,7 +167,7 @@
                                 </td>
                                 <td>
                                     <div class="action justify-content-end">
-                                        <a href="#" class="edit">
+                                        <a href="{% url 'inventario:reporte_movimiento_insumo_xlsx' foo.pk %}" class="edit" title="Reporte de movimientos">
                                             <i class="lni lni-printer"></i>
                                         </a>
                                         <button
@@ -156,6 +175,7 @@
                                                 id="moreAction1"
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"
+
                                         >
                                             <i class="lni lni-more-alt"></i>
                                         </button>

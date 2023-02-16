@@ -146,6 +146,7 @@ class Insumo(ModeloBase):
             transaction.set_rollback(True)
 
 
+
 class Kardex(ModeloBase):
     empresa = models.ForeignKey('administracion.Empresa', verbose_name="Empresa", on_delete=models.CASCADE)
     insumo = models.ForeignKey(Insumo, verbose_name="Insumo", on_delete=models.CASCADE)
@@ -176,6 +177,13 @@ class Kardex(ModeloBase):
     def get_total_movimiento(self):
         return self.detallekardex_set.filter(status=True).order_by('-id')[0].importe
 
+    def get_inventario_entradas(self):
+        entradas = self.detallekardex_set.filter(status=True,tipo_movimiento= 2)
+        return entradas.count()
+
+    def get_inventario_salidas(self):
+        salidas = self.detallekardex_set.filter(status=True,tipo_movimiento= 3)
+        return salidas.count()
 
 class DetalleKardex(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha")

@@ -47,22 +47,33 @@
     <div class="tables-wrapper">
 
         <!-- ========== option-header start ========== -->
-        <div class="row pb-3">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Configuraciones
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="{% url 'inventario:categoria' %}">Categoria</a></li>
-                    <li><a class="dropdown-item" href="{% url 'inventario:proveedor' %}">Proveedor</a></li>
-                    <li><a class="dropdown-item" href="{% url 'inventario:unidad_medida' %}">Unidad de medida</a></li>
-
-
-                </ul>
+        <div class="row pb-3 ">
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Configuraciones
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{% url 'inventario:categoria' %}">Categoria</a></li>
+                        <li><a class="dropdown-item" href="{% url 'inventario:proveedor' %}">Proveedor</a></li>
+                        <li><a class="dropdown-item" href="{% url 'inventario:unidad_medida' %}">Unidad de medida</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            <div class="col-md-1">
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Reportes
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{% url 'inventario:reporte_insumos_xlsx' %}">Reporte de insumos</a></li>
 
-
+                    </ul>
+                </div>
+            </div>
         </div>
         <!-- ========== option-header end ========== -->
         <div class="row">

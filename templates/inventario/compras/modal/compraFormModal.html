@@ -1,15 +1,32 @@
-<p class="text-sm">
-    Lorem Ipsum is simply dummy text of the printing and
-    typesetting industry. Lorem Ipsum has been the industry's
-    standard dummy text ever since the 1500s, when an unknown
-    printer took a galley of type and scrambled it to make a type
-    specimen book. It has survived not only five centuries, but
-    also the leap into electronic typesetting, remaining
-    essentially unchanged. It was popularised in the 1960s with
-    the release of Letraset sheets containing Lorem Ipsum
-    passages, and more recently with desktop publishing software
-    like Aldus PageMaker including versions of Lorem Ipsum.Lorem
-    Ipsum is simply dummy text of the printing and typesetting
-    industry. Lorem Ipsum has been the industry's standard dummy
-    text ever since the .
-</p>
+<div class="row">
+    {% for field in form %}
+        <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
+            <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:"" }}">
+
+                {{ field.label_tag }}
+                {% if field.field.widget.input_type == 'select' %}
+                    <div class="select-position">
+                        {{ field }}
+                    </div>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+
+                {% if field.help_text %}
+                    <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="error-message text-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+            </fieldset>
+
+        </div>
+
+    {% endfor %}
+</div>
+
+
+

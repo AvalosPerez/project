@@ -1,15 +1,63 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Insumos{% endblock %}
+{% block extra_head %}
+    <script>
+        function formModal(id, text, url, footer = true) {
+            alert("ok")
+            $.ajax({
+                type: "GET",
+                url: url,
+
+                success: function (context) {
+                    if (context.success === true) {
+                        $('.modal-body').html(context.context);
+                        $('#id_modal_form .idModalLabel').html(text.toUpperCase());
+                        $("#id_modal_form").modal({backdrop: 'static', width: '900px'}).modal('show');
+                    } else {
+                        alert("error")
+                    }
+                },
+                error: function () {
+                    $.unblockUI();
+                    mensajeDanger("Error de conexión.");
+                },
+                dataType: "json"
+            });
+        }
+
+    </script>
+
+{% endblock %}
 
 {% block content %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="id_modal_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="idModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Compras de Insumos</h2>
-                      <a href="{% url 'inventario:add_categoria' %}" class="main-btn primary-btn btn-hover btn-sm">
+                    <a href="{% url 'inventario:add_compra' %}" class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar</a>
                 </div>
             </div>
@@ -38,11 +86,6 @@
         </div>
         <!-- end row -->
     </div>
-
-    <!-- ========== title-wrapper end ========== -->
-
-
-
     <!-- ========== tables-wrapper start ========== -->
     <div class="tables-wrapper">
 
@@ -64,7 +107,7 @@
                                 <th>
                                     <h6 class="text-sm text-medium">Proveedor</h6>
                                 </th>
-                                 <th>
+                                <th>
                                     <h6 class="text-sm text-medium">Detalle</h6>
                                 </th>
                                 <th>
@@ -88,17 +131,17 @@
                                         <p class="text-sm">{{ compra.fecha }}</p>
                                     </td>
 
-                                     <td>
+                                    <td>
                                         <p class="text-sm">{{ compra.proveedor }}</p>
                                     </td>
 
 
-                                     <td>
+                                    <td>
                                         <p class="text-sm">{{ compra.descripcion }}</p>
                                     </td>
 
 
-                                     <td>
+                                    <td>
                                         <p class="text-sm">{{ compra.total }}</p>
                                     </td>
                                     <td>
@@ -151,4 +194,12 @@
 
     </div>
     <!-- ========== tables-wrapper end ========== -->
+
+    <!-- Button trigger modal -->
+    <button type="button" id="d_button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+
 {% endblock %}

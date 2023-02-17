@@ -1,13 +1,13 @@
 import xlsxwriter
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, FormView
+from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm, CompraForm
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra
 
 
@@ -20,6 +20,32 @@ class Index(LoginRequiredMixin, View):
         context['inventario'] = inventario
         # action = request.GET['action']
         return render(request, self.template_name, context)
+
+
+class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+    permission_required = 'inventario.add_compra'
+    template_name = "inventario/compras/addCompra.html"
+    form_class = CompraForm
+    success_url = reverse_lazy('inventario:entrada_insumo')
+    context_object_name = "compras"
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse({'success': False, 'form': response.rendered_content})
+        else:
+            return response
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class()
+            return JsonResponse({'success': True, 'form': form.as_p()})
+        else:
+            return render(request, self.template_name)
 
 
 def reporte_inventario_xlsx(request):
@@ -54,7 +80,6 @@ def reporte_inventario_xlsx(request):
 
     workbook.close()
     return response
-
 
 def reporte_movimiento_insumo_xlsx(request, pk):
     insumo = Kardex.objects.get(pk=pk)
@@ -92,7 +117,6 @@ def reporte_movimiento_insumo_xlsx(request, pk):
     workbook.close()
     return response
 
-
 class MovimientoView(LoginRequiredMixin, View):
     template_name = "inventario/movimientoView.html"
 
@@ -105,7 +129,6 @@ class MovimientoView(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, context)
 
-
 class ViewInsumo(LoginRequiredMixin, ListView):
     template_name = "inventario/insumo/insumo_view.html"
     model = Insumo
@@ -114,7 +137,6 @@ class ViewInsumo(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request)
-
 
 def reporte_insumos_xlsx(request):
     # Escribir los datos
@@ -161,7 +183,6 @@ def reporte_insumos_xlsx(request):
     #     response['Content-Disposition'] = 'inline;filename="reporte_insumo.pdf"'
 
     return response
-
 
 class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_insumo'

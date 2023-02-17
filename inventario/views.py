@@ -1,53 +1,15 @@
-import mimetypes
-from pathlib import Path
-from urllib.parse import urlparse
-
 import xlsxwriter
-from django.conf.global_settings import MEDIA_ROOT, STATIC_URL
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.staticfiles.finders import find
-from django.core.files.storage import default_storage
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 # Create your views here.
-from django.template.loader import  get_template
-from django.urls import reverse_lazy, get_script_prefix
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from weasyprint import HTML, default_url_fetcher
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex
-from project.settings import MEDIA_URL
 
-
-def url_fetcher(url, *args, **kwargs):
-    # load file:// paths directly from disk
-    if url.startswith('file:'):
-        mime_type, encoding = mimetypes.guess_type(url)
-        url_path = urlparse(url).path
-        data = {
-            'mime_type': mime_type,
-            'encoding': encoding,
-            'filename': Path(url_path).name,
-        }
-
-        default_media_url = MEDIA_URL in ('', get_script_prefix())
-        if not default_media_url and url_path.startswith(MEDIA_URL):
-            media_root = MEDIA_ROOT
-            if isinstance(MEDIA_ROOT, Path):
-                media_root = f'{MEDIA_ROOT}/'
-            path = url_path.replace(MEDIA_URL, media_root, 1)
-            data['file_obj'] = default_storage.open(path)
-            return data
-
-        elif STATIC_URL and url_path.startswith(STATIC_URL):
-            path = url_path.replace(STATIC_URL, '', 1)
-            data['file_obj'] = open(find(path), 'rb')
-            return data
-
-    # fall back to weasyprint default fetcher
-    return default_url_fetcher(url, *args, **kwargs)
 
 class Index(LoginRequiredMixin, View):
     template_name = "inventario/view.html"
@@ -58,6 +20,7 @@ class Index(LoginRequiredMixin, View):
         data['inventario'] = inventario
         # action = request.GET['action']
         return render(request, self.template_name, data)
+
 
 def reporte_inventario_xlsx(request):
     # Escribir los datos
@@ -70,7 +33,8 @@ def reporte_inventario_xlsx(request):
     worksheet = workbook.add_worksheet()
 
     # Escribir los encabezados de columna
-    encabezados = ['Descripción','Unidad de medida',' Mínimo ','Máximo','Existencia','Entradas','Salidas','Costo','Costo total', ]
+    encabezados = ['Descripción', 'Unidad de medida', ' Mínimo ', 'Máximo', 'Existencia', 'Entradas', 'Salidas',
+                   'Costo', 'Costo total', ]
     for col_num, encabezado in enumerate(encabezados):
         worksheet.write(0, col_num, encabezado)
 
@@ -85,13 +49,12 @@ def reporte_inventario_xlsx(request):
         worksheet.write(row_num + 1, 7, kardex.get_costo_existencia().__str__())
         worksheet.write(row_num + 1, 8, kardex.get_total_existencia().__str__())
 
-
-
     # Ajustar el ancho de columna
     worksheet.set_column(0, len(encabezados) - 1, 15)
 
     workbook.close()
     return response
+
 
 def reporte_movimiento_insumo_xlsx(request, pk):
     insumo = Kardex.objects.get(pk=pk)
@@ -129,6 +92,7 @@ def reporte_movimiento_insumo_xlsx(request, pk):
     workbook.close()
     return response
 
+
 class MovimientoView(LoginRequiredMixin, View):
     template_name = "inventario/movimientoView.html"
 
@@ -141,6 +105,7 @@ class MovimientoView(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, data)
 
+
 class ViewInsumo(LoginRequiredMixin, ListView):
     template_name = "inventario/insumo/insumo_view.html"
     model = Insumo
@@ -149,6 +114,7 @@ class ViewInsumo(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request)
+
 
 def reporte_insumos_xlsx(request):
     # Escribir los datos
@@ -186,15 +152,16 @@ def reporte_insumos_xlsx(request):
     workbook.close()
     return response
 
-def reporte_insumo_pdf(request):
-    context = {}
-    context['insumos']= Insumo.objects.filter(status=True)
-    html_template = get_template('inventario/report/reporte_insumo_pdf.html').render(context)
-    pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri(), url_fetcher=url_fetcher).write_pdf()
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline;filename="reporte_insumo.pdf"'
+    # def reporte_insumo_pdf(request):
+    #     context = {}
+    #     context['insumos']= Insumo.objects.filter(status=True)
+    #     html_template = get_template('inventario/report/reporte_insumo_pdf.html').render(context)
+    #     pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri(), url_fetcher=url_fetcher).write_pdf()
+    #     response = HttpResponse(pdf_file, content_type='application/pdf')
+    #     response['Content-Disposition'] = 'inline;filename="reporte_insumo.pdf"'
 
     return response
+
 
 class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_insumo'
@@ -214,6 +181,7 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         self.object.generar_inventario_inicial()
         return super().form_valid(form)
 
+
 class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_insumo'
     model = Insumo
@@ -225,6 +193,7 @@ class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+
 class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_insumo'
     template_name = "inventario/insumo/deleteInsumo.html"
@@ -232,11 +201,13 @@ class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
 
+
 class ViewProveedor(LoginRequiredMixin, ListView):
     template_name = "inventario/proveedor/view.html"
     model = Proveedor
     paginate_by = 10
     context_object_name = "proveedores"
+
 
 def reporte_proveedor_xlsx(request):
     # Escribir los datos
@@ -258,12 +229,12 @@ def reporte_proveedor_xlsx(request):
         worksheet.write(row_num + 1, 1, proveedor.email.__str__())
         worksheet.write(row_num + 1, 2, proveedor.telefono.__str__())
 
-
     # Ajustar el ancho de columna
     worksheet.set_column(0, len(encabezados) - 1, 15)
 
     workbook.close()
     return response
+
 
 class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_proveedor'
@@ -277,6 +248,7 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+
 class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_proveedor'
     model = Proveedor
@@ -288,12 +260,14 @@ class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+
 class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_proveedor'
     template_name = "inventario/proveedor/deleteProveedor.html"
     model = Proveedor
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
+
 
 class EntradaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/entrada_insumo_view.html"
@@ -308,6 +282,7 @@ class EntradaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
+
 class SalidaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/salida_insumo_view.html"
 
@@ -321,11 +296,13 @@ class SalidaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
+
 class ViewCategoria(LoginRequiredMixin, ListView):
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
     paginate_by = 10
     context_object_name = "categorias"
+
 
 def reporte_categoria_xlsx(request):
     # Escribir los datos
@@ -345,13 +322,12 @@ def reporte_categoria_xlsx(request):
     for row_num, categoria in enumerate(categorias):
         worksheet.write(row_num + 1, 0, categoria.descripcion.__str__())
 
-
-
     # Ajustar el ancho de columna
     worksheet.set_column(0, len(encabezados) - 1, 15)
 
     workbook.close()
     return response
+
 
 class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_categoria'
@@ -365,6 +341,7 @@ class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+
 class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_categoria'
     model = Categoria
@@ -376,17 +353,20 @@ class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+
 class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_categoria'
     template_name = "inventario/categoria/deleteCategoria.html"
     model = Categoria
     success_url = reverse_lazy('inventario:categoria')
 
+
 class ViewUnidadMedida(LoginRequiredMixin, ListView):
     template_name = "inventario/unidadMedida/unidad_medida_view.html"
     model = UnidadMedida
     paginate_by = 10
     context_object_name = "unidades_medidas"
+
 
 def reporte_unidad_medida_xlsx(request):
     # Escribir los datos
@@ -399,7 +379,7 @@ def reporte_unidad_medida_xlsx(request):
     worksheet = workbook.add_worksheet()
 
     # Escribir los encabezados de columna
-    encabezados = ['Unidad de medida','Alias', ]
+    encabezados = ['Unidad de medida', 'Alias', ]
     for col_num, encabezado in enumerate(encabezados):
         worksheet.write(0, col_num, encabezado)
 
@@ -407,13 +387,12 @@ def reporte_unidad_medida_xlsx(request):
         worksheet.write(row_num + 1, 0, unidad.descripcion.__str__())
         worksheet.write(row_num + 1, 1, unidad.alias.__str__())
 
-
-
     # Ajustar el ancho de columna
     worksheet.set_column(0, len(encabezados) - 1, 15)
 
     workbook.close()
     return response
+
 
 class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_unidadmedida'

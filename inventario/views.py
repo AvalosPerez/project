@@ -24,28 +24,9 @@ class Index(LoginRequiredMixin, View):
 
 class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     permission_required = 'inventario.add_compra'
-    template_name = "inventario/compras/addCompra.html"
+    template_name = "inventario/compras/modal/compraFormModal.html"
     form_class = CompraForm
-    success_url = reverse_lazy('inventario:entrada_insumo')
-    context_object_name = "compras"
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse({'success': False, 'form': response.rendered_content})
-        else:
-            return response
-
-    def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            form = self.form_class()
-            return JsonResponse({'success': True, 'form': form.as_p()})
-        else:
-            return render(request, self.template_name)
 
 
 def reporte_inventario_xlsx(request):

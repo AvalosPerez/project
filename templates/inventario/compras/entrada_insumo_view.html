@@ -3,26 +3,13 @@
 {% block title %}Insumos{% endblock %}
 {% block extra_head %}
     <script>
-        function formModal(id, text, url, footer = true) {
-            alert("ok")
+        function abrirFormularioModal(url) {
             $.ajax({
-                type: "GET",
                 url: url,
-
-                success: function (context) {
-                    if (context.success === true) {
-                        $('.modal-body').html(context.context);
-                        $('#id_modal_form .idModalLabel').html(text.toUpperCase());
-                        $("#id_modal_form").modal({backdrop: 'static', width: '900px'}).modal('show');
-                    } else {
-                        alert("error")
-                    }
-                },
-                error: function () {
-                    $.unblockUI();
-                    mensajeDanger("Error de conexión.");
-                },
-                dataType: "json"
+                success: function (data) {
+                    $('#formularioModal .content').html(data);
+                    $('#formularioModal').modal('show');
+                }
             });
         }
 
@@ -33,19 +20,28 @@
 {% block content %}
 
     <!-- Modal -->
-    <div class="modal fade" id="id_modal_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="idModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content card-style">
+                <div class="modal-header px-0 border-0">
+                    <h5 class="text-bold">{{ titulo }}</h5>
+                    <button class="border-0 bg-transparent h1" data-bs-dismiss="modal">
+                        <i class="lni lni-cross-circle"></i>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                <div class="modal-body px-0">
+                    <div class="content mb-30">
+
+                    </div>
+                    <div class="action d-flex flex-wrap justify-content-end">
+                        <button data-bs-dismiss="modal" class="main-btn danger-btn-outline btn-hover m-1">
+                            Cancelar
+                        </button>
+                        <button data-bs-dismiss="modal" class="main-btn primary-btn btn-hover m-1">
+                            Guardar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,7 +192,8 @@
     <!-- ========== tables-wrapper end ========== -->
 
     <!-- Button trigger modal -->
-    <button type="button" id="d_button" class="btn btn-primary" data-bs-toggle="modal"
+    <button onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');" type="button" id="d_button"
+            class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#exampleModal">
         Launch demo modal
     </button>

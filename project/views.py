@@ -12,11 +12,9 @@ class Index(LoginRequiredMixin,View):
 
 
     def get(self, request, *args, **kwargs):
-        data = {}
-        modulos = Modulo.objects.filter(status = True, activo=True)
-        data['modulos'] = modulos
+        context = {}
         #action = request.GET['action']
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         data = {}

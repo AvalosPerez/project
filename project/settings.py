@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'project.processors.context_dict',
             ],
         },
     },
@@ -135,6 +136,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
-#
-WEASYPRINT_DLL_DIRECTORIES=r"C:/GTK3-Runtime Win64/bin"
-WEASYPRINT_BASEURL='/'
+#EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'odontologicoclinico@gmail.com'
+EMAIL_HOST_PASSWORD = 'hzrrnmxsotjlkkss'
+EMAIL_PORT = 587

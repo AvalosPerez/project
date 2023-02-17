@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="shortcut icon"
+            href={% static 'assets/images/favicon.svg' %}
+                    type="image/x-icon"
+    />
+    <title>ERP | {% block title %}{% endblock %}</title>
+
+    <!-- ========== All CSS files linkup ========= -->
+    <link rel="stylesheet" href={% static 'assets/css/bootstrap.min.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/lineicons.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/materialdesignicons.min.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
+    <link rel="stylesheet" href={% static 'assets/css/main.css' %}/>
+</head>
+<body>
+
+
+<!-- ======== main-wrapper start =========== -->
+<main class="container-fluid">
+{% block content %}
+
+{% endblock %}
+</main>
+<!-- ======== main-wrapper end =========== -->
+
+
+<!-- ========= All Javascript files linkup ======== -->
+<script src= {% static 'assets/js/bootstrap.bundle.min.js' %}></script>
+<script src= {% static 'assets/js/Chart.min.js' %}></script>
+<script src= {% static 'assets/js/dynamic-pie-chart.js' %}></script>
+<script src= {% static 'assets/js/moment.min.js' %}></script>
+<script src= {% static 'assets/js/fullcalendar.js' %}></script>
+<script src= {% static 'assets/js/jvectormap.min.js' %}></script>
+<script src= {% static 'assets/js/world-merc.js' %}></script>
+<script src= {% static 'assets/js/polyfill.js' %}></script>
+<script src= {% static 'assets/js/main.js' %}></script>
+
+</body>
+</html>

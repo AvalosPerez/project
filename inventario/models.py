@@ -242,6 +242,7 @@ class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")
     proveedor = models.ForeignKey(Cliente, verbose_name="Proveedor", on_delete=models.CASCADE)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
+    descripcion = models.CharField(verbose_name="Detalle", max_length=450, null=True)
 
     class Meta:
         verbose_name = "Compra"

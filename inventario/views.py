@@ -8,18 +8,18 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra
 
 
 class Index(LoginRequiredMixin, View):
     template_name = "inventario/view.html"
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        context = {}
         inventario = Kardex.objects.filter(status=True)
-        data['inventario'] = inventario
+        context['inventario'] = inventario
         # action = request.GET['action']
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, context)
 
 
 def reporte_inventario_xlsx(request):
@@ -97,13 +97,13 @@ class MovimientoView(LoginRequiredMixin, View):
     template_name = "inventario/movimientoView.html"
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        context = {}
         kardex = Kardex.objects.get(pk=kwargs['pk'])
         detalleKardex = kardex.detallekardex_set.filter(status=True)
-        data['insumo'] = kardex
-        data['movimientos'] = detalleKardex
+        context['insumo'] = kardex
+        context['movimientos'] = detalleKardex
         # action = request.GET['action']
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, context)
 
 
 class ViewInsumo(LoginRequiredMixin, ListView):
@@ -270,29 +270,30 @@ class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 class EntradaInsumo(LoginRequiredMixin, View):
-    template_name = "inventario/entrada_insumo_view.html"
+    template_name = "inventario/compras/entrada_insumo_view.html"
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        context = {}
+        context['compras'] = Compra.objects.filter(status=True)
         # action = request.GET['action']
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        context = {}
         # action = request.POST['action']
         pass
 
 
 class SalidaInsumo(LoginRequiredMixin, View):
-    template_name = "inventario/salida_insumo_view.html"
+    template_name = "inventario/ventas/salida_insumo_view.html"
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        context = {}
         # action = request.GET['action']
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        context = {}
         # action = request.POST['action']
         pass
 

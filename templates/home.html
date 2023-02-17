@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load tags %}
 {% block title %}Home{% endblock %}
 {% block extra_head %}
 {% endblock %}
@@ -30,6 +30,7 @@
         <!-- end row -->
 
         <div class="row">
+        {% get_modulos_list as modulos %}
             {% for modulo in modulos %}
 
                 <div class="col-md-4">

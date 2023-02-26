@@ -18,12 +18,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from project.views import Index
+from project.views import Index, MyLoginView
 
 app_name = 'base'
 urlpatterns = [
                   path('', Index.as_view(), name="home"),
                   path('app_nkfp_2023_code/', admin.site.urls),
+
+                  path('accounts/login/', MyLoginView.as_view(), name='login'),
                   path('accounts/', include("django.contrib.auth.urls")),
                   path('inventario/', include("inventario.urls")),
                   path('administracion/', include("administracion.urls")),

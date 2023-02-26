@@ -1,7 +1,7 @@
 # Create your models here.
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.db import models
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 
 from project import settings
 
@@ -28,6 +28,13 @@ class ModeloBase(models.Model):
         else:
             self.usuario_creacion_id = usuario
         models.Model.save(self)
+
+
+def enviar_correo(asunto, plantilla, destinatario, contexto):
+    cuerpo_correo = render_to_string(plantilla, contexto)
+    correo = EmailMessage(asunto, cuerpo_correo, to=[destinatario])
+    correo.content_subtype = 'html'
+    correo.send()
 
 
 def create_mail_simple(user_mail, subject, template_name, context):

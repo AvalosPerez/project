@@ -8,7 +8,7 @@
                 url: url,
                 success: function (data) {
                     $('#formularioModal .content').html(data);
-                    $('#formularioModal').modal('show');
+                    $('#formularioModal').modal({backdrop: 'static'}).modal('show');
                 }
             });
         }
@@ -18,6 +18,19 @@
 {% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mb-0 alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
 
     <!-- Modal -->
     <div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -31,19 +44,12 @@
                     </button>
                 </div>
                 <div class="modal-body px-0">
-                    <form action="">
-                        <div class="content mb-30">
 
-                        </div>
-                        <div class="action d-flex flex-wrap justify-content-end">
-                            <button data-bs-dismiss="modal" class="main-btn danger-btn-outline btn-hover m-1">
-                                Cancelar
-                            </button>
-                            <button data-bs-dismiss="modal" class="main-btn primary-btn btn-hover m-1">
-                                Guardar
-                            </button>
-                        </div>
-                    </form>
+                    <div class="content mb-30">
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -55,8 +61,11 @@
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Compras de Insumos</h2>
-                    <a href="{% url 'inventario:add_compra' %}" class="main-btn primary-btn btn-hover btn-sm">
-                        <i class="lni lni-plus mr-5"></i> Adicionar</a>
+                    <button type="button" id="d_button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');"
+                            class="main-btn primary-btn btn-hover btn-sm">
+                        <i class="lni lni-plus mr-5"></i> Adicionar
+                    </button>
                 </div>
             </div>
             <!-- end col -->
@@ -193,12 +202,6 @@
     </div>
     <!-- ========== tables-wrapper end ========== -->
 
-    <!-- Button trigger modal -->
-    <button onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');" type="button" id="d_button"
-            class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-        Launch demo modal
-    </button>
 
 
 {% endblock %}

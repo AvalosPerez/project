@@ -1,5 +1,6 @@
 import xlsxwriter
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -22,10 +23,21 @@ class Index(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
     permission_required = 'inventario.add_compra'
     template_name = "inventario/compras/modal/compraFormModal.html"
     form_class = CompraForm
+    success_url = reverse_lazy('inventario:entrada_insumo')
+    success_message = 'Registro Eliminado Exitosamente'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_form']= 'Formulario adicionar compra'
+        return context
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+        return super().form_valid(form)
 
 
 

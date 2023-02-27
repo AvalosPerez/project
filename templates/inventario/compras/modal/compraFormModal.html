@@ -1,32 +1,46 @@
-<div class="row">
-    {% for field in form %}
-        <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
-            <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:"" }}">
+<form action="{% url 'inventario:add_compra' %}" method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <input type="hidden" name="action">
+        {% for field in form %}
+            <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
+                <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:"" }}">
 
-                {{ field.label_tag }}
-                {% if field.field.widget.input_type == 'select' %}
-                    <div class="select-position">
+                    {{ field.label_tag }}
+                    {% if field.field.widget.input_type == 'select' %}
+                        <div class="select-position">
+                            {{ field }}
+                        </div>
+                    {% else %}
                         {{ field }}
-                    </div>
-                {% else %}
-                    {{ field }}
-                {% endif %}
+                    {% endif %}
 
-                {% if field.help_text %}
-                    <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {% for error in field.errors %}
-                    <div class="error-message text-danger">
-                        {{ error }}
-                    </div>
-                {% endfor %}
+                    {% if field.help_text %}
+                        <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="error-message text-danger">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
 
-            </fieldset>
+                </fieldset>
 
-        </div>
+            </div>
 
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+    <div class="action d-flex flex-wrap justify-content-end">
+        <button data-bs-dismiss="modal" class="main-btn danger-btn-outline btn-hover m-1">
+            Cancelar
+        </button>
+        <button data-bs-dismiss="modal" class="main-btn primary-btn btn-hover m-1">
+            Guardar
+        </button>
+    </div>
+</form>
+
+
 
 
 

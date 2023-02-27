@@ -8,8 +8,7 @@ from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
 from administracion.forms import ModuloForm, EmpresaForm
-from administracion.models import Modulo,Empresa
-
+from administracion.models import Modulo, Empresa
 
 
 class Index(LoginRequiredMixin, View):
@@ -47,6 +46,10 @@ class AddModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
+
 
 class EditModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_modulo'
@@ -58,6 +61,10 @@ class EditModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
 
 
 class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -87,6 +94,7 @@ class ViewEmpresa(LoginRequiredMixin, ListView):
             context['form'] = EmpresaForm
         return context
 
+
 class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_empresa'
     model = Empresa
@@ -95,6 +103,11 @@ class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('administracion:view_empresa')
     context_object_name = "empresas"
 
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
+
+
 class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_empresa'
     model = Empresa
@@ -102,6 +115,11 @@ class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = EmpresaForm
     success_url = reverse_lazy('administracion:view_empresa')
     context_object_name = "empresas"
+
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
+
 
 class DeleteEmpresa(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_empresa'

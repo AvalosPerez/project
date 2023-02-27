@@ -45,7 +45,7 @@
 
     <!-- ========== title-wrapper end ========== -->
 
-     <div class="row pb-3">
+    <div class="row pb-3">
         <div class="dropdown">
             <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -110,10 +110,9 @@
                                     <td>
                                         <p class="text-sm">{{ unidad_medida.descripcion }}</p>
                                     </td>
-                                     <td>
-                                            <p class="text-sm">{{ unidad_medida.alias | default_if_none:"nothing" }}</p>
+                                    <td>
+                                        <p class="text-sm">{{ unidad_medida.alias | default_if_none:"nothing" }}</p>
                                     </td>
-
 
 
                                     <td>
@@ -131,11 +130,15 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
+                                                {% if not unidad_medida.en_uso %}
+                                                    <li class="dropdown-item">
+                                                        <a href="{% url 'inventario:delete_unidad_medida' unidad_medida.pk %}"
+                                                           class="text-gray">Eliminar</a>
+                                                    </li>
+                                                {% endif %}
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:delete_unidad_medida' unidad_medida.pk %}" class="text-gray">Eliminar</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:edit_unidad_medida' unidad_medida.pk %}" class="text-gray">Editar</a>
+                                                    <a href="{% url 'inventario:edit_unidad_medida' unidad_medida.pk %}"
+                                                       class="text-gray">Editar</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -143,13 +146,15 @@
                                 </tr>
 
                             {% empty %}
-                               <tr><td> No existen registros</td></tr>
+                                <tr>
+                                    <td> No existen registros</td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>
                         <!-- End Table -->
                     </div>
-                  {% include "paginador_snippet.html" %}
+                    {% include "paginador_snippet.html" %}
                 </div>
                 <!-- end card -->
             </div>

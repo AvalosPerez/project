@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 from django.urls import reverse_lazy, reverse
 
-from project.funciones import ModeloBase
+from project.models import ModeloBase
 
 
 class Empresa(ModeloBase):

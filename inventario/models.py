@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.http import request
 from administracion.models import Empresa
-from project.funciones import ModeloBase
+from project.models import ModeloBase
 
 TIPO_MOVIMIENTO = (
     (1, u"Inicial"),
@@ -68,6 +68,8 @@ class Categoria(ModeloBase):
     def __str__(self):
         return f'{self.descripcion}'
 
+    def en_uso(self):
+        return self.insumo_set.filter(status=True).exists()
 
 class UnidadMedida(ModeloBase):
     descripcion = models.CharField(verbose_name="Unidad de medida", unique=True, max_length=200)
@@ -81,6 +83,8 @@ class UnidadMedida(ModeloBase):
     def __str__(self):
         return f'{self.descripcion}'
 
+    def en_uso(self):
+        return self.insumo_set.filter(status=True).exists()
 
 class Proveedor(ModeloBase):
     razon_social = models.CharField(verbose_name="Razón social", unique=True, max_length=200)
@@ -89,6 +93,9 @@ class Proveedor(ModeloBase):
 
     def __str__(self):
         return f'{self.razon_social}'
+
+    def en_uso(self):
+        return self.insumo_set.filter(status=True).exists()
 
     class Meta:
         verbose_name = "Proveedor"

@@ -192,6 +192,7 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
         self.object = form.save()
+        form.instance.usuario_creacion = self.request.user
         self.object.generar_inventario_inicial()
         return super().form_valid(form)
 
@@ -207,7 +208,9 @@ class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
 class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_insumo'
     template_name = "inventario/insumo/deleteInsumo.html"
@@ -262,6 +265,9 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
 
 class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_proveedor'
@@ -273,7 +279,9 @@ class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
-
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
 
 class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_proveedor'
@@ -355,7 +363,9 @@ class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
-
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
 
 class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_categoria'
@@ -367,7 +377,9 @@ class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
-
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
 
 class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_categoria'
@@ -421,6 +433,9 @@ class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
 
 class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_unidadmedida'
@@ -433,6 +448,9 @@ class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
 
 class DeleteUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_unidadmedida'

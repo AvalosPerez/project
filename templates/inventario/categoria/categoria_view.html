@@ -117,11 +117,14 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
-                                                <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:delete_categoria' categoria.pk %}"
+                                                {% if not categoria.en_uso %}
+                                                    <li class="dropdown-item">
+                                                        <a href="{% url 'inventario:delete_categoria' categoria.pk %}"
 
-                                                       class="text-gray">Eliminar</a>
-                                                </li>
+                                                           class="text-gray">Eliminar</a>
+                                                    </li>
+
+                                                {% endif %}
                                                 <li class="dropdown-item">
                                                     <a href="{% url 'inventario:edit_categoria' categoria.pk %}"
                                                        class="text-gray">Editar</a>
@@ -134,7 +137,7 @@
 
                             {% empty %}
                                 <tr>
-                                   <td> No existen registros</td>
+                                    <td> No existen registros</td>
                                 </tr>
                             {% endfor %}
 

@@ -283,6 +283,7 @@ class CompraForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'col': 'col-md-12',
+                    'rows':'4',
                     'imputstyle': 'input-style-1',
 
 

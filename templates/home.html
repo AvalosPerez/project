@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load tags %}
 {% block title %}Home{% endblock %}
 {% block extra_head %}
 {% endblock %}
@@ -30,32 +29,6 @@
         <!-- end row -->
 
         <div class="row">
-        {% get_modulos_list as modulos %}
-            {% for modulo in modulos %}
-
-                <div class="col-md-4">
-                    <div class="item">
-                        <!-- Card -->
-                        <div class="card  mb-4 card-hover">
-                            <a href="{{ modulo.url}}"  class="card-img-top"><img
-                                    src='#' alt="" class="card-img-top rounded-top-md"></a>
-                            <!-- Card Body -->
-                            <div class="card-body">
-                                <h4 class="mb-2 text-truncate-line-2 "><a
-                                        href="{{ modulo.url}}" class="text-inherit">
-                                    {{ modulo.nombre }}</a></h4>
-                                <!-- List -->
-                                <ul class="mb-3 list-inline">
-                                    <li class="list-inline-item">
-                                        {{ modulo.descripcion }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            {% endfor %}
 
         </div>
     </div>

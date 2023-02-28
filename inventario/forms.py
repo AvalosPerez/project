@@ -112,18 +112,8 @@ class InsumoForm(forms.ModelForm):
             'presentacion_comercial': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-6',
+                    'col': 'col-md-4',
                     'imputstyle': 'input-style-1'
-
-                }
-            ),
-            'fecha_vencimiento': forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-6',
-                    'imputstyle': 'input-style-1',
-                    'type': 'date'
-
 
                 }
             ),
@@ -131,7 +121,7 @@ class InsumoForm(forms.ModelForm):
             'minimo': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-6',
+                    'col': 'col-md-4',
                     'imputstyle': 'input-style-1',
                     'type': 'number',
                     'min': '0'
@@ -142,7 +132,7 @@ class InsumoForm(forms.ModelForm):
             'maximo': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-6',
+                    'col': 'col-md-4',
                     'imputstyle': 'input-style-1',
                     'type': 'number',
                     'min': '0'

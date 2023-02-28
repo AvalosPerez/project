@@ -249,7 +249,7 @@
                         label: 'Compras',
                         data: [
                             {% for compras in compras_por_mes %}
-                                {{ compras.cantidad_vendida }},
+                                {{ compras.cantidad_vendida | floatformat:2}},
                             {% endfor %}
                         ],
                         fill: false,
@@ -260,7 +260,7 @@
                         label: 'Ventas',
                         data: [
                             {% for ventas in ventas_por_mes %}
-                                {{ ventas.cantidad_vendida }},
+                                {{ ventas.cantidad_vendida  | floatformat:2 }},
                             {% endfor %}
                         ],
                         fill: false,

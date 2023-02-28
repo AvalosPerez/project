@@ -110,7 +110,6 @@ class Insumo(ModeloBase):
     descripcion = models.CharField(verbose_name="Insumo", unique=True, max_length=200)
     detalle = models.CharField(verbose_name="Descripción", null=True, max_length=300)
     presentacion_comercial = models.CharField(verbose_name="Presentacion Comercial", unique=True, max_length=200)
-    fecha_vencimiento = models.DateField(verbose_name="Fecha vencimiento")
     minimo = models.IntegerField(verbose_name="Mínimo")
     maximo = models.IntegerField(verbose_name="Máximo")
     proveedor = models.ForeignKey(Proveedor, verbose_name="Proveedor", on_delete=models.CASCADE)

@@ -23,7 +23,7 @@ class Modulo(ModeloBase):
     descripcion = models.CharField(verbose_name="Descripción", unique=True, max_length=200)
     name_tag = models.CharField(verbose_name="name tag", unique=True, max_length=200)
     activo = models.BooleanField(verbose_name="¿Módulo activo?")
-
+    icon_class = models.CharField(verbose_name="icon class",default='lni lni-folder', max_length=200)
     class Meta:
         verbose_name = "Módulo del sistema"
         verbose_name_plural = "Módulos del sistema"

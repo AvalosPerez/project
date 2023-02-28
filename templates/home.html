@@ -30,6 +30,61 @@
 
         <div class="row">
 
+            <div class="col-xl-3 col-lg-4 col-sm-6">
+                <div class="icon-card mb-30">
+                    <div class="icon purple">
+                        <i class="lni lni-producthunt"></i>
+                    </div>
+                    <div class="content">
+                        <h6 class="mb-10">Insumos</h6>
+                        <h3 class="text-bold mb-10">{{ total_insumos }}</h3>
+                        <p class="text-sm text-success">
+
+                        </p>
+                    </div>
+                </div>
+                <!-- End Icon Cart -->
+            </div>
+            <!-- End Col -->
+            <div class="col-xl-3 col-lg-4 col-sm-6">
+                <div class="icon-card mb-30">
+                    <div class="icon success">
+                        <i class="lni lni-shopify"></i>
+                    </div>
+                    <div class="content">
+                        <h6 class="mb-10">Compas</h6>
+                        <h3 class="text-bold mb-10">${{ total_compras|floatformat:2}}</h3>
+                        <p class="text-sm text-success">
+                        </p>
+                    </div>
+                </div>
+                <!-- End Icon Cart -->
+
+
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-sm-6">
+                <div class="icon-card mb-30">
+                    <div class="icon success">
+                        <i class="lni lni-dollar"></i>
+                    </div>
+                    <div class="content">
+                        <h6 class="mb-10">Ventas</h6>
+                        <h3 class="text-bold mb-10">${{ total_ventas|floatformat:2 }}</h3>
+                        <p class="text-sm text-success">
+                        </p>
+                    </div>
+                </div>
+                <!-- End Icon Cart -->
+
+
+            </div>
+
         </div>
+
+
+        <div class="row"></div>
+
+
     </div>
 {% endblock %}

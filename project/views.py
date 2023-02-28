@@ -1,27 +1,28 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.db.models import Sum
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
+from django.views.generic import TemplateView
 
 from administracion.models import Modulo
+from inventario.models import Insumo, Compra, Venta
 from project.funciones import enviar_correo
 
 
-class Index(LoginRequiredMixin, View):
+class Index(LoginRequiredMixin, TemplateView):
     template_name = "home.html"
 
-    def get(self, request, *args, **kwargs):
-        context = {}
-        # action = request.GET['action']
-        return render(request, self.template_name, context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_insumos'] = Insumo.objects.filter(status=True).count()
+        context['total_compras'] = total_compra = Compra.objects.filter(status=True).aggregate(Sum('total',default=0))['total__sum']
+        context['total_ventas'] = total_venta = Venta.objects.filter(status=True).aggregate(Sum('total',default=0))['total__sum']
+        return context
 
-    def post(self, request, *args, **kwargs):
-        data = {}
-        # action = request.POST['action']
-        pass
 
 class MyLoginView(LoginView):
 

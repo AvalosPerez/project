@@ -33,7 +33,16 @@ class ModuloForm(forms.ModelForm):
                 }
             ),
 
-             'name_tag': forms.TextInput(
+            'name_tag': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'col': 'col-md-12',
+                    'imputstyle': 'input-style-1'
+
+                }
+            ),
+
+            'icon_class': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'col': 'col-md-12',

@@ -85,25 +85,25 @@
         </div>
 
         <div class="row">
-             <div class="card-style mb-30">
-                    <div class="title d-flex flex-wrap justify-content-between">
-                        <div class="left">
-                            <h6 class="text-medium mb-10">Compras / Ventas Realizadas por mes</h6>
-                            <h3 class="text-bold"></h3>
-                        </div>
-                        <div class="right">
-                            <div class="select-style-1">
+            <div class="card-style mb-30">
+                <div class="title d-flex flex-wrap justify-content-between">
+                    <div class="left">
+                        <h6 class="text-medium mb-10">Compras / Ventas Realizadas por mes</h6>
+                        <h3 class="text-bold"></h3>
+                    </div>
+                    <div class="right">
+                        <div class="select-style-1">
 
-                            </div>
-                            <!-- end select -->
                         </div>
+                        <!-- end select -->
                     </div>
-                    <!-- End Title -->
-                    <div class="chart">
-                        <canvas id="chart_ventas_por_mes"></canvas>
-                    </div>
-                    <!-- End Chart -->
                 </div>
+                <!-- End Title -->
+                <div class="chart">
+                    <canvas id="line-chart"></canvas>
+                </div>
+                <!-- End Chart -->
+            </div>
         </div>
         <!-- End Row -->
         <div class="row">
@@ -112,7 +112,7 @@
                     <div class="title d-flex flex-wrap justify-content-between">
                         <div class="left">
                             <h6 class="text-medium mb-10">Costo Insumos disponibles</h6>
-                            <h3 class="text-bold">${{total_precio_compra_insumo| floatformat:2}}</h3>
+                            <h3 class="text-bold">${{ total_precio_compra_insumo| floatformat:2 }}</h3>
                         </div>
                         <div class="right">
                             <div class="select-style-1">
@@ -233,5 +233,54 @@
                 }
             }
         });
+
+
+        var ctx2 = document.getElementById('line-chart').getContext('2d');
+        var myChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for compras in compras_por_mes %}
+                        "{{ compras.mes|date:"M" }}",
+                    {% endfor %}
+                ],
+                datasets: [
+                    {
+                        label: 'Compras',
+                        data: [
+                            {% for compras in compras_por_mes %}
+                                {{ compras.cantidad_vendida }},
+                            {% endfor %}
+                        ],
+                        fill: false,
+                        borderColor: 'blue',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Ventas',
+                        data: [
+                            {% for ventas in ventas_por_mes %}
+                                {{ ventas.cantidad_vendida }},
+                            {% endfor %}
+                        ],
+                        fill: false,
+                        borderColor: 'green',
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        },
+
+                    }]
+                }
+            }
+        });
+
+
     </script>
 {% endblock %}

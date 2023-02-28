@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block extra_head %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 {% block content %}
     <!-- ========== title-wrapper start ========== -->
@@ -53,7 +55,7 @@
                     </div>
                     <div class="content">
                         <h6 class="mb-10">Compas</h6>
-                        <h3 class="text-bold mb-10">${{ total_compras|floatformat:2}}</h3>
+                        <h3 class="text-bold mb-10">${{ total_compras|floatformat:2 }}</h3>
                         <p class="text-sm text-success">
                         </p>
                     </div>
@@ -82,9 +84,154 @@
 
         </div>
 
+        <div class="row">
+             <div class="card-style mb-30">
+                    <div class="title d-flex flex-wrap justify-content-between">
+                        <div class="left">
+                            <h6 class="text-medium mb-10">Compras / Ventas Realizadas por mes</h6>
+                            <h3 class="text-bold"></h3>
+                        </div>
+                        <div class="right">
+                            <div class="select-style-1">
 
-        <div class="row"></div>
+                            </div>
+                            <!-- end select -->
+                        </div>
+                    </div>
+                    <!-- End Title -->
+                    <div class="chart">
+                        <canvas id="chart_ventas_por_mes"></canvas>
+                    </div>
+                    <!-- End Chart -->
+                </div>
+        </div>
+        <!-- End Row -->
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="card-style mb-30">
+                    <div class="title d-flex flex-wrap justify-content-between">
+                        <div class="left">
+                            <h6 class="text-medium mb-10">Costo Insumos disponibles</h6>
+                            <h3 class="text-bold">${{total_precio_compra_insumo| floatformat:2}}</h3>
+                        </div>
+                        <div class="right">
+                            <div class="select-style-1">
+
+                            </div>
+                            <!-- end select -->
+                        </div>
+                    </div>
+                    <!-- End Title -->
+                    <div class="chart">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <!-- End Chart -->
+                </div>
+            </div>
+            <!-- End Col -->
+            <div class="col-lg-5">
+                <div class="card-style mb-30">
+                    <div
+                            class="
+                    title
+                    d-flex
+                    flex-wrap
+                    align-items-center
+                    justify-content-between
+                  "
+                    >
+                        <div class="left">
+                            <h6 class="text-medium mb-30">Indicadores de Abastecimiento</h6>
+                        </div>
+                        <div class="right">
+
+                            <!-- end select -->
+                        </div>
+                    </div>
+                    <!-- End Title -->
+                    <div class="chart">
+                        <table class="table table-responsive">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Insumo</th>
+                                <th>Cantidad</th>
+                                <th>C. Mínima</th>
+                                <th>Indicador</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for abastecer in insumos_abastecimiento %}
+                                <tr>
+                                    <td>{{ abastecer.descripcion }}</td>
+                                    <td>{{ abastecer.cantidad }}</td>
+                                    <td>{{ abastecer.minimo }}</td>
+                                    <td><span class="status-btn close-btn">Reabastecer</span></td>
+                                </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End Chart -->
+                </div>
+            </div>
+            <!-- End Col -->
+        </div>
 
 
     </div>
+{% endblock %}
+
+
+
+
+{% block javascript %}
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for insumo in insumos %}
+                        "{{ insumo.descripcion }}",
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Cantidad',
+                    data: [
+                        {% for insumo in insumos %}
+                            {{ insumo.cantidad }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
 {% endblock %}

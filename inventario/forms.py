@@ -124,6 +124,7 @@ class InsumoForm(forms.ModelForm):
                     'imputstyle': 'input-style-1',
                     'type': 'date'
 
+
                 }
             ),
 

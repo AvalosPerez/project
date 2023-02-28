@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.shortcuts import render
 
 # Create your views here.
@@ -21,6 +21,13 @@ class Index(LoginRequiredMixin, TemplateView):
         context['total_insumos'] = Insumo.objects.filter(status=True).count()
         context['total_compras'] = total_compra = Compra.objects.filter(status=True).aggregate(Sum('total',default=0))['total__sum']
         context['total_ventas'] = total_venta = Venta.objects.filter(status=True).aggregate(Sum('total',default=0))['total__sum']
+        insumos = Insumo.objects.filter(status=True)
+        context['insumos'] = insumos
+        context['total_precio_compra_insumo'] = insumos.annotate(total_costo = (F('cantidad')*F('costo_unitario'))).aggregate(Sum('total_costo',default=0))['total_costo__sum']
+        context['insumos_abastecimiento'] = insumos.annotate(cantidad_minima=F('minimo')).filter(cantidad__lt=F('cantidad_minima'))
+        anio=0
+        compras_por_mes =0
+        ventas_por_mes =0
         return context
 
 

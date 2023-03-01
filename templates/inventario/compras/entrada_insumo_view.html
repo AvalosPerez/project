@@ -48,11 +48,16 @@
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Compras de Insumos</h2>
-                    <button type="button" id="d_button" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                            onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');"
+                    <a type="button" id="d_button" href="{% url 'inventario:add_compra' %}"
                             class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar
-                    </button>
+                    </a>
+
+{#                    <button type="button" id="d_button" data-bs-toggle="modal" data-bs-target="#exampleModal"#}
+{#                            onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');"#}
+{#                            class="main-btn primary-btn btn-hover btn-sm">#}
+{#                        <i class="lni lni-plus mr-5"></i> Adicionar#}
+{#                    </button>#}
                 </div>
             </div>
             <!-- end col -->
@@ -159,7 +164,7 @@
                                                        class="text-gray">Eliminar</a>
                                                 </li>
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'inventario:edit_categoria' compra.pk %}"
+                                                    <a href="{% url 'inventario:edit_compra' compra.pk %}"
                                                        class="text-gray">Editar</a>
                                                 </li>
                                             </ul>
@@ -181,6 +186,7 @@
                     </div>
                 </div>
                 <!-- end card -->
+              {% include "paginador_snippet.html" %}
             </div>
             <!-- end col -->
         </div>

@@ -1,7 +1,6 @@
 <form action="{% url 'inventario:add_compra' %}" method="POST">
     {% csrf_token %}
     <div class="row">
-        <input type="hidden" name="action">
         {% for field in form %}
             <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
                 <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:"" }}">
@@ -69,9 +68,6 @@
 
             </tbody>
         </table>
-
-
-
 
     </div>
     <div class="action d-flex flex-wrap justify-content-end">

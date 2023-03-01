@@ -47,7 +47,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <form action="{% url 'inventario:add_compra' %}" method="POST">
+                <form action="{% url 'inventario:edit_compra' compras.pk %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
 
@@ -127,6 +127,7 @@
                         <button type="submit" id="id_submit" class="btn btn-primary">Guardar cambios</button>
                         <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
                     </div>
+
 
                 </form>
             </div>

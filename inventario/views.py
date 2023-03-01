@@ -7,7 +7,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView, FormView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, FormView, TemplateView
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm, CompraForm
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra
 
@@ -22,22 +22,53 @@ class Index(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, context)
 
-class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
+
+class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_compra'
-    template_name = "inventario/compras/modal/compraFormModal.html"
+    template_name = "inventario/compras/addCompra.html"
     form_class = CompraForm
     success_url = reverse_lazy('inventario:entrada_insumo')
     success_message = 'Registro guardado exitosamente'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo_form']= 'Formulario adicionar compra'
         return context
 
+
+class EditCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+    permission_required = 'inventario.change_compra'
+    model = Compra
+    template_name = "inventario/compras/editCompra.html"
+    form_class = CompraForm
+    success_url = reverse_lazy('inventario:entrada_insumo')
+    context_object_name = "compras"
+    success_message = 'Registro modificado exitosamente'
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
-        """If the form is valid, save the associated model."""
-        self.object = form.save()
+        form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
+
+
+# class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
+#     permission_required = 'inventario.add_compra'
+#     template_name = "inventario/compras/modal/compraFormModal.html"
+#     form_class = CompraForm
+#     success_url = reverse_lazy('inventario:entrada_insumo')
+#     success_message = 'Registro guardado exitosamente'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['titulo_form']= 'Formulario adicionar compra'
+#         return context
+#
+#     def form_valid(self, form):
+#         """If the form is valid, save the associated model."""
+#         self.object = form.save()
+#         return super().form_valid(form)
 
 def reporte_inventario_xlsx(request):
     # Escribir los datos
@@ -195,7 +226,6 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
         self.object.generar_inventario_inicial()
         return super().form_valid(form)
 
-
 class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_insumo'
     model = Insumo
@@ -217,7 +247,6 @@ class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Insumo
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
-
 
 class ViewProveedor(LoginRequiredMixin, ListView):
     template_name = "inventario/proveedor/view.html"
@@ -288,19 +317,13 @@ class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
 
-class EntradaInsumo(LoginRequiredMixin, View):
+class EntradaInsumo(LoginRequiredMixin, ListView):
     template_name = "inventario/compras/entrada_insumo_view.html"
+    model = Compra
+    paginate_by = 10
+    context_object_name = "compras"
 
-    def get(self, request, *args, **kwargs):
-        context = {}
-        context['compras'] = Compra.objects.filter(status=True)
-        # action = request.GET['action']
-        return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        context = {}
-        # action = request.POST['action']
-        pass
 
 class SalidaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/ventas/salida_insumo_view.html"

@@ -85,14 +85,17 @@ class InsumoForm(forms.ModelForm):
 
                 }
             ),
-            'lote': forms.TextInput(
+
+            'proveedor': forms.Select(
                 attrs={
                     'class': 'form-control',
                     'col': 'col-md-4',
-                    'imputstyle': 'input-style-1'
+                    'imputstyle': 'select-style-1'
 
                 }
             ),
+
+
             'descripcion': forms.TextInput(
                 attrs={
                     'class': 'form-control',
@@ -105,14 +108,6 @@ class InsumoForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
-
-                }
-            ),
-            'presentacion_comercial': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
                     'imputstyle': 'input-style-1'
 
                 }
@@ -140,14 +135,6 @@ class InsumoForm(forms.ModelForm):
                 }
             ),
 
-            'proveedor': forms.Select(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'select-style-1'
-
-                }
-            ),
 
             'cantidad': forms.TextInput(
                 attrs={

@@ -18,19 +18,6 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} mb-0 alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-
 
     <!-- Modal -->
     <div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -205,3 +192,13 @@
 
 
 {% endblock %}
+
+
+
+{% block javascript %}
+
+{% endblock %}
+
+
+
+

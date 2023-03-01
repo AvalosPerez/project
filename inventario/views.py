@@ -22,13 +22,13 @@ class Index(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, context)
 
-
 class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
     permission_required = 'inventario.add_compra'
     template_name = "inventario/compras/modal/compraFormModal.html"
     form_class = CompraForm
     success_url = reverse_lazy('inventario:entrada_insumo')
-    success_message = 'Registro Eliminado Exitosamente'
+    success_message = 'Registro guardado exitosamente'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo_form']= 'Formulario adicionar compra'
@@ -38,8 +38,6 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
         """If the form is valid, save the associated model."""
         self.object = form.save()
         return super().form_valid(form)
-
-
 
 def reporte_inventario_xlsx(request):
     # Escribir los datos
@@ -177,7 +175,7 @@ def reporte_insumos_xlsx(request):
 
     return response
 
-class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_insumo'
     model = Insumo
     # fields = ['nombre', 'apellido', 'cedula']
@@ -185,6 +183,7 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = InsumoForm
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
+    success_message = 'Registro Guardado Exitosamente'
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
@@ -197,20 +196,21 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_insumo'
     model = Insumo
     template_name = "inventario/insumo/editInsumo.html"
     form_class = InsumoForm
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
-
+    success_message = 'Registro modificado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
 class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_insumo'
     template_name = "inventario/insumo/deleteInsumo.html"
@@ -224,7 +224,6 @@ class ViewProveedor(LoginRequiredMixin, ListView):
     model = Proveedor
     paginate_by = 10
     context_object_name = "proveedores"
-
 
 def reporte_proveedor_xlsx(request):
     # Escribir los datos
@@ -252,8 +251,7 @@ def reporte_proveedor_xlsx(request):
     workbook.close()
     return response
 
-
-class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_proveedor'
     model = Proveedor
     # fields = ['nombre', 'apellido', 'cedula']
@@ -261,7 +259,7 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = ProveedorForm
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
-
+    success_message = 'Registro guardado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
@@ -269,14 +267,14 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_proveedor'
     model = Proveedor
     template_name = "inventario/proveedor/editProveedor.html"
     form_class = ProveedorForm
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
-
+    success_message = 'Registro modificado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
     def form_valid(self, form):
@@ -289,7 +287,6 @@ class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Proveedor
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
-
 
 class EntradaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/compras/entrada_insumo_view.html"
@@ -305,7 +302,6 @@ class EntradaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
-
 class SalidaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/ventas/salida_insumo_view.html"
 
@@ -319,13 +315,11 @@ class SalidaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
-
 class ViewCategoria(LoginRequiredMixin, ListView):
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
     paginate_by = 10
     context_object_name = "categorias"
-
 
 def reporte_categoria_xlsx(request):
     # Escribir los datos
@@ -351,8 +345,7 @@ def reporte_categoria_xlsx(request):
     workbook.close()
     return response
 
-
-class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_categoria'
     model = Categoria
     # fields = ['nombre', 'apellido', 'cedula']
@@ -360,21 +353,21 @@ class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = CategoriaForm
     success_url = reverse_lazy('inventario:categoria')
     context_object_name = "categorias"
-
+    success_message = 'Registro guardado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
     def form_valid(self, form):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_categoria'
     model = Categoria
     template_name = "inventario/categoria/editCategoria.html"
     form_class = CategoriaForm
     success_url = reverse_lazy('inventario:categoria')
     context_object_name = "categorias"
-
+    success_message = 'Registro modificado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
     def form_valid(self, form):
@@ -387,13 +380,11 @@ class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Categoria
     success_url = reverse_lazy('inventario:categoria')
 
-
 class ViewUnidadMedida(LoginRequiredMixin, ListView):
     template_name = "inventario/unidadMedida/unidad_medida_view.html"
     model = UnidadMedida
     paginate_by = 10
     context_object_name = "unidades_medidas"
-
 
 def reporte_unidad_medida_xlsx(request):
     # Escribir los datos
@@ -420,15 +411,14 @@ def reporte_unidad_medida_xlsx(request):
     workbook.close()
     return response
 
-
-class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_unidadmedida'
     model = UnidadMedida
-    # fields = ['nombre', 'apellido', 'cedula']
     template_name = "inventario/unidadMedida/addUnidadMedida.html"
     form_class = UnidadMedidaForm
     success_url = reverse_lazy('inventario:unidad_medida')
     context_object_name = "unidades_medidas"
+    success_message = 'Registro guardado exitosamente'
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
@@ -437,14 +427,14 @@ class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_unidadmedida'
     model = UnidadMedida
     template_name = "inventario/unidadMedida/editUnidadMedida.html"
     form_class = UnidadMedidaForm
     success_url = reverse_lazy('inventario:unidad_medida')
     context_object_name = "unidades_medidas"
-
+    success_message = 'Registro modificado exitosamente'
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 

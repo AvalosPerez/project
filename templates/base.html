@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/fullcalendar.css' %}"/>
     <link rel="stylesheet" href="{% static 'assets/css/fullcalendar.css' %}"/>
     <link rel="stylesheet" href="{% static 'assets/css/main.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/sweetalert2.min.css' %}"/>
     <script src="{% static 'assets/js/jquery.js' %}"></script>
+
     {% block extra_head %}
     {% endblock %}
 </head>
@@ -180,7 +182,20 @@
 <script src="{% static 'assets/js/world-merc.js' %}"></script>
 <script src="{% static 'assets/js/polyfill.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/sweetalert2.all.min.js' %}"></script>
 
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2500
+            });
+        </script>
+    {% endfor %}
+{% endif %}
 {% block javascript %}
 
 {% endblock %}

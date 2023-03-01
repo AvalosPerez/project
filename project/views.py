@@ -6,11 +6,9 @@ from django.db.models.functions import TruncMonth
 from django.shortcuts import render
 
 # Create your views here.
-from django.views import View
 from django.views.generic import TemplateView
 
-from administracion.models import Modulo
-from inventario.models import Insumo, Compra, Venta
+from inventario.models import Insumo, Compra, Venta, Usuario
 from project.funciones import enviar_correo
 
 
@@ -39,7 +37,7 @@ class MyLoginView(LoginView):
         User = get_user_model()
         username = form.cleaned_data.get('username')
         try:
-            user = User.objects.get(username=username)
+            user = Usuario.objects.get(email=username)
             email = user.email
         except User.DoesNotExist:
             email = None
@@ -67,7 +65,7 @@ class MyLoginView(LoginView):
         User = get_user_model()
         username = form.cleaned_data.get('username')
         try:
-            user = User.objects.get(username=username)
+            user = Usuario.objects.get(email=username)
             email = user.email
         except User.DoesNotExist:
             email = None

@@ -1,7 +1,7 @@
 from django import forms
 from django.db.models import fields
 
-from administracion.models import Modulo,Empresa
+from administracion.models import Modulo
 
 
 
@@ -63,28 +63,28 @@ class ModuloForm(forms.ModelForm):
 
         }
 
+#
+# class EmpresaForm(forms.ModelForm):
+#
+#     def __init__(self, *args,**kwargs):
+#         super(EmpresaForm, self).__init__(*args, **kwargs)
 
-class EmpresaForm(forms.ModelForm):
-
-    def __init__(self, *args,**kwargs):
-        super(EmpresaForm, self).__init__(*args, **kwargs)
-
-
-    class Meta:
-        model = Empresa
-        fields = '__all__'
-        exclude=("status",)
-
-        widgets = {
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
-
-                }
-            ),
-
-        }
-
-
+    #
+    # class Meta:
+    #     model = Empresa
+    #     fields = '__all__'
+    #     exclude=("status",)
+    #
+    #     widgets = {
+    #         'nombre': forms.TextInput(
+    #             attrs={
+    #                 'class': 'form-control',
+    #                 'col': 'col-md-12',
+    #                 'imputstyle': 'input-style-1'
+    #
+    #             }
+    #         ),
+    #
+    #     }
+    #
+    #

@@ -144,3 +144,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'odontologicoclinico@gmail.com'
 EMAIL_HOST_PASSWORD = 'hzrrnmxsotjlkkss'
 EMAIL_PORT = 587
+
+#
+AUTH_USER_MODEL = 'inventario.Usuario'

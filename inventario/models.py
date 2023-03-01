@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import User, PermissionsMixin
 from django.db import models, transaction
-from django.http import request
-from administracion.models import Empresa
 from project.models import ModeloBase
 
 TIPO_MOVIMIENTO = (
@@ -17,8 +16,33 @@ TIPO_METODO = (
 )
 
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('El email es obligatorio')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+
+    def __str__(self):
+        return self.email
+
 class Persona(ModeloBase):
-    usuario = models.OneToOneField(User, verbose_name="Usuario", blank=True, null=True, on_delete=models.CASCADE)
     nombres = models.CharField(verbose_name="Nombres", max_length=450)
     apellidos = models.CharField(verbose_name="Nombres", max_length=450)
     email = models.EmailField(verbose_name="Email", unique=True)
@@ -31,7 +55,12 @@ class Persona(ModeloBase):
 
     def __str__(self):
         return f'{self.apellidos} {self.nombres}'
+class Perfil(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    foto = models.ImageField(upload_to='fotos_perfil/', blank=True)
 
+    def __str__(self):
+        return f'Perfil de {self.persona.nombre} {self.persona.apellido}'
 
 class Cliente(ModeloBase):
     persona = models.ForeignKey(Persona, verbose_name="Persona", on_delete=models.CASCADE)
@@ -126,9 +155,8 @@ class Insumo(ModeloBase):
     def generar_inventario_inicial(self):
         try:
             with transaction.atomic():
-                empresa = Empresa.objects.filter(status=True)
                 kardex = Kardex(
-                    empresa=empresa[0],
+
                     insumo=self
                 )
                 kardex.save()
@@ -152,7 +180,6 @@ class Insumo(ModeloBase):
 
 
 class Kardex(ModeloBase):
-    empresa = models.ForeignKey('administracion.Empresa', verbose_name="Empresa", on_delete=models.CASCADE)
     insumo = models.ForeignKey(Insumo, verbose_name="Insumo", on_delete=models.CASCADE)
 
     class Meta:

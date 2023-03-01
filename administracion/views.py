@@ -7,8 +7,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
-from administracion.forms import ModuloForm, EmpresaForm
-from administracion.models import Modulo, Empresa
+from administracion.forms import ModuloForm
+from administracion.models import Modulo
 
 
 class Index(LoginRequiredMixin, View):
@@ -74,56 +74,56 @@ class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('administracion:view_modulo')
     context_object_name = "modulos"
 
-
-class ViewEmpresa(LoginRequiredMixin, ListView):
-    template_name = "administracion/empresa/view.html"
-    model = Empresa
-    paginate_by = 10
-    context_object_name = "empresas"
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        #
-        mi_empresa = Empresa.objects.filter(status=True)
-        context['existe_mi_empresa'] = mi_empresa.exists()
-
-        if mi_empresa.exists():
-            context['datos_empresa'] = mi_empresa[0]
-            context['form'] = EmpresaForm(initial=model_to_dict(mi_empresa[0]))
-        else:
-            context['form'] = EmpresaForm
-        return context
-
-
-class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'inventario.add_empresa'
-    model = Empresa
-    template_name = "administracion/empresa/addEmpresa.html"
-    form_class = EmpresaForm
-    success_url = reverse_lazy('administracion:view_empresa')
-    context_object_name = "empresas"
-
-    def form_valid(self, form):
-        form.instance.usuario_creacion = self.request.user
-        return super().form_valid(form)
-
-
-class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'inventario.change_empresa'
-    model = Empresa
-    template_name = "administracion/empresa/editEmpresa.html"
-    form_class = EmpresaForm
-    success_url = reverse_lazy('administracion:view_empresa')
-    context_object_name = "empresas"
-
-    def form_valid(self, form):
-        form.instance.usuario_modificacion = self.request.user
-        return super().form_valid(form)
-
-
-class DeleteEmpresa(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'inventario.delete_empresa'
-    template_name = "administracion/empresa/deleteEmpresa.html"
-    model = Empresa
-    success_url = reverse_lazy('administracion:view_empresa')
-    context_object_name = "empresas"
+#
+# class ViewEmpresa(LoginRequiredMixin, ListView):
+#     template_name = "administracion/empresa/view.html"
+#     model = Empresa
+#     paginate_by = 10
+#     context_object_name = "empresas"
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         #
+#         mi_empresa = Empresa.objects.filter(status=True)
+#         context['existe_mi_empresa'] = mi_empresa.exists()
+#
+#         if mi_empresa.exists():
+#             context['datos_empresa'] = mi_empresa[0]
+#             context['form'] = EmpresaForm(initial=model_to_dict(mi_empresa[0]))
+#         else:
+#             context['form'] = EmpresaForm
+#         return context
+#
+#
+# class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+#     permission_required = 'inventario.add_empresa'
+#     model = Empresa
+#     template_name = "administracion/empresa/addEmpresa.html"
+#     form_class = EmpresaForm
+#     success_url = reverse_lazy('administracion:view_empresa')
+#     context_object_name = "empresas"
+#
+#     def form_valid(self, form):
+#         form.instance.usuario_creacion = self.request.user
+#         return super().form_valid(form)
+#
+#
+# class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+#     permission_required = 'inventario.change_empresa'
+#     model = Empresa
+#     template_name = "administracion/empresa/editEmpresa.html"
+#     form_class = EmpresaForm
+#     success_url = reverse_lazy('administracion:view_empresa')
+#     context_object_name = "empresas"
+#
+#     def form_valid(self, form):
+#         form.instance.usuario_modificacion = self.request.user
+#         return super().form_valid(form)
+#
+#
+# class DeleteEmpresa(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+#     permission_required = 'inventario.delete_empresa'
+#     template_name = "administracion/empresa/deleteEmpresa.html"
+#     model = Empresa
+#     success_url = reverse_lazy('administracion:view_empresa')
+#     context_object_name = "empresas"

@@ -1,4 +1,6 @@
 from django import forms
+from django.db import transaction
+
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra
 
 
@@ -63,114 +65,125 @@ class InsumoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(InsumoForm, self).__init__(*args, **kwargs)
 
+    def save(self, commit=True):
+        if self.instance.pk is None:  # solo se ejecuta si es un objeto nuevo
+            try:
+                insumo= super().save(commit=commit)
+                insumo.generar_inventario_inicial()
+                return insumo
+            except Exception as ex:
+                raise NameError("Error al generar el inventario inicial")
+                return None
+        else:
+            return super().save(commit=commit)
+
+
     class Meta:
-        model = Insumo
-        fields = '__all__'
-        exclude = ("status",)
+            model = Insumo
+            fields = '__all__'
+            exclude = ("status",)
 
-        widgets = {
-            'categoria': forms.Select(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'select-style-1'
+            widgets = {
+                'categoria': forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'select-style-1'
 
-                }
-            ),
-            'unidad_medida': forms.Select(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'select-style-1'
+                    }
+                ),
+                'unidad_medida': forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'select-style-1'
 
-                }
-            ),
+                    }
+                ),
 
-            'proveedor': forms.Select(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'select-style-1'
+                'proveedor': forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'select-style-1'
 
-                }
-            ),
+                    }
+                ),
 
+                'descripcion': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-12',
+                        'imputstyle': 'input-style-1'
 
-            'descripcion': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
+                    }
+                ),
+                'detalle': forms.Textarea(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-12',
+                        'imputstyle': 'input-style-1'
 
-                }
-            ),
-            'detalle': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
+                    }
+                ),
 
-                }
-            ),
+                'minimo': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'input-style-1',
+                        'type': 'number',
+                        'min': '0'
 
-            'minimo': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0'
+                    }
+                ),
 
-                }
-            ),
+                'maximo': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'input-style-1',
+                        'type': 'number',
+                        'min': '0'
 
-            'maximo': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0'
+                    }
+                ),
 
-                }
-            ),
+                'cantidad': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'input-style-1',
+                        'type': 'number',
+                        'min': '0'
 
+                    }
+                ),
 
-            'cantidad': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0'
+                'costo_unitario': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'input-style-1',
+                        'type': 'number',
+                        'min': '0'
 
-                }
-            ),
+                    }
+                ),
 
-            'costo_unitario': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0'
+                'precio_venta': forms.TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'col': 'col-md-4',
+                        'imputstyle': 'input-style-1',
+                        'type': 'number',
+                        'min': '0',
+                        'decimal': '2'
 
-                }
-            ),
+                    }
+                ),
 
-            'precio_venta': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-4',
-                    'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0',
-                    'decimal': '2'
-
-                }
-            ),
-
-        }
+            }
 
 
 class ProveedorForm(forms.ModelForm):
@@ -261,9 +274,8 @@ class CompraForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'col': 'col-md-12',
-                    'rows':'4',
+                    'rows': '4',
                     'imputstyle': 'input-style-1',
-
 
                 }
             ),

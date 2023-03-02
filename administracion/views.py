@@ -7,8 +7,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
-from administracion.forms import ModuloForm
+from administracion.forms import ModuloForm, UsuarioForm, PersonaForm
 from administracion.models import Modulo
+from inventario.models import Usuario, Persona
 
 
 class Index(LoginRequiredMixin, View):
@@ -32,6 +33,10 @@ class ViewModulo(LoginRequiredMixin, ListView):
     model = Modulo
     paginate_by = 10
     context_object_name = "modulos"
+
+    def get_queryset(self):
+        query= Modulo.objects.filter(status=True)
+        return query
 
 
 class AddModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -73,6 +78,58 @@ class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Modulo
     success_url = reverse_lazy('administracion:view_modulo')
     context_object_name = "modulos"
+
+
+
+class ViewUsuario(LoginRequiredMixin, ListView):
+    template_name = "administracion/usuario/view.html"
+    model = Usuario
+    paginate_by = 10
+    context_object_name = "usuarios"
+
+class ViewPersona(LoginRequiredMixin, ListView):
+    template_name = "administracion/persona/view.html"
+    model = Persona
+    paginate_by = 10
+    context_object_name = "personas"
+
+    def get_queryset(self):
+        query = Persona.objects.filter(status=True)
+        return query
+
+
+class AddPersona(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'inventario.add_persona'
+    model = Persona
+    template_name = "administracion/persona/addPersona.html"
+    form_class = PersonaForm
+    success_url = reverse_lazy('administracion:view_persona')
+    context_object_name = "personas"
+
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
+
+
+class EditPersona(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'inventario.change_persona'
+    model = Persona
+    template_name = "administracion/persona/editPersona.html"
+    form_class = PersonaForm
+    success_url = reverse_lazy('administracion:view_persona')
+    context_object_name = "personas"
+
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
+
+
+class DeletePersona(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'inventario.delete_persona'
+    template_name = "administracion/persona/deletePersona.html"
+    model = Persona
+    success_url = reverse_lazy('administracion:view_persona')
+    context_object_name = "personas"
 
 #
 # class ViewEmpresa(LoginRequiredMixin, ListView):

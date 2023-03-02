@@ -157,8 +157,9 @@ class ViewInsumo(LoginRequiredMixin, ListView):
     paginate_by = 10
     context_object_name = "insumos"
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request)
+    def get_queryset(self):
+        query= Insumo.objects.filter(status=True)
+        return query
 
 def reporte_insumos_xlsx(request):
     # Escribir los datos
@@ -221,9 +222,7 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
-        self.object = form.save()
         form.instance.usuario_creacion = self.request.user
-        self.object.generar_inventario_inicial()
         return super().form_valid(form)
 
 class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
@@ -253,6 +252,10 @@ class ViewProveedor(LoginRequiredMixin, ListView):
     model = Proveedor
     paginate_by = 10
     context_object_name = "proveedores"
+
+    def get_queryset(self):
+        query= Proveedor.objects.filter(status=True)
+        return query
 
 def reporte_proveedor_xlsx(request):
     # Escribir los datos
@@ -323,6 +326,10 @@ class EntradaInsumo(LoginRequiredMixin, ListView):
     paginate_by = 10
     context_object_name = "compras"
 
+    def get_queryset(self):
+        query= Compra.objects.filter(status=True)
+        return query
+
 
 
 class SalidaInsumo(LoginRequiredMixin, View):
@@ -343,6 +350,11 @@ class ViewCategoria(LoginRequiredMixin, ListView):
     model = Categoria
     paginate_by = 10
     context_object_name = "categorias"
+
+    def get_queryset(self):
+        query = Categoria.objects.filter(status=True)
+        return query
+
 
 def reporte_categoria_xlsx(request):
     # Escribir los datos
@@ -408,6 +420,10 @@ class ViewUnidadMedida(LoginRequiredMixin, ListView):
     model = UnidadMedida
     paginate_by = 10
     context_object_name = "unidades_medidas"
+
+    def get_queryset(self):
+        query= UnidadMedida.objects.filter(status=True)
+        return query
 
 def reporte_unidad_medida_xlsx(request):
     # Escribir los datos

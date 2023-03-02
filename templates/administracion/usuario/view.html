@@ -9,9 +9,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
-                    <h2 class="mr-40">Módulos</h2>
-                    <a href="{% url 'administracion:add_modulo' %}" class="main-btn primary-btn btn-hover btn-sm">
-                        <i class="lni lni-plus mr-5"></i> Adicionar</a>
+                    <h2 class="mr-40">Usuarios</h2>
                 </div>
             </div>
             <!-- end col -->
@@ -28,7 +26,7 @@
                             </li>
 
                             <li class="breadcrumb-item active" aria-current="page">
-                                Módulos
+                                Usuarios
                             </li>
 
                         </ol>
@@ -64,19 +62,25 @@
                                     <h6 class="text-sm text-medium">N°.</h6>
                                 </th>
                                 <th>
-                                    <h6 class="text-sm text-medium">Nombre</h6>
+                                    <h6 class="text-sm text-medium">Información del usuario</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">Descripción</h6>
+                                <th>
+                                    <h6 class="text-sm text-medium">¿Gestor?</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">tag</h6>
+                                <th>
+                                    <h6 class="text-sm text-medium">¿Superusuario?</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">Estado</h6>
+                                <th>
+                                    <h6 class="text-sm text-medium">¿Activo?</h6>
+                                </th>
+
+
+
+                                <th>
+                                    <h6 class="text-sm text-medium">¿último inicio de sesión?</h6>
                                 </th>
                                 <th>
                                     <h6 class="text-sm text-medium text-end">
@@ -86,27 +90,51 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for modulo in modulos %}
+                            {% for usuario in usuarios %}
 
                                 <tr>
                                     <td>
                                         {{ forloop.counter }}
                                     </td>
                                     <td>
-                                        <p class="text-sm">{{ modulo.nombre }}</p>
+                                        <p class="text-sm"><b>Email:</b>{{ usuario.email }}</p>
+                                        <p class="text-sm"><b>Persona:</b>{{ usuario.persona |default:" S/N" }}</p>
+                                        <p class="text-sm"><b>Cédula:</b>{{ usuario.persona.cedula |default:" S/N" }}
+                                        </p>
                                     </td>
-                                      <td>
-                                        <p class="text-sm">{{ modulo.descripcion }}</p>
+                                    <td>
+                                        <p class="text-sm">
+                                            {% if usuario.is_staff %}
+                                                <span class="text-sm badge bg-success">Si</span>
+                                            {% else %}
+                                                <span class="text-sm badge bg-danger">No</span>
+                                            {% endif %}
+                                        </p>
                                     </td>
-                                      <td>
-                                        <p class="text-sm">{{ modulo.name_tag }}</p>
+                                    <td>
+                                        <p class="text-sm">
+                                            {% if usuario.is_superuser %}
+                                                <span class="text-sm badge bg-success">Si</span>
+                                            {% else %}
+                                                <span class="text-sm badge bg-danger">No</span>
+                                            {% endif %}
+                                        </p>
                                     </td>
-                                      <td>
-                                        {% if modulo.activo %}
-                                             <span class="text-sm badge bg-success">Activo</span>
-                                        {% else %}
-                                             <span class="text-sm badge bg-danger">No activo</span>
-                                        {% endif %}
+                                    <td>
+
+                                        <p class="text-sm">
+                                            {% if usuario.is_active %}
+                                                <span class="text-sm badge bg-success">Si</span>
+                                            {% else %}
+                                                <span class="text-sm badge bg-danger">No</span>
+                                            {% endif %}
+                                        </p>
+                                    </td>
+
+                                    <td>
+                                        <p class="text-sm">
+                                            {{ usuario.last_login|default_if_none:"S/N" }}
+                                        </p>
                                     </td>
 
                                     <td>
@@ -124,15 +152,8 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
-                                                <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:delete_modulo' modulo.pk %}"
 
-                                                       class="text-gray">Eliminar</a>
-                                                </li>
-                                                <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:edit_modulo' modulo.pk %}"
-                                                       class="text-gray">Editar</a>
-                                                </li>
+
                                             </ul>
                                         </div>
                                     </td>
@@ -161,7 +182,8 @@
     </div>
     <!-- ========== tables-wrapper end ========== -->
 {% endblock %}
-<!-- Modal Eliminar -->
-<div class="modal fade" id="eliminar" role="dialog">
+{% block modals %}
 
-</div>
+{% endblock %}
+
+

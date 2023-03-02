@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import User, PermissionsMixin
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from project.models import ModeloBase
 
@@ -31,10 +32,11 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
+
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    email = models.EmailField(unique=True, verbose_name="Email")
+    is_active = models.BooleanField(default=True, verbose_name="¿Activo?")
+    is_staff = models.BooleanField(default=False, verbose_name="¿Gestor?")
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -42,11 +44,13 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
 class Persona(ModeloBase):
     nombres = models.CharField(verbose_name="Nombres", max_length=450)
-    apellidos = models.CharField(verbose_name="Nombres", max_length=450)
-    email = models.EmailField(verbose_name="Email", unique=True)
+    apellidos = models.CharField(verbose_name="Apellidos", max_length=450)
     cedula = models.CharField(verbose_name="Cédula", max_length=10, unique=True)
+    email = models.EmailField(unique=True, verbose_name="Email", null=True, blank=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "Persona"
@@ -55,12 +59,31 @@ class Persona(ModeloBase):
 
     def __str__(self):
         return f'{self.apellidos} {self.nombres}'
+
+    def crear_usuario(self):
+        try:
+            with transaction.atomic():
+                # Creamos el usuario en la tabla User
+                usuario = Usuario.objects.create_user(
+                    email=self.email,
+                    password=self.cedula
+                )
+
+                # Asociamos el usuario a la persona
+                self.usuario = usuario
+
+        except Exception as ex:
+            raise NameError("Error al generar el usuario")
+            transaction.set_rollback(True)
+
+
 class Perfil(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE)
     foto = models.ImageField(upload_to='fotos_perfil/', blank=True)
 
     def __str__(self):
         return f'Perfil de {self.persona.nombre} {self.persona.apellido}'
+
 
 class Cliente(ModeloBase):
     persona = models.ForeignKey(Persona, verbose_name="Persona", on_delete=models.CASCADE)
@@ -100,6 +123,7 @@ class Categoria(ModeloBase):
     def en_uso(self):
         return self.insumo_set.filter(status=True).exists()
 
+
 class UnidadMedida(ModeloBase):
     descripcion = models.CharField(verbose_name="Unidad de medida", unique=True, max_length=200)
     alias = models.CharField(verbose_name="Alias", unique=True, max_length=200)
@@ -114,6 +138,7 @@ class UnidadMedida(ModeloBase):
 
     def en_uso(self):
         return self.insumo_set.filter(status=True).exists()
+
 
 class Proveedor(ModeloBase):
     razon_social = models.CharField(verbose_name="Razón social", unique=True, max_length=200)
@@ -173,10 +198,9 @@ class Insumo(ModeloBase):
                     import_anterior=(self.cantidad * self.costo_unitario)
                 )
             detalleKardex.save()
-        except Exception as ex :
+        except Exception as ex:
             raise NameError("Error al generar el inventario inicial")
             transaction.set_rollback(True)
-
 
 
 class Kardex(ModeloBase):
@@ -209,12 +233,13 @@ class Kardex(ModeloBase):
         return self.detallekardex_set.filter(status=True).order_by('-id')[0].importe
 
     def get_inventario_entradas(self):
-        entradas = self.detallekardex_set.filter(status=True,tipo_movimiento= 2)
+        entradas = self.detallekardex_set.filter(status=True, tipo_movimiento=2)
         return entradas.count()
 
     def get_inventario_salidas(self):
-        salidas = self.detallekardex_set.filter(status=True,tipo_movimiento= 3)
+        salidas = self.detallekardex_set.filter(status=True, tipo_movimiento=3)
         return salidas.count()
+
 
 class DetalleKardex(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha")

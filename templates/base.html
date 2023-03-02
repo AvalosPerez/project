@@ -89,7 +89,7 @@
                             >
                                 <div class="profile-info">
                                     <div class="info">
-                                        <h6>{{ user.email }}</h6>
+                                        <h6>{{ user }}</h6>
                                         <div class="image">
                                             <img
                                                     src="{% static 'assets/images/profile/profile-image.png' %}"
@@ -123,6 +123,10 @@
     <section class="section">
         <div class="container-fluid">
             {% block content %}
+
+            {% endblock %}
+
+            {% block modals %}
 
             {% endblock %}
 

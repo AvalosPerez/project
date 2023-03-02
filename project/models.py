@@ -12,3 +12,8 @@ class ModeloBase(models.Model):
 
     class Meta:
         abstract = True
+
+    def delete(self, *args,**kwargs):
+        self.status =False
+        self.save(*args,**kwargs)
+

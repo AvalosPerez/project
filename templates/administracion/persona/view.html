@@ -9,8 +9,8 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
-                    <h2 class="mr-40">Módulos</h2>
-                    <a href="{% url 'administracion:add_modulo' %}" class="main-btn primary-btn btn-hover btn-sm">
+                    <h2 class="mr-40">Personas</h2>
+                    <a href="{% url 'administracion:add_persona' %}" class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar</a>
                 </div>
             </div>
@@ -28,7 +28,7 @@
                             </li>
 
                             <li class="breadcrumb-item active" aria-current="page">
-                                Módulos
+                                Personas
                             </li>
 
                         </ol>
@@ -51,7 +51,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card-style mb-30">
-                    <h6 class="mb-10">Módulos</h6>
+                    <h6 class="mb-10">Personas</h6>
                     <p class="text-sm mb-20">
 
                     </p>
@@ -64,20 +64,17 @@
                                     <h6 class="text-sm text-medium">N°.</h6>
                                 </th>
                                 <th>
-                                    <h6 class="text-sm text-medium">Nombre</h6>
+                                    <h6 class="text-sm text-medium">Persona</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">Descripción</h6>
+                                <th>
+                                    <h6 class="text-sm text-medium">Cédula</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">tag</h6>
+                                <th>
+                                    <h6 class="text-sm text-medium">Usuario</h6>
                                 </th>
 
-                                 <th>
-                                    <h6 class="text-sm text-medium">Estado</h6>
-                                </th>
                                 <th>
                                     <h6 class="text-sm text-medium text-end">
                                         Acciones
@@ -86,29 +83,30 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for modulo in modulos %}
+                            {% for persona in personas %}
 
                                 <tr>
                                     <td>
                                         {{ forloop.counter }}
                                     </td>
                                     <td>
-                                        <p class="text-sm">{{ modulo.nombre }}</p>
-                                    </td>
-                                      <td>
-                                        <p class="text-sm">{{ modulo.descripcion }}</p>
-                                    </td>
-                                      <td>
-                                        <p class="text-sm">{{ modulo.name_tag }}</p>
-                                    </td>
-                                      <td>
-                                        {% if modulo.activo %}
-                                             <span class="text-sm badge bg-success">Activo</span>
-                                        {% else %}
-                                             <span class="text-sm badge bg-danger">No activo</span>
-                                        {% endif %}
-                                    </td>
+                                        <p class="text-sm">{{ persona }}</p>
+                                        <p class="text-sm">{{ persona.email }}</p>
 
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">{{ persona.cedula }} </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">
+                                            {% if persona.usuario %}
+                                                {{ persona.usuario| default_if_none:"N/A" }}
+                                            {% else %}
+                                                <spam class="badge bg-warning">{{ persona.usuario| default_if_none:"N/A" }}</spam>
+                                            {% endif %}
+
+                                        </p>
+                                    </td>
                                     <td>
                                         <div class="action justify-content-end">
 
@@ -124,15 +122,21 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
-                                                <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:delete_modulo' modulo.pk %}"
 
-                                                       class="text-gray">Eliminar</a>
-                                                </li>
+                                                {% if not persona.en_uso %}
+                                                    <li class="dropdown-item">
+                                                        <a href="{% url 'administracion:delete_persona' persona.pk %}"
+
+                                                           class="text-gray">Eliminar</a>
+                                                    </li>
+
+                                                {% endif %}
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:edit_modulo' modulo.pk %}"
+                                                    <a href="{% url 'administracion:edit_persona' persona.pk %}"
                                                        class="text-gray">Editar</a>
                                                 </li>
+
+
                                             </ul>
                                         </div>
                                     </td>
@@ -161,7 +165,8 @@
     </div>
     <!-- ========== tables-wrapper end ========== -->
 {% endblock %}
-<!-- Modal Eliminar -->
-<div class="modal fade" id="eliminar" role="dialog">
+{% block modals %}
 
-</div>
+{% endblock %}
+
+

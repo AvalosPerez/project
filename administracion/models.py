@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.db import models
 
 # Create your models here.
@@ -39,3 +40,9 @@ class Modulo(ModeloBase):
             url="Javascript:void(0)"
         return url
 
+class GroupAccess(ModeloBase):
+    grupos = models.ForeignKey(Group, on_delete=models.CASCADE)
+    modulos = models.ManyToManyField(Modulo)
+
+    def __str__(self):
+        return self.group.name

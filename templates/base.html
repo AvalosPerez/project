@@ -92,9 +92,11 @@
                                         <h6>{{ user }}</h6>
                                         <div class="image">
                                             <img
-                                                    src="{% static 'assets/images/profile/profile-image.png' %}"
+                                                    src="{% static 'assets/images/profile/user.png' %}"
                                                     alt=""
                                             />
+                                            <div></div>
+
                                             <span class="status"></span>
                                         </div>
                                     </div>
@@ -105,6 +107,11 @@
                                     class="dropdown-menu dropdown-menu-end"
                                     aria-labelledby="profile"
                             >
+                                <li>
+                                    <a href="{% url 'perfil' %}">
+                                        <i class="lni lni-user"></i> Perfil
+                                    </a>
+                                </li>
 
                                 <li>
                                     <a href="{% url 'logout' %}"> <i class="lni lni-exit"></i> Cerrar Sesión </a>
@@ -171,6 +178,11 @@
         </div>
         <!-- end container -->
     </footer>
+
+
+    <div class="row">
+
+    </div>
     <!-- ========== footer end =========== -->
 </main>
 <!-- ======== main-wrapper end =========== -->

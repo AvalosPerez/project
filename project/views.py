@@ -6,9 +6,9 @@ from django.db.models.functions import TruncMonth
 from django.shortcuts import render
 
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
 
-from inventario.models import Insumo, Compra, Venta, Usuario
+from inventario.models import Insumo, Compra, Venta, Usuario, Perfil
 from project.funciones import enviar_correo
 
 
@@ -78,3 +78,17 @@ class MyLoginView(LoginView):
         contexto = {'mensaje': 'Usted ha intentado ingresar al sistema'}
         enviar_correo(asunto, plantilla, destinatario, contexto)
         return super().form_invalid(form)
+
+class MiPerfil(LoginRequiredMixin, DetailView):
+    template_name = "registration/perfil.html"
+    model = Usuario
+    context_object_name = "user"
+
+    def get_object(self):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['perfil'] = self.request.user
+        return context
+

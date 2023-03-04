@@ -18,11 +18,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from project.views import Index, MyLoginView
+from project.views import Index, MyLoginView, MiPerfil
 
 app_name = 'base'
 urlpatterns = [
                   path('', Index.as_view(), name="home"),
+                  path('perfil/', MiPerfil.as_view(), name="perfil"),
                   path('app_nkfp_2023_code/', admin.site.urls),
 
                   path('accounts/login/', MyLoginView.as_view(), name='login'),

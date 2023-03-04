@@ -82,7 +82,7 @@ class Perfil(models.Model):
     foto = models.ImageField(upload_to='fotos_perfil/', blank=True)
 
     def __str__(self):
-        return f'Perfil de {self.persona.nombre} {self.persona.apellido}'
+        return f'Perfil de {self.usuario.persona.nombre} {self.usuario.persona.apellido}'
 
 
 class Cliente(ModeloBase):

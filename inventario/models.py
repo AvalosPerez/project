@@ -240,7 +240,6 @@ class Kardex(ModeloBase):
         salidas = self.detallekardex_set.filter(status=True, tipo_movimiento=3)
         return salidas.count()
 
-
 class DetalleKardex(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha")
     kardex = models.ForeignKey(Kardex, verbose_name="Inventario", on_delete=models.CASCADE)
@@ -262,7 +261,6 @@ class DetalleKardex(ModeloBase):
     def __str__(self):
         return f'tipo: {self.tipo_movimiento} - producto: {self.kardex}'
 
-
 class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
@@ -278,7 +276,6 @@ class Venta(ModeloBase):
     def __str__(self):
         return f'{self.fecha} - {self.cliente}'
 
-
 class DetalleVenta(ModeloBase):
     venta = models.ForeignKey(Venta, verbose_name="Venta", on_delete=models.CASCADE)
     cantidad = models.IntegerField(verbose_name="Cantidad")
@@ -293,12 +290,12 @@ class DetalleVenta(ModeloBase):
     def __str__(self):
         return f'{self.venta} - {self.insumo}'
 
-
 class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")
     proveedor = models.ForeignKey(Proveedor, verbose_name="Proveedor", on_delete=models.CASCADE)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
     descripcion = models.CharField(verbose_name="Detalle", max_length=450, null=True)
+    insumos = models.ManyToManyField('Insumo', through='CompraInsumo')
 
     class Meta:
         verbose_name = "Compra"
@@ -309,10 +306,10 @@ class Compra(ModeloBase):
         return f'{self.fecha} - {self.proveedor}'
 
 
-class DetalleCompra(ModeloBase):
+class CompraInsumo(ModeloBase):
     compra = models.ForeignKey(Compra, verbose_name="Compra", on_delete=models.CASCADE)
     insumo = models.ForeignKey(Insumo, verbose_name="Insumo", on_delete=models.CASCADE)
-    cantidad = models.IntegerField(verbose_name="Cantidad")
+    cantidad = models.PositiveIntegerField(verbose_name="Cantidad")
     costo = models.IntegerField(verbose_name="Cantidad")
     importe = models.DecimalField(verbose_name="Importe", max_digits=30, decimal_places=2)
 

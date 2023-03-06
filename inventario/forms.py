@@ -238,7 +238,7 @@ class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
         fields = '__all__'
-        exclude = ("status",)
+        exclude = ("status","insumos")
 
         widgets = {
             'fecha': forms.DateInput(

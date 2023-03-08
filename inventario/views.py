@@ -172,7 +172,7 @@ def reporte_insumos_xlsx(request):
     worksheet = workbook.add_worksheet()
 
     # Escribir los encabezados de columna
-    encabezados = ['categoria', 'unidad_medida', 'lote', 'Isumo', 'presentacion_comercial', 'fecha_vencimiento',
+    encabezados = ['categoria', 'unidad_medida', 'Isumo',
                    'Mínimo', 'Máximo', 'proveedor', 'cantidad', 'Costo unitario' 'Precio Venta', ]
     for col_num, encabezado in enumerate(encabezados):
         worksheet.write(0, col_num, encabezado)
@@ -180,16 +180,13 @@ def reporte_insumos_xlsx(request):
     for row_num, insumo in enumerate(insumos):
         worksheet.write(row_num + 1, 0, insumo.categoria.__str__())
         worksheet.write(row_num + 1, 1, insumo.unidad_medida.__str__())
-        worksheet.write(row_num + 1, 2, insumo.lote.__str__())
-        worksheet.write(row_num + 1, 3, insumo.descripcion.__str__())
-        worksheet.write(row_num + 1, 4, insumo.presentacion_comercial.__str__())
-        worksheet.write(row_num + 1, 5, insumo.fecha_vencimiento.__str__())
-        worksheet.write(row_num + 1, 6, insumo.minimo.__str__())
-        worksheet.write(row_num + 1, 7, insumo.maximo.__str__())
-        worksheet.write(row_num + 1, 8, insumo.proveedor.__str__())
-        worksheet.write(row_num + 1, 9, insumo.cantidad.__str__())
-        worksheet.write(row_num + 1, 10, insumo.costo_unitario.__str__())
-        worksheet.write(row_num + 1, 11, insumo.precio_venta.__str__())
+        worksheet.write(row_num + 1, 2, insumo.descripcion.__str__())
+        worksheet.write(row_num + 1, 3, insumo.minimo.__str__())
+        worksheet.write(row_num + 1, 4, insumo.maximo.__str__())
+        worksheet.write(row_num + 1, 5, insumo.proveedor.__str__())
+        worksheet.write(row_num + 1, 6, insumo.cantidad.__str__())
+        worksheet.write(row_num + 1, 7, insumo.costo_unitario.__str__())
+        worksheet.write(row_num + 1, 8, insumo.precio_venta.__str__())
 
     # Ajustar el ancho de columna
     worksheet.set_column(0, len(encabezados) - 1, 15)

@@ -56,8 +56,10 @@ class MyLoginView(LoginView):
         plantilla = 'emails_template/email_login_exitoso.html'
         destinatario = email
         contexto = {'mensaje': 'siuuu'}
-        enviar_correo(asunto, plantilla, destinatario, contexto)
-
+        try:
+            enviar_correo(asunto, plantilla, destinatario, contexto)
+        except Exception:
+            pass
         # Devuelve la respuesta de la superclase
         return response
 
@@ -76,7 +78,12 @@ class MyLoginView(LoginView):
         plantilla = 'emails_template/email_login_fallido.html'
         destinatario = email
         contexto = {'mensaje': 'Usted ha intentado ingresar al sistema'}
-        enviar_correo(asunto, plantilla, destinatario, contexto)
+
+        try:
+            enviar_correo(asunto, plantilla, destinatario, contexto)
+        except Exception:
+            pass
+
         return super().form_invalid(form)
 
 class MiPerfil(LoginRequiredMixin, DetailView):

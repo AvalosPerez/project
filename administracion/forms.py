@@ -130,7 +130,6 @@ class UsuarioForm(UserCreationForm):
 
 class ClienteForm(forms.ModelForm):
 
-
     nombres = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -188,20 +187,39 @@ class ClienteForm(forms.ModelForm):
                 transaction.set_rollback(True)
 
         else:
-            return super().save(commit=commit)
+
+            try:
+                with transaction.atomic():
+                    cliente = super().save(commit=False)
+                    persona = Persona.objects.get(pk=cliente.persona.pk)
+                    persona.nombres = self.cleaned_data['nombres']
+                    persona.apellidos = self.cleaned_data['apellidos']
+                    # persona.cedula = self.cleaned_data['cedula']
+                    # persona.email = self.cleaned_data['email']
+                    persona.save()
+                    if commit:
+                        cliente.save()
+                    return cliente
+            except Exception as ex:
+                raise NameError("Error al editar un  cliente",ex)
+                transaction.set_rollback(True)
+
+
 
     def clean_cedula(self):
         cedula = self.cleaned_data['cedula']
-        r = Persona.objects.filter(cedula=cedula)
-        if r.count():
-            raise ValidationError("cédula ya existe.")
+        if not self.instance.pk:
+            r = Persona.objects.filter(cedula=cedula)
+            if r.count():
+                raise ValidationError("cédula ya existe.")
         return cedula
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        r = Persona.objects.filter(email=email)
-        if r.count():
-            raise ValidationError("email ya existe.")
+        if not self.instance.pk:
+            r = Persona.objects.filter(email=email)
+            if r.count():
+                raise ValidationError("email ya existe.")
         return email
 
 

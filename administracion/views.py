@@ -9,7 +9,7 @@ from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
 from administracion.forms import ModuloForm, GroupAccessForm, ClienteForm
 from administracion.models import Modulo, GroupAccess
-from inventario.models import Usuario, Cliente
+from inventario.models import Usuario, Cliente, Persona
 
 
 class Index(LoginRequiredMixin, View):
@@ -138,9 +138,29 @@ class EditCliente(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('administracion:view_cliente')
     context_object_name = "clientes"
 
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Bloquear los campos "cedula" y "email" en el formulario
+        form.fields['cedula'].disabled = True
+        form.fields['email'].disabled = True
+        return form
+
+    def get_initial(self):
+        initial = super().get_initial()
+        persona = self.object.persona
+        initial['nombres'] = persona.nombres
+        initial['apellidos'] = persona.apellidos
+        initial['email'] = persona.email
+        initial['cedula'] = persona.cedula
+        return initial
+
+
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
+
 
 
 class DeleteCliente(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):

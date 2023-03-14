@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import User, PermissionsMixin
+from django.contrib.auth.models import User, PermissionsMixin, Group
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from project.models import ModeloBase
@@ -44,6 +44,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    def obtener_grupos(self):
+        return self.groups.all()
 
 class Persona(ModeloBase):
     nombres = models.CharField(verbose_name="Nombres", max_length=450)
@@ -60,7 +62,7 @@ class Persona(ModeloBase):
     def __str__(self):
         return f'{self.apellidos} {self.nombres}'
 
-    def crear_usuario(self):
+    def crear_usuario_perfil_cliente(self):
         try:
             with transaction.atomic():
                 # Creamos el usuario en la tabla User
@@ -68,12 +70,16 @@ class Persona(ModeloBase):
                     email=self.email,
                     password=self.cedula
                 )
-
-                # Asociamos el usuario a la persona
+                # Asociamos el usuario a la cliente
                 self.usuario = usuario
+                self.save()
+                grupo = Group.objects.get(name='cliente')
+                usuario.groups.add(grupo)
+
+
 
         except Exception as ex:
-            raise NameError("Error al generar el usuario")
+            raise NameError("Error al generar el usuario",ex)
             transaction.set_rollback(True)
 
 
@@ -96,6 +102,8 @@ class Cliente(ModeloBase):
     def __str__(self):
         return f"{self.persona}"
 
+    def en_uso(self):
+        return self.venta_set.filter(status=True).exists()
 
 class Empleado(ModeloBase):
     persona = models.ForeignKey(Persona, verbose_name="Empleado", on_delete=models.CASCADE)

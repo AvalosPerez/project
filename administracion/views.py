@@ -7,9 +7,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
-from administracion.forms import ModuloForm, UsuarioForm, PersonaForm
-from administracion.models import Modulo
-from inventario.models import Usuario, Persona
+from administracion.forms import ModuloForm, GroupAccessForm, ClienteForm
+from administracion.models import Modulo, GroupAccess
+from inventario.models import Usuario, Cliente
 
 
 class Index(LoginRequiredMixin, View):
@@ -29,6 +29,7 @@ class Index(LoginRequiredMixin, View):
 
 
 class ViewModulo(LoginRequiredMixin, ListView):
+    permission_required = 'inventario.view_modulo'
     template_name = "administracion/modulo/view.html"
     model = Modulo
     paginate_by = 10
@@ -84,6 +85,7 @@ class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 class ViewUsuario(LoginRequiredMixin, ListView):
+    permission_required = 'inventario.view_usuario'
     template_name = "administracion/usuario/view.html"
     model = Usuario
     paginate_by = 10
@@ -100,49 +102,95 @@ class ViewUsuario(LoginRequiredMixin, ListView):
         return query
 
 
-class ViewPersona(LoginRequiredMixin, ListView):
-    template_name = "administracion/persona/view.html"
-    model = Persona
+class ViewCliente(LoginRequiredMixin, ListView):
+    permission_required = 'inventario.view_cliente'
+    template_name = "administracion/cliente/view.html"
+    model = Cliente
     paginate_by = 10
-    context_object_name = "personas"
+    context_object_name = "clientes"
 
     def get_queryset(self):
-        query = Persona.objects.filter(status=True)
+        query = Cliente.objects.filter(status=True)
         term = self.request.GET.get('buscar')
         if term:
-            query = query.filter(nombres__icontains=term) | query.filter(apellidos__icontains=term) | query.filter(cedula__icontains=term)| query.filter(email__icontains=term)
+            query = query.filter(persona__nombres__icontains=term) | query.filter(persona__apellidos__icontains=term) | query.filter(persona__cedula__icontains=term)| query.filter(persona__email__icontains=term)
         return query
 
 
-class AddPersona(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'inventario.add_persona'
-    model = Persona
-    template_name = "administracion/persona/addPersona.html"
-    form_class = PersonaForm
-    success_url = reverse_lazy('administracion:view_persona')
-    context_object_name = "personas"
+class AddCliente(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'inventario.add_cliente'
+    model = Cliente
+    template_name = "administracion/cliente/addCliente.html"
+    form_class = ClienteForm
+    success_url = reverse_lazy('administracion:view_cliente')
+    context_object_name = "clientes"
 
     def form_valid(self, form):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
 
-class EditPersona(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'inventario.change_persona'
-    model = Persona
-    template_name = "administracion/persona/editPersona.html"
-    form_class = PersonaForm
-    success_url = reverse_lazy('administracion:view_persona')
-    context_object_name = "personas"
+class EditCliente(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'inventario.change_cliente'
+    model = Cliente
+    template_name = "administracion/cliente/editCliente.html"
+    form_class = ClienteForm
+    success_url = reverse_lazy('administracion:view_cliente')
+    context_object_name = "clientes"
 
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
 
-class DeletePersona(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'inventario.delete_persona'
-    template_name = "administracion/persona/deletePersona.html"
-    model = Persona
-    success_url = reverse_lazy('administracion:view_persona')
-    context_object_name = "personas"
+class DeleteCliente(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'inventario.delete_cliente'
+    template_name = "administracion/cliente/deleteCliente.html"
+    model = Cliente
+    success_url = reverse_lazy('administracion:view_cliente')
+    context_object_name = "clientes"
+
+class ViewAccesoModulo(LoginRequiredMixin, ListView):
+    permission_required = 'inventario.view_groupaccess'
+    template_name = "administracion/acceso_modulo/view.html"
+    model = GroupAccess
+    paginate_by = 10
+    context_object_name = "acceso_modulo"
+
+    def get_queryset(self):
+        query= GroupAccess.objects.filter(status=True)
+
+        return query
+
+class AddAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'inventario.add_groupaccess'
+    model = GroupAccess
+    template_name = "administracion/acceso_modulo/add_acceso_modulo.html"
+    form_class = GroupAccessForm
+    success_url = reverse_lazy('administracion:view_acceso_modulo')
+    context_object_name = "acceso_modulo"
+
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
+
+
+class EditAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'inventario.change_groupaccess'
+    model = GroupAccess
+    template_name = "administracion/acceso_modulo/edit_acceso_modulo.html"
+    form_class = GroupAccessForm
+    success_url = reverse_lazy('administracion:view_acceso_modulo')
+    context_object_name = "acceso_modulo"
+
+    def form_valid(self, form):
+        form.instance.usuario_modificacion = self.request.user
+        return super().form_valid(form)
+
+
+class DeleteAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'inventario.delete_groupaccess'
+    template_name = "administracion/acceso_modulo/delete_acceso_modulo.html"
+    model = GroupAccess
+    success_url = reverse_lazy('administracion:view_acceso_modulo')
+    context_object_name = "acceso_modulo"

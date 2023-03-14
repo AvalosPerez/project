@@ -28,8 +28,8 @@ class Modulo(ModeloBase):
         return url
 
 class GroupAccess(ModeloBase):
-    grupos = models.ForeignKey(Group, on_delete=models.CASCADE)
+    grupos = models.ForeignKey(Group, on_delete=models.CASCADE, help_text="Si el grupo no se encuentra listado en el combo es por que ya fue agregado.")
     modulos = models.ManyToManyField(Modulo)
 
     def __str__(self):
-        return self.group.name
+        return self.grupos.name

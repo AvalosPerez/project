@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Administración{% endblock %}
+{% block title %}Grupo  Acceso Módulo{% endblock %}
 
 {% block content %}
     <!-- ========== title-wrapper start ========== -->
@@ -7,7 +7,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
-                    <h2 class="mr-40"></h2>
+                    <h2 class="mr-40">Formulario Grupo Acceso módulo</h2>
 
                 </div>
             </div>
@@ -25,11 +25,11 @@
                             </li>
 
                             <li class="breadcrumb-item ">
-                                <a href="{% url 'administracion:view_persona' %}">Empresa</a>
+                                <a href="{% url 'administracion:view_acceso_modulo' %}">Grupo acceso módulo</a>
                             </li>
 
                             <li class="breadcrumb-item active" aria-current="page">
-                                edit
+                                add
                             </li>
 
                         </ol>
@@ -44,24 +44,13 @@
 
     <!-- ========== tables-wrapper start ========== -->
     <div class="container">
-
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <div class="">
-                    <div class="title d-flex align-items-center flex-wrap mb-30">
-                        <h2 class="mr-40">Formulario</h2>
+                <form action="{% url 'administracion:add_acceso_modulo' %}" method="POST">
+                    {% include "form_snippet.html" %}
 
-                    </div>
-                    <form action="{% url 'administracion:edit_persona' personas.pk %}" method="POST"
-                          enctype="multipart/form-data">
-                        {% include "form_snippet.html" %}
-
-                    </form>
-                </div>
-
-
+                </form>
             </div>
-
 
         </div>
         <!-- end row -->

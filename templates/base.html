@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load tags %}
 {% load static %}
 <html lang="es">
 <head>
@@ -33,8 +32,8 @@
     </div>
     <nav class="sidebar-nav">
         <ul>
-            {% get_modulos_list as menu %}
-            {% for modulo in menu %}
+
+            {% for modulo in mis_modulo %}
                 <li class="nav-item {% if modulo.url == request.get_full_path %} active {% endif %}">
                     <a href="{{ modulo.url }}">
               <span class="icon">
@@ -121,7 +120,7 @@
                                 </li>
                                 {% if user.is_superuser or user.is_staff %}
                                      <li>
-                                    <a href="/app_nkfp_2023_code"> <i class="lni lni-yen"></i>Administración </a>
+                                    <a href="/app_nkfp_2023_code" target="_blank"> <i class="lni lni-yen"></i>Administración </a>
                                 </li>
                                 {% endif %}
 

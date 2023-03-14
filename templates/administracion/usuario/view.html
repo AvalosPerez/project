@@ -66,18 +66,11 @@
                                 </th>
 
                                 <th>
-                                    <h6 class="text-sm text-medium">¿Gestor?</h6>
+                                    <h6 class="text-sm text-medium">Accesos</h6>
                                 </th>
-
                                 <th>
-                                    <h6 class="text-sm text-medium">¿Superusuario?</h6>
+                                    <h6 class="text-sm text-medium">Grupo</h6>
                                 </th>
-
-                                <th>
-                                    <h6 class="text-sm text-medium">¿Activo?</h6>
-                                </th>
-
-
 
                                 <th>
                                     <h6 class="text-sm text-medium">¿último inicio de sesión?</h6>
@@ -105,30 +98,39 @@
                                     <td>
                                         <p class="text-sm">
                                             {% if usuario.is_staff %}
-                                                <span class="text-sm badge bg-success">Si</span>
+                                                <i class="lni lni-checkmark"></i>
                                             {% else %}
-                                                <span class="text-sm badge bg-danger">No</span>
+                                                <i class="lni lni-close"></i>
                                             {% endif %}
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm">
-                                            {% if usuario.is_superuser %}
-                                                <span class="text-sm badge bg-success">Si</span>
-                                            {% else %}
-                                                <span class="text-sm badge bg-danger">No</span>
-                                            {% endif %}
-                                        </p>
-                                    </td>
-                                    <td>
+                                            Gestor
 
-                                        <p class="text-sm">
-                                            {% if usuario.is_active %}
-                                                <span class="text-sm badge bg-success">Si</span>
+                                            <br>
+
+                                            {% if usuario.is_superuser %}
+                                                <i class="lni lni-checkmark"></i>
                                             {% else %}
-                                                <span class="text-sm badge bg-danger">No</span>
+                                                <i class="lni lni-close"></i>
                                             {% endif %}
+                                            Super usuario
+                                            <br>
+
+                                            {% if usuario.is_active %}
+                                                <i class="lni lni-checkmark"></i>
+                                            {% else %}
+                                                <i class="lni lni-close"></i>
+                                            {% endif %}
+                                            activo
                                         </p>
+                                    </td>
+
+                                    <td>
+                                        {% for grupo in usuario.obtener_grupos %}
+                                            <spam class="badge bg-primary" >{{ grupo }}</spam>
+                                        {% empty %}
+                                            <spam class="badge bg-danger" >N/A</spam>
+                                        {% endfor %}
+
+                                        
                                     </td>
 
                                     <td>

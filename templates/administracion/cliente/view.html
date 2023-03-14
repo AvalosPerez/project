@@ -9,8 +9,8 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
-                    <h2 class="mr-40">Personas</h2>
-                    <a href="{% url 'administracion:add_persona' %}" class="main-btn primary-btn btn-hover btn-sm">
+                    <h2 class="mr-40">Clientes</h2>
+                    <a href="{% url 'administracion:add_cliente' %}" class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar</a>
                 </div>
             </div>
@@ -25,7 +25,7 @@
 
 
                             <li class="breadcrumb-item active" aria-current="page">
-                                Personas
+                                Clientes
                             </li>
 
                         </ol>
@@ -48,7 +48,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card-style mb-30">
-                    <h6 class="mb-10">Personas</h6>
+                    <h6 class="mb-10">Clientes</h6>
                     <p class="text-sm mb-20">
 
                     </p>
@@ -80,26 +80,26 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for persona in personas %}
+                            {% for cliente in clientes %}
 
                                 <tr>
                                     <td>
                                         {{ forloop.counter }}
                                     </td>
                                     <td>
-                                        <p class="text-sm">{{ persona }}</p>
-                                        <p class="text-sm">{{ persona.email }}</p>
+                                        <p class="text-sm">{{ cliente.persona }}</p>
+                                        <p class="text-sm">{{ cliente.persona.email }}</p>
 
                                     </td>
                                     <td>
-                                        <p class="text-sm">{{ persona.cedula }} </p>
+                                        <p class="text-sm">{{ cliente.persona.cedula }} </p>
                                     </td>
                                     <td>
                                         <p class="text-sm">
-                                            {% if persona.usuario %}
-                                                {{ persona.usuario| default_if_none:"N/A" }}
+                                            {% if cliente.persona.usuario %}
+                                                {{ cliente.persona.usuario| default_if_none:"N/A" }}
                                             {% else %}
-                                                <spam class="badge bg-warning">{{ persona.usuario| default_if_none:"N/A" }}</spam>
+                                                <spam class="badge bg-warning">{{ cliente.persona.usuario| default_if_none:"N/A" }}</spam>
                                             {% endif %}
 
                                         </p>
@@ -120,16 +120,20 @@
                                                     aria-labelledby="moreAction1"
                                             >
 
-                                                {% if not persona.en_uso %}
-                                                    <li class="dropdown-item">
-                                                        <a href="{% url 'administracion:delete_persona' persona.pk %}"
+                                                {% if not cliente.en_uso %}
+                                                     <li class="dropdown-item">
+                                                        <a href="{% url 'administracion:delete_cliente' cliente.pk %}"
 
                                                            class="text-gray">Eliminar</a>
                                                     </li>
 
                                                 {% endif %}
+
+
+
+
                                                 <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:edit_persona' persona.pk %}"
+                                                    <a href="{% url 'administracion:edit_cliente' cliente.pk %}"
                                                        class="text-gray">Editar</a>
                                                 </li>
 

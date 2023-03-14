@@ -13,6 +13,7 @@ from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex
 
 
 class Index(LoginRequiredMixin, ListView):
+    permission_required = 'inventario.view_kardex'
     template_name = "inventario/view.html"
     model = Kardex
     paginate_by = 10
@@ -152,7 +153,8 @@ class MovimientoView(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, context)
 
-class ViewInsumo(LoginRequiredMixin, ListView):
+class ViewInsumo(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    permission_required = 'inventario.view_insumo'
     template_name = "inventario/insumo/insumo_view.html"
     model = Insumo
     paginate_by = 10
@@ -248,7 +250,8 @@ class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
 
-class ViewProveedor(LoginRequiredMixin, ListView):
+class ViewProveedor(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+    permission_required = 'inventario.view_proveedor'
     template_name = "inventario/proveedor/view.html"
     model = Proveedor
     paginate_by = 10
@@ -347,7 +350,8 @@ class SalidaInsumo(LoginRequiredMixin, View):
         # action = request.POST['action']
         pass
 
-class ViewCategoria(LoginRequiredMixin, ListView):
+class ViewCategoria(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    permission_required = 'inventario.view_Categoria'
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
     paginate_by = 10
@@ -419,7 +423,8 @@ class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Categoria
     success_url = reverse_lazy('inventario:categoria')
 
-class ViewUnidadMedida(LoginRequiredMixin, ListView):
+class ViewUnidadMedida(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    permission_required = 'inventario.view_unidadmedida'
     template_name = "inventario/unidadMedida/unidad_medida_view.html"
     model = UnidadMedida
     paginate_by = 10

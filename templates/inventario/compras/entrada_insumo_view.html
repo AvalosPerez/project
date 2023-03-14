@@ -2,18 +2,7 @@
 {% load static %}
 {% block title %}Insumos{% endblock %}
 {% block extra_head %}
-    <script>
-        function abrirFormularioModal(url) {
-            $.ajax({
-                url: url,
-                success: function (data) {
-                    $('#formularioModal .content').html(data);
-                    $('#formularioModal').modal({backdrop: 'static'}).modal('show');
-                }
-            });
-        }
 
-    </script>
 
 {% endblock %}
 
@@ -180,12 +169,42 @@
 
 
 {% block javascript %}
-
+    <script>
+       function abrirFormularioModal(url) {
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    $('#formularioModal .content').html(data);
+                    $('#formularioModal').modal({backdrop: 'static'}).modal('show');
+                }
+            });
+        }
+    </script>
 {% endblock %}
 
 
 
 
 {% block modals %}
+<div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content card-style">
+                <div class="modal-header px-0 border-0">
+                    <h5 class="text-bold">{{ titulo }}</h5>
+                    <button class="border-0 bg-transparent h1" data-bs-dismiss="modal">
+                        <i class="lni lni-cross-circle"></i>
+                    </button>
+                </div>
+                <div class="modal-body px-0">
 
+                    <div class="content mb-30">
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

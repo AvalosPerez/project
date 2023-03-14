@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}Insumos{% endblock %}
+{% block extra_head %}
+ <script>
+        function abrirFormularioModal(url) {
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    $('#formularioModal .content').html(data);
+                    $('#formularioModal').modal({backdrop: 'static'}).modal('show');
+                }
+            });
+        }
 
+    </script>
+{% endblock %}
 {% block content %}
     <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
@@ -92,9 +105,12 @@
                                 <th>Total</th>
                                 <th>
                                     <div class="action justify-content-center">
-                                        <a href="Javascript:void(0);" data-bs-toggle="modal" data-bs-target="#id_items"
-                                           class="main-btn primary-btn btn-hover btn-sm">
-                                            <i class="lni lni-plus mr-5"></i> </a>
+
+                                        <a href="Javascript:void(0);" class="main-btn primary-btn btn-hover btn-sm" data-bs-toggle="modal" data-bs-target="#id_items"
+                                                onclick="abrirFormularioModal('{% url 'inventario:add_detalle_compra' %}');"
+                                                class="main-btn primary-btn btn-hover btn-sm">
+                                            <i class="lni lni-plus mr-5"></i>
+                                        </a>
 
                                     </div>
                                 </th>
@@ -105,8 +121,7 @@
                                 <td>Product 1</td>
                                 <td>$10</td>
                                 <td>
-                                    <input class="form-control w-50" type="number" min=0 name="cantidad"
-                                           id="id_cantidad">
+                                    2
                                 </td>
                                 <td>$10</td>
                                 <td>

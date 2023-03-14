@@ -12,15 +12,19 @@ from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, Provee
 from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra
 
 
-class Index(LoginRequiredMixin, View):
+class Index(LoginRequiredMixin, ListView):
     template_name = "inventario/view.html"
+    model = Kardex
+    paginate_by = 10
+    context_object_name = "inventario"
 
-    def get(self, request, *args, **kwargs):
-        context = {}
-        inventario = Kardex.objects.filter(status=True)
-        context['inventario'] = inventario
-        # action = request.GET['action']
-        return render(request, self.template_name, context)
+    def get_queryset(self):
+        query=  Kardex.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(insumo__descripcion__icontains=term) | query.filter(insumo__detalle__icontains=term)
+        return query
+
 
 
 class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
@@ -33,7 +37,6 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-
 
 class EditCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_compra'
@@ -51,24 +54,22 @@ class EditCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
+class AddDetalleCompraModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
+    permission_required = 'inventario.add_compra'
+    template_name = "inventario/compras/modal/compraFormModal.html"
+    form_class = CompraForm
+    success_url = reverse_lazy('inventario:entrada_insumo')
+    success_message = 'Registro guardado exitosamente'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo_form']= 'Formulario adicionar compra'
+        return context
 
-# class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
-#     permission_required = 'inventario.add_compra'
-#     template_name = "inventario/compras/modal/compraFormModal.html"
-#     form_class = CompraForm
-#     success_url = reverse_lazy('inventario:entrada_insumo')
-#     success_message = 'Registro guardado exitosamente'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['titulo_form']= 'Formulario adicionar compra'
-#         return context
-#
-#     def form_valid(self, form):
-#         """If the form is valid, save the associated model."""
-#         self.object = form.save()
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+        return super().form_valid(form)
 
 def reporte_inventario_xlsx(request):
     # Escribir los datos
@@ -159,6 +160,9 @@ class ViewInsumo(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query= Insumo.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(descripcion__icontains=term) | query.filter(detalle__icontains=term)
         return query
 
 def reporte_insumos_xlsx(request):
@@ -252,6 +256,9 @@ class ViewProveedor(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query= Proveedor.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(razon_social__icontains=term) | query.filter(email__icontains=term)
         return query
 
 def reporte_proveedor_xlsx(request):
@@ -327,8 +334,6 @@ class EntradaInsumo(LoginRequiredMixin, ListView):
         query= Compra.objects.filter(status=True)
         return query
 
-
-
 class SalidaInsumo(LoginRequiredMixin, View):
     template_name = "inventario/ventas/salida_insumo_view.html"
 
@@ -350,8 +355,10 @@ class ViewCategoria(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query = Categoria.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(descripcion__icontains=term)
         return query
-
 
 def reporte_categoria_xlsx(request):
     # Escribir los datos
@@ -420,6 +427,9 @@ class ViewUnidadMedida(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query= UnidadMedida.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(descripcion__icontains=term) |query.filter(alias__icontains=term)
         return query
 
 def reporte_unidad_medida_xlsx(request):

@@ -163,9 +163,9 @@ class Insumo(ModeloBase):
     proveedor = models.ForeignKey(Proveedor, verbose_name="Proveedor", on_delete=models.CASCADE)
     descripcion = models.CharField(verbose_name="Insumo", unique=True, max_length=200)
     detalle = models.CharField(verbose_name="Descripción", null=True, max_length=300)
-    minimo = models.IntegerField(verbose_name="Mínimo")
-    maximo = models.IntegerField(verbose_name="Máximo")
-    cantidad = models.IntegerField(verbose_name="Stock", default=0)
+    minimo = models.PositiveIntegerField(verbose_name="Mínimo")
+    maximo = models.PositiveIntegerField(verbose_name="Máximo")
+    cantidad = models.PositiveIntegerField(verbose_name="Stock", default=0)
     costo_unitario = models.DecimalField(verbose_name="Costo Unitario", max_digits=30, decimal_places=2)
     precio_venta = models.DecimalField(verbose_name="Precio Venta", max_digits=30, decimal_places=2)
 
@@ -245,11 +245,11 @@ class DetalleKardex(ModeloBase):
     kardex = models.ForeignKey(Kardex, verbose_name="Inventario", on_delete=models.CASCADE)
     tipo_movimiento = models.CharField('Tipo movimiento', choices=TIPO_MOVIMIENTO, default=1, max_length=1)
     detalle = models.CharField(verbose_name="Detalle", max_length=450)
-    cantidad = models.IntegerField(verbose_name="Cantidad", default=0)
+    cantidad = models.PositiveIntegerField(verbose_name="Cantidad", default=0)
     costo_unitario = models.DecimalField(verbose_name="Costo unitario", max_digits=30, decimal_places=4, default=0,
                                          null=True)
     importe = models.DecimalField(verbose_name="Importe", max_digits=30, decimal_places=2, default=0)
-    cantidad_anterior = models.IntegerField(verbose_name="Cantidad Anterior", default=0)
+    cantidad_anterior = models.PositiveIntegerField(verbose_name="Cantidad Anterior", default=0)
     costo_anterior = models.DecimalField(verbose_name="Costo Anterior", max_digits=30, decimal_places=4, default=0)
     import_anterior = models.DecimalField(verbose_name="Importe Anterior", max_digits=30, decimal_places=4, default=0)
 
@@ -265,7 +265,6 @@ class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
     subtotal = models.DecimalField(verbose_name="Subtotal", max_digits=30, decimal_places=2)
-    iva = models.DecimalField(verbose_name="Iva", max_digits=30, decimal_places=2)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
 
     class Meta:
@@ -278,9 +277,9 @@ class Venta(ModeloBase):
 
 class DetalleVenta(ModeloBase):
     venta = models.ForeignKey(Venta, verbose_name="Venta", on_delete=models.CASCADE)
-    cantidad = models.IntegerField(verbose_name="Cantidad")
+    cantidad = models.PositiveIntegerField(verbose_name="Cantidad")
     insumo = models.ForeignKey(Insumo, verbose_name="Venta", on_delete=models.CASCADE)
-    importe = models.DecimalField(verbose_name="Total", max_digits=4, decimal_places=2)
+    importe = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
 
     class Meta:
         verbose_name = "Venta"
@@ -294,8 +293,6 @@ class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")
     proveedor = models.ForeignKey(Proveedor, verbose_name="Proveedor", on_delete=models.CASCADE)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
-    descripcion = models.CharField(verbose_name="Detalle", max_length=450, null=True)
-    insumos = models.ManyToManyField('Insumo', through='CompraInsumo')
 
     class Meta:
         verbose_name = "Compra"
@@ -310,7 +307,7 @@ class CompraInsumo(ModeloBase):
     compra = models.ForeignKey(Compra, verbose_name="Compra", on_delete=models.CASCADE)
     insumo = models.ForeignKey(Insumo, verbose_name="Insumo", on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(verbose_name="Cantidad")
-    costo = models.IntegerField(verbose_name="Cantidad")
+    costo = models.DecimalField(verbose_name="Costo",max_digits=30, decimal_places=2)
     importe = models.DecimalField(verbose_name="Importe", max_digits=30, decimal_places=2)
 
     class Meta:

@@ -1,88 +1,14 @@
-<form action="{% url 'inventario:add_compra' %}" method="POST">
-    {% csrf_token %}
-    <div class="row">
-        {% for field in form %}
-            <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
-                <fieldset id="id_{{ field.name }}" class="{{ field.field.widget.attrs.imputstyle| default:"" }}">
-
-                    {{ field.label_tag }}
-                    {% if field.field.widget.input_type == 'select' %}
-                        <div class="select-position">
-                            {{ field }}
-                        </div>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-
-                    {% if field.help_text %}
-                        <small id="help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% for error in field.errors %}
-                        <div class="error-message text-danger">
-                            {{ error }}
-                        </div>
-                    {% endfor %}
-
-                </fieldset>
-
-            </div>
-
-        {% endfor %}
-    </div>
-    <div class="row">
-        <h3>Listado de insumos</h3>
-        <hr>
-        <table class="table">
-            <thead class="table-light">
-            <tr>
-                <th>Insumo</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>
-                    <div class="action justify-content-center">
-                        <a href="Javascript:void(0);" data-bs-toggle="modal" data-bs-target="#id_items"  class="main-btn primary-btn btn-hover btn-sm">
-                        <i class="lni lni-plus mr-5"></i> </a>
-
-                    </div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Product 1</td>
-                <td>$10</td>
-                <td>
-                    <input class="form-control w-50" type="number" min=0 name="cantidad" id="id_cantidad">
-                </td>
-                <td>$10</td>
-                <td>
-                    <div class="action justify-content-center">
-                        <a  href="Javascript:void(0);" class="text-danger">
-                            <i class="lni lni-trash-can"></i>
-                        </a>
-
-                    </div>
-                </td>
-            </tr>
-
-            </tbody>
-        </table>
-
-    </div>
-    <div class="action d-flex flex-wrap justify-content-end">
-        <button data-bs-dismiss="modal" class="main-btn danger-btn-outline btn-hover m-1">
-            Cancelar
-        </button>
-        <button data-bs-dismiss="modal" class="main-btn primary-btn btn-hover m-1">
-            Guardar
-        </button>
-    </div>
-</form>
-
-
-
-
+<div class="row">
+    <h3>Listado de insumos</h3>
+</div>
+<div class="action d-flex flex-wrap justify-content-end">
+    <button data-bs-dismiss="modal" class="main-btn danger-btn-outline btn-hover m-1">
+        Cancelar
+    </button>
+    <button data-bs-dismiss="modal" class="main-btn primary-btn btn-hover m-1">
+        Guardar
+    </button>
+</div>
 
 
 <script>

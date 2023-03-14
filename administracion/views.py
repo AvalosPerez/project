@@ -36,6 +36,9 @@ class ViewModulo(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query= Modulo.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(nombre__icontains=term) | query.filter(descripcion__icontains=term)
         return query
 
 
@@ -80,12 +83,22 @@ class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     context_object_name = "modulos"
 
 
-
 class ViewUsuario(LoginRequiredMixin, ListView):
     template_name = "administracion/usuario/view.html"
     model = Usuario
     paginate_by = 10
     context_object_name = "usuarios"
+
+    def get_queryset(self):
+        query= Usuario.objects.all()
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(email__icontains=term) | \
+                    query.filter(persona__apellidos__icontains=term)|\
+                    query.filter(persona__nombres__icontains=term)|\
+                    query.filter(persona__cedula__icontains=term)
+        return query
+
 
 class ViewPersona(LoginRequiredMixin, ListView):
     template_name = "administracion/persona/view.html"
@@ -95,6 +108,9 @@ class ViewPersona(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query = Persona.objects.filter(status=True)
+        term = self.request.GET.get('buscar')
+        if term:
+            query = query.filter(nombres__icontains=term) | query.filter(apellidos__icontains=term) | query.filter(cedula__icontains=term)| query.filter(email__icontains=term)
         return query
 
 
@@ -130,57 +146,3 @@ class DeletePersona(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Persona
     success_url = reverse_lazy('administracion:view_persona')
     context_object_name = "personas"
-
-#
-# class ViewEmpresa(LoginRequiredMixin, ListView):
-#     template_name = "administracion/empresa/view.html"
-#     model = Empresa
-#     paginate_by = 10
-#     context_object_name = "empresas"
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         #
-#         mi_empresa = Empresa.objects.filter(status=True)
-#         context['existe_mi_empresa'] = mi_empresa.exists()
-#
-#         if mi_empresa.exists():
-#             context['datos_empresa'] = mi_empresa[0]
-#             context['form'] = EmpresaForm(initial=model_to_dict(mi_empresa[0]))
-#         else:
-#             context['form'] = EmpresaForm
-#         return context
-#
-#
-# class AddEmpresa(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-#     permission_required = 'inventario.add_empresa'
-#     model = Empresa
-#     template_name = "administracion/empresa/addEmpresa.html"
-#     form_class = EmpresaForm
-#     success_url = reverse_lazy('administracion:view_empresa')
-#     context_object_name = "empresas"
-#
-#     def form_valid(self, form):
-#         form.instance.usuario_creacion = self.request.user
-#         return super().form_valid(form)
-#
-#
-# class EditEmpresa(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-#     permission_required = 'inventario.change_empresa'
-#     model = Empresa
-#     template_name = "administracion/empresa/editEmpresa.html"
-#     form_class = EmpresaForm
-#     success_url = reverse_lazy('administracion:view_empresa')
-#     context_object_name = "empresas"
-#
-#     def form_valid(self, form):
-#         form.instance.usuario_modificacion = self.request.user
-#         return super().form_valid(form)
-#
-#
-# class DeleteEmpresa(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-#     permission_required = 'inventario.delete_empresa'
-#     template_name = "administracion/empresa/deleteEmpresa.html"
-#     model = Empresa
-#     success_url = reverse_lazy('administracion:view_empresa')
-#     context_object_name = "empresas"

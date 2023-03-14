@@ -5,7 +5,7 @@ from inventario.views import Index, ViewInsumo, EntradaInsumo, SalidaInsumo, Vie
     EditCategoria, DeleteCategoria, AddUnidadMedida, EditUnidadMedida, DeleteUnidadMedida, AddInsumo, EditInsumo, \
     DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor, MovimientoView, reporte_insumos_xlsx, \
     reporte_movimiento_insumo_xlsx, reporte_proveedor_xlsx, reporte_categoria_xlsx, \
-    reporte_unidad_medida_xlsx, reporte_inventario_xlsx, AddCompra, EditCompra
+    reporte_unidad_medida_xlsx, reporte_inventario_xlsx, AddCompra, EditCompra, AddDetalleCompraModal
 
 app_name = 'inventario'
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path('movimientos/<int:pk>', MovimientoView.as_view(), name="movimiento"),
     path('entradas/', EntradaInsumo.as_view(), name="entrada_insumo"),
     path('entradas/add/', AddCompra.as_view(), name="add_compra"),
+    path('entradas/addDetalleCompra/', AddDetalleCompraModal.as_view(), name="add_detalle_compra"),
     path('entradas/edit/<int:pk>', EditCompra.as_view(), name="edit_compra"),
     path('salidas/', SalidaInsumo.as_view(), name="salida_insumo"),
     path('insumos/', ViewInsumo.as_view(), name="insumo"),

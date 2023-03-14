@@ -499,3 +499,30 @@ class DeleteUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, DeleteView
     model = UnidadMedida
     success_url = reverse_lazy('inventario:unidad_medida')
     context_object_name = "unidades_medidas"
+
+
+class ViewBuscarInsumo(View):
+    def post(self,request):
+        busqueda = request.POST.get('busqueda')
+        pass
+
+    def get(self, request):
+        # Obtener los parámetros de búsqueda del request
+        busqueda = request.GET.get('busqueda')
+
+        # Realizar la búsqueda utilizando los parámetros recibidos
+        objetos = Insumo.objects.filter(descripcion__icontains=busqueda, status=True)
+
+        # Serializar los resultados en un formato que pueda ser manejado por el script de JavaScript
+        resultados = []
+        for objeto in objetos:
+            resultado = {
+                'id': objeto.id,
+                'nombre': objeto.descripcion,
+                'cantidad_disponible': objeto.cantidad,
+                'precio_venta': objeto.precio_venta
+            }
+            resultados.append(resultado)
+
+        # Devolver los resultados en un objeto JSON
+        return JsonResponse(resultados, safe=False)

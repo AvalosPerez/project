@@ -5,7 +5,7 @@ from inventario.views import Index, ViewInsumo, EntradaInsumo, SalidaInsumo, Vie
     EditCategoria, DeleteCategoria, AddUnidadMedida, EditUnidadMedida, DeleteUnidadMedida, AddInsumo, EditInsumo, \
     DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor, MovimientoView, reporte_insumos_xlsx, \
     reporte_movimiento_insumo_xlsx, reporte_proveedor_xlsx, reporte_categoria_xlsx, \
-    reporte_unidad_medida_xlsx, reporte_inventario_xlsx, AddCompra, EditCompra, AddDetalleCompraModal
+    reporte_unidad_medida_xlsx, reporte_inventario_xlsx, AddCompra, EditCompra, AddDetalleCompraModal, ViewBuscarInsumo
 
 app_name = 'inventario'
 urlpatterns = [
@@ -40,5 +40,6 @@ urlpatterns = [
     path('reporte_unidad_medida_xlsx/', reporte_unidad_medida_xlsx, name='reporte_unidad_medida_xlsx'),
     path('reporte_unidad_medida_xlsx/', reporte_unidad_medida_xlsx, name='reporte_unidad_medida_xlsx'),
     path('reporte_inventario_xlsx/', reporte_inventario_xlsx, name='reporte_inventario_xlsx'),
+    path('insumos/buscar/', ViewBuscarInsumo.as_view(), name="buscar_insumo"),
 
 ]

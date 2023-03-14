@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Insumos{% endblock %}
 {% block extra_head %}
- <script>
+    <script>
         function abrirFormularioModal(url) {
             $.ajax({
                 url: url,
@@ -12,7 +12,51 @@
             });
         }
 
+
+        function consultar() {
+            busqueda = $('#id_busqueda').val()
+            $.ajax({
+                url: '{% url "inventario:buscar_insumo" %}', // URL de la vista de búsqueda
+                data: {'busqueda': busqueda}, // Datos del formulario serializados
+                success: function (data) {
+                    // Renderizar los resultados en la tabla de resultados
+                    var resultados = $('#resultados tbody');
+                    resultados.empty(); // Limpiar la tabla
+                    $.each(data, function (index, objeto) {
+                        // Crear una nueva fila para cada objeto
+                        var fila = $('<tr>');
+                        fila.append($('<td>').text(objeto.nombre));
+                        fila.append($('<td>').text(objeto.cantidad_disponible));
+                        var boton = $('<button>').addClass('btn btn-primary').text('Agregar');
+                        boton.click(function () {
+                            // Agregar la información a la tabla principal
+                            var filaPrincipal = $('<tr>');
+                            filaPrincipal.append($('<td>').text(objeto.nombre));
+                            filaPrincipal.append($('<td>').text("$"+objeto.precio_venta));
+                            filaPrincipal.append($('<td>').append($('<input type="number" min=0 max='+objeto.cantidad_disponible+' name = cantidad_'+objeto.id+' id = id_cantidad_'+objeto.id+' class="form-control w-25"  >')));
+                            filaPrincipal.append($('<td>').html(' <div class="action justify-content-center"> <a href="Javascript:void(0);" class="text-danger"><i class="lni lni-trash-can"></i> </a>  </div>'));
+                            $('#tablaPrincipal tbody').append(filaPrincipal);
+                        });
+                        fila.append($('<td>').append(boton));
+                        resultados.append(fila);
+                    });
+                },
+                error: function () {
+                    // Manejar errores
+                    alert('Error en la búsqueda');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#id_busqueda').keyup(function () {
+                consultar()
+            });
+        });
+
     </script>
+
+
 {% endblock %}
 {% block content %}
     <!-- ========== title-wrapper start ========== -->
@@ -96,7 +140,7 @@
                     <div class="row">
                         <h3>Listado de insumos</h3>
                         <hr>
-                        <table class="table">
+                        <table class="table" id="tablaPrincipal">
                             <thead class="table-light">
                             <tr>
                                 <th>Insumo</th>
@@ -106,9 +150,9 @@
                                 <th>
                                     <div class="action justify-content-center">
 
-                                        <a href="Javascript:void(0);" class="main-btn primary-btn btn-hover btn-sm" data-bs-toggle="modal" data-bs-target="#id_items"
-                                                onclick="abrirFormularioModal('{% url 'inventario:add_detalle_compra' %}');"
-                                                class="main-btn primary-btn btn-hover btn-sm">
+                                        <a href="Javascript:void(0);" class="main-btn primary-btn btn-hover btn-sm"
+                                           data-bs-toggle="modal" data-bs-target="#formularioModal"
+                                           class="main-btn primary-btn btn-hover btn-sm">
                                             <i class="lni lni-plus mr-5"></i>
                                         </a>
 
@@ -117,22 +161,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Product 1</td>
-                                <td>$10</td>
-                                <td>
-                                    2
-                                </td>
-                                <td>$10</td>
-                                <td>
-                                    <div class="action justify-content-center">
-                                        <a href="Javascript:void(0);" class="text-danger">
-                                            <i class="lni lni-trash-can"></i>
-                                        </a>
 
-                                    </div>
-                                </td>
-                            </tr>
 
                             </tbody>
                         </table>
@@ -151,4 +180,51 @@
 
     </div>
     <!-- ========== tables-wrapper end ========== -->
+
+    <div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content card-style">
+                <div class="modal-header px-0 border-0">
+                    <h5 class="text-bold">Buscar insumo</h5>
+                    <button class="border-0 bg-transparent h1" data-bs-dismiss="modal">
+                        <i class="lni lni-cross-circle"></i>
+                    </button>
+                </div>
+                <div class="modal-body px-0">
+
+                    <div class="content mb-30">
+                        <!-- Formulario de búsqueda -->
+                        <form id="buscarForm" method="GET">
+
+                            <div class="form-group">
+                                <label for="busqueda">Buscar:</label>
+                                <input type="text" name="busqueda" id="id_busqueda" class="form-control"
+                                       autocomplete="off">
+                            </div>
+
+                        </form>
+                        <!-- Resultados de la búsqueda -->
+                        <table id="resultados" class="table">
+                            <thead>
+                            <tr>
+                                <th>Insumo</th>
+                                <th>Cantidad disponible</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}
+

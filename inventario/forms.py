@@ -238,13 +238,13 @@ class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
         fields = '__all__'
-        exclude = ("status","insumos")
+        exclude = ("status","insumos","total")
 
         widgets = {
             'fecha': forms.DateInput(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-4',
+                    'col': 'col-md-6',
                     'imputstyle': 'input-style-1',
                     'type': 'date'
 
@@ -253,7 +253,7 @@ class CompraForm(forms.ModelForm):
             'proveedor': forms.Select(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-4',
+                    'col': 'col-md-6',
                     'imputstyle': 'select-style-1'
 
                 }

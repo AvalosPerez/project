@@ -119,6 +119,12 @@
                                 <li>
                                     <a href="{% url 'logout' %}"> <i class="lni lni-exit"></i> Cerrar Sesión </a>
                                 </li>
+                                {% if user.is_superuser or user.is_staff %}
+                                     <li>
+                                    <a href="/app_nkfp_2023_code"> <i class="lni lni-yen"></i>Administración </a>
+                                </li>
+                                {% endif %}
+
                             </ul>
                         </div>
                         <!-- profile end -->

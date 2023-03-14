@@ -60,9 +60,7 @@
                     align-items-center
                   ">
                                 <h6>My Pefil</h6>
-                                <button class="border-0 bg-transparent">
-                                    <i class="lni lni-pencil-alt"></i>
-                                </button>
+
                             </div>
                             <div class="profile-info">
                                 <div class="d-flex align-items-center mb-30">
@@ -88,10 +86,16 @@
 
                                 <form action="#">
                                     <div class="row">
-                                        <div class="col-12">
+                                        <div class="col-6">
                                             <div class="input-style-1">
-                                                <label>Nombres completos</label>
-                                                <input type="text" placeholder="Full Name" disabled value="{{ user.persona }}">
+                                                <label>Nombres </label>
+                                                <input type="text" placeholder="Nombres" disabled value="{{ user.persona.nombres }}">
+                                            </div>
+                                        </div>
+                                         <div class="col-6">
+                                            <div class="input-style-1">
+                                                <label>Apellidos </label>
+                                                <input type="text" placeholder="Nombres" disabled value="{{ user.persona.apellidos }}">
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -104,7 +108,7 @@
                                          <div class="col-12">
                                             <div class="input-style-1">
                                                 <label>Cédula</label>
-                                                <input type="email" placeholder="Email" disabled value="{{ user.persona.cedula }}">
+                                                <input type="email" placeholder="Cédula" disabled value="{{ user.persona.cedula }}">
                                             </div>
                                         </div>
 

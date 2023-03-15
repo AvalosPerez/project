@@ -1,6 +1,7 @@
 import xlsxwriter
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -512,17 +513,5 @@ class ViewBuscarInsumo(View):
 
         # Realizar la búsqueda utilizando los parámetros recibidos
         objetos = Insumo.objects.filter(descripcion__icontains=busqueda, status=True)
-
-        # Serializar los resultados en un formato que pueda ser manejado por el script de JavaScript
-        resultados = []
-        for objeto in objetos:
-            resultado = {
-                'id': objeto.id,
-                'nombre': objeto.descripcion,
-                'cantidad_disponible': objeto.cantidad,
-                'precio_venta': objeto.precio_venta
-            }
-            resultados.append(resultado)
-
-        # Devolver los resultados en un objeto JSON
-        return JsonResponse(resultados, safe=False)
+        data = serializers.serialize('json', objetos)
+        return HttpResponse(data, content_type='application/json')

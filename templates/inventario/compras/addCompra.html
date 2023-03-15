@@ -25,15 +25,21 @@
                     $.each(data, function (index, objeto) {
                         // Crear una nueva fila para cada objeto
                         var fila = $('<tr>');
-                        fila.append($('<td>').text(objeto.nombre));
-                        fila.append($('<td>').text(objeto.cantidad_disponible));
-                        var boton = $('<button>').addClass('btn btn-primary').text('Agregar');
+                        fila.append($('<td>').text(objeto.fields.descripcion));
+                        fila.append($('<td>').text(objeto.fields.cantidad));
+                        var boton = $('<button>');
+                        if (objeto.fields.cantidad== 0) {
+                            boton.prop('disabled',true).addClass('btn btn-danger').text('Agotado');
+                        }else{
+                           boton.prop('disabled',false).addClass('btn btn-primary').text('Agregar');
+                        }
+
                         boton.click(function () {
                             // Agregar la información a la tabla principal
                             var filaPrincipal = $('<tr>');
-                            filaPrincipal.append($('<td>').text(objeto.nombre));
-                            filaPrincipal.append($('<td>').text("$"+objeto.precio_venta));
-                            filaPrincipal.append($('<td>').append($('<input type="number" min=0 max='+objeto.cantidad_disponible+' name = cantidad_'+objeto.id+' id = id_cantidad_'+objeto.id+' class="form-control w-25"  >')));
+                            filaPrincipal.append($('<td>').text(objeto.fields.descripcion));
+                            filaPrincipal.append($('<td>').text(objeto.fields.precio_venta));
+                            filaPrincipal.append($('<td>').append($('<input type="number" value="1" min=0 max='+objeto.fields.cantidad+' name = cantidad_'+objeto.pk+' id = id_cantidad_'+objeto.pk+' class="form-control w-25"  >')));
                             filaPrincipal.append($('<td>').html(' <div class="action justify-content-center"> <a href="Javascript:void(0);" class="text-danger"><i class="lni lni-trash-can"></i> </a>  </div>'));
                             $('#tablaPrincipal tbody').append(filaPrincipal);
                         });

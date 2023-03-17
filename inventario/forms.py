@@ -1,7 +1,7 @@
 from django import forms
 from django.db import transaction
 
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra, Venta
 
 
 class CategoriaForm(forms.ModelForm):
@@ -166,7 +166,8 @@ class InsumoForm(forms.ModelForm):
                         'col': 'col-md-4',
                         'imputstyle': 'input-style-1',
                         'type': 'number',
-                        'min': '0'
+                        'min': '0',
+                        'step':'0.01',
 
                     }
                 ),
@@ -178,7 +179,8 @@ class InsumoForm(forms.ModelForm):
                         'imputstyle': 'input-style-1',
                         'type': 'number',
                         'min': '0',
-                        'decimal': '2'
+                        'decimal': '2',
+                        'step':'0.01',
 
                     }
                 ),
@@ -258,26 +260,60 @@ class CompraForm(forms.ModelForm):
 
                 }
             ),
+
+        }
+
+
+class VentaForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VentaForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Venta
+        fields = '__all__'
+        exclude = ("status","insumos")
+
+        widgets = {
+            'fecha': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'col': 'col-md-6',
+                    'imputstyle': 'input-style-1',
+                    'type': 'date'
+
+                }
+            ),
+            'cliente': forms.Select(
+                attrs={
+                    'class': 'form-control',
+                    'col': 'col-md-6',
+                    'imputstyle': 'select-style-1'
+
+                }
+            ),
+
+            'subtotal': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'col': 'col-md-6',
+                    'imputstyle': 'input-style-1',
+
+
+                }
+            ),
             'total': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'col': 'col-md-4',
+                    'col': 'col-md-6',
                     'imputstyle': 'input-style-1',
-                    'type': 'number',
-                    'min': '0',
-                    'decimal': '2'
+
+
 
                 }
             ),
 
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'rows': '4',
-                    'imputstyle': 'input-style-1',
 
-                }
-            ),
+
 
         }

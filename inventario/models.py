@@ -272,7 +272,6 @@ class DetalleKardex(ModeloBase):
 class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
-    subtotal = models.DecimalField(verbose_name="Subtotal", max_digits=30, decimal_places=2)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
 
     class Meta:

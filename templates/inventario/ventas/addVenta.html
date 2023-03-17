@@ -49,14 +49,16 @@
                             filaPrincipal.append($('<td>').text(objeto.fields.descripcion).addClass('min-width')).append($('<input class="insumos[]" type="hidden" value=' + objeto.pk + '>'));
 
                             filaPrincipal.append($('<td>').text(objeto.fields.precio_venta));
-                            filaPrincipal.append($('<td>').append($('<input type="number" value="1" min=0 max=' + objeto.fields.cantidad + ' name = cantidad_' + objeto.pk + ' id = id_cantidad_' + objeto.pk + ' class="form-control cantidad"  >')));
-                            filaPrincipal.append($('<td>').append($('<input type="text" name = total_' + objeto.pk + ' id = id_total_' + objeto.pk + ' class="form-control " disabled  >')));
+                            filaPrincipal.append($('<td>').append($('<input type="number" value="1" min=1 max=' + objeto.fields.cantidad + ' name = cantidad_' + objeto.pk + ' id = id_cantidad_' + objeto.pk + ' costo = ' + objeto.fields.precio_venta + ' pk = ' + objeto.pk + '  class="form-control cantidad"  >')));
+                            filaPrincipal.append($('<td>').append($('<input type="text" name = total_' + objeto.pk + ' id = id_total_' + objeto.pk + ' value=' + objeto.fields.precio_venta + ' class="form-control " disabled  >')));
 
                             filaPrincipal.append($('<td>').html(' <div class="action justify-content-center"> <a href="Javascript:void(0);" class="text-danger eliminar"><i class="lni lni-trash-can"></i> </a>  </div>'));
                             $('#tablaPrincipal tbody').append(filaPrincipal);
+                            obtener_total_subtotal();
                         });
                         fila.append($('<td>').append(boton));
                         resultados.append(fila);
+
                     });
                 },
                 error: function () {
@@ -80,10 +82,32 @@
 
         $(document).on('change', '.cantidad', function () {
             // Tu código para actualizar el subtotal aquí
-            cantidad = $(this).val()
-            costo = 0
+            cantidad = parseInt($(this).val())
+            cantidad_disponible = $(this).attr('max')
+            if (cantidad_disponible >= cantidad) {
+                costo = parseFloat($(this).attr('costo')).toFixed(2)
+                pk = parseFloat($(this).attr('pk'))
+                tot = parseFloat(cantidad * costo).toFixed(2)
+                $('#id_total_' + pk).val(tot)
+            } else {
+                swal.fire("La cantidad solicita es mayor a la disponible: " + cantidad_disponible)
+                $(this).val(1)
+                $('#id_total_' + pk).val(costo)
+            }
+            obtener_total_subtotal();
 
         });
+
+        function obtener_total_subtotal() {
+            acumulador = 0
+            $('#tablaPrincipal tr').not(':first').each(function () {
+                acumulador= acumulador + parseFloat($(this).find('td').eq(3).find('input').val())
+
+            });
+
+            $('#id_total').val(acumulador)
+
+        }
 
 
     </script>
@@ -96,7 +120,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
-                    <h2 class="mr-40">Formulario de compras</h2>
+                    <h2 class="mr-40">Formulario de ventas</h2>
 
                 </div>
             </div>
@@ -114,7 +138,7 @@
                             </li>
 
                             <li class="breadcrumb-item ">
-                                <a href="{% url 'inventario:entrada_insumo' %}">Compras</a>
+                                <a href="{% url 'inventario:salida_insumo' %}">Ventas</a>
                             </li>
 
 
@@ -136,7 +160,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <form action="{% url 'inventario:add_compra' %}" method="POST">
+                <form action="{% url 'inventario:add_venta' %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
 

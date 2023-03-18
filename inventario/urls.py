@@ -6,7 +6,7 @@ from inventario.views import Index, ViewInsumo, EntradaInsumo, SalidaInsumo, Vie
     DeleteInsumo, ViewProveedor, AddProveedor, EditProveedor, DeleteProveedor, MovimientoView, reporte_insumos_xlsx, \
     reporte_movimiento_insumo_xlsx, reporte_proveedor_xlsx, reporte_categoria_xlsx, \
     reporte_unidad_medida_xlsx, reporte_inventario_xlsx, AddCompra, EditCompra, AddDetalleCompraModal, ViewBuscarInsumo, \
-    AddDetalleVentaModal, AddVenta, EditVenta
+    AddDetalleVentaModal, AddVenta, EditVenta, DeleteVenta
 
 app_name = 'inventario'
 urlpatterns = [
@@ -20,6 +20,8 @@ urlpatterns = [
     path('salidas/add/', AddVenta.as_view(), name="add_venta"),
     path('salidas/addDetalleVenta/', AddDetalleVentaModal.as_view(), name="add_detalle_venta"),
     path('salidas/edit/<int:pk>', EditVenta.as_view(), name="edit_venta"),
+    path('salidas/delete/<int:pk>', DeleteVenta.as_view(), name="delete_venta"),
+
     path('insumos/', ViewInsumo.as_view(), name="insumo"),
     path('insumos/add/', AddInsumo.as_view(), name="add_insumo"),
     path('insumos/edit/<int:pk>', EditInsumo.as_view(), name="edit_insumo"),
@@ -38,7 +40,7 @@ urlpatterns = [
     path('insumos/proveedor/delete/<int:pk>', DeleteProveedor.as_view(), name="delete_proveedor"),
     path('insumos/reporte_insumo_xlsx/', reporte_insumos_xlsx, name='reporte_insumos_xlsx'),
     path('reporte_movimiento_xlsx/<int:pk>', reporte_movimiento_insumo_xlsx, name='reporte_movimiento_insumo_xlsx'),
-    #path('reporte_insumo_pdf', reporte_insumo_pdf, name="reporte_insumo_pdf" ),
+    # path('reporte_insumo_pdf', reporte_insumo_pdf, name="reporte_insumo_pdf" ),
     path('reporte_proveedor_xlsx/', reporte_proveedor_xlsx, name='reporte_proveedor_xlsx'),
     path('reporte_categoria_xlsx/', reporte_categoria_xlsx, name='reporte_categoria_xlsx'),
     path('reporte_unidad_medida_xlsx/', reporte_unidad_medida_xlsx, name='reporte_unidad_medida_xlsx'),

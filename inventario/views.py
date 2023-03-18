@@ -83,7 +83,7 @@ def reporte_movimiento_insumo_xlsx(request, pk):
 
     for row_num, movimiento in enumerate(movimientos):
         worksheet.write(row_num + 2, 0, movimiento.fecha.__str__())
-        worksheet.write(row_num + 2, 1, movimiento.get_tipo_movimiento_display().__str__())
+        worksheet.write(row_num + 2, 1, movimiento.get_tipomovimiento_display().__str__())
         worksheet.write(row_num + 2, 2, movimiento.detalle.__str__())
         worksheet.write(row_num + 2, 3, movimiento.cantidad.__str__())
         worksheet.write(row_num + 2, 4, movimiento.costo_unitario.__str__())
@@ -430,6 +430,12 @@ class AddDetalleVentaModal(LoginRequiredMixin, PermissionRequiredMixin, SuccessM
         self.object = form.save()
         return super().form_valid(form)
 
+class DeleteVenta(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'inventario.delete_venta'
+    template_name = "inventario/ventas/deleteventa.html"
+    model = Venta
+    success_url = reverse_lazy('inventario:salida_insumo')
+    context_object_name = "venta"
 
 class ViewCategoria(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_Categoria'

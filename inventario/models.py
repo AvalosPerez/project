@@ -191,7 +191,7 @@ class Insumo(ModeloBase):
                 detalleKardex = DetalleKardex(
                     fecha=datetime.now(),
                     kardex=kardex,
-                    tipo_movimiento=1,
+                    tipomovimiento=1,
                     detalle="Inicial",
                     cantidad=self.cantidad,
                     costo_unitario=self.costo_unitario,
@@ -239,17 +239,17 @@ class Kardex(ModeloBase):
         return self.detallekardex_set.filter(status=True).order_by('-id')[0].importe
 
     def get_inventario_entradas(self):
-        entradas = self.detallekardex_set.filter(status=True, tipo_movimiento=2)
+        entradas = self.detallekardex_set.filter(status=True, tipomovimiento=2)
         return entradas.count()
 
     def get_inventario_salidas(self):
-        salidas = self.detallekardex_set.filter(status=True, tipo_movimiento=3)
+        salidas = self.detallekardex_set.filter(status=True, tipomovimiento=3)
         return salidas.count()
 
 class DetalleKardex(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha")
     kardex = models.ForeignKey(Kardex, verbose_name="Inventario", on_delete=models.CASCADE)
-    tipo_movimiento = models.CharField('Tipo movimiento', choices=TIPO_MOVIMIENTO, default=1, max_length=1)
+    tipomovimiento = models.CharField('Tipo movimiento', choices=TIPO_MOVIMIENTO, default=1, max_length=1)
     detalle = models.CharField(verbose_name="Detalle", max_length=450)
     cantidad = models.PositiveIntegerField(verbose_name="Cantidad", default=0)
     costo_unitario = models.DecimalField(verbose_name="Costo unitario", max_digits=30, decimal_places=4, default=0,
@@ -265,7 +265,7 @@ class DetalleKardex(ModeloBase):
         ordering = ['-id']
 
     def __str__(self):
-        return f'tipo: {self.tipo_movimiento} - producto: {self.kardex}'
+        return f'tipo: {self.tipomovimiento} - producto: {self.kardex}'
 
 class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
@@ -301,7 +301,7 @@ class DetalleVenta(ModeloBase):
                 detalleKardex = DetalleKardex(
                     fecha=datetime.now(),
                     kardex=kardex,
-                    tipo_movimiento=3,
+                    tipomovimiento=3,
                     detalle="Movimiento salida",
                     cantidad=self.cantidad,
                     costo_unitario = self.insumo.precio_venta,

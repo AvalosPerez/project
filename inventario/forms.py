@@ -1,7 +1,7 @@
 from django import forms
 from django.db import transaction
 
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra, Venta
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra, Venta, DetalleVenta
 
 
 class CategoriaForm(forms.ModelForm):
@@ -265,14 +265,41 @@ class CompraForm(forms.ModelForm):
 
 
 class VentaForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(VentaForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if self.instance.pk is None:  # solo se ejecuta si es un objeto nuevo
+            try:
+                with transaction.atomic():
+                    venta= super().save(commit=False)
+                    venta.fecha = self.cleaned_data['fecha']
+                    venta.cliente = self.cleaned_data['cliente']
+                    venta.total = float(self.initial['total'])
+                    if commit:
+                        venta.save()
+                    lista_id_insumos =self.initial['id_insumos']
+                    lista_cantidad =self.initial['cantidad']
+                    for id_insumo, cant in zip(lista_id_insumos, lista_cantidad):
+                        id= int(id_insumo)
+                        cantidad= int(cant)
+                        insumo= Insumo.objects.get(pk=id)
+                        importe = float(cantidad * insumo.precio_venta)
+                        detalle_venta = DetalleVenta(venta = venta,insumo=insumo, cantidad=cantidad,importe=importe)
+                        detalle_venta.save()
+                        detalle_venta.generar_inventario_movimiento_salida(cantidad)
+                    return venta
+
+            except Exception as ex:
+                raise NameError("Error al guardar la venta")
+                return None
+        else:
+            return super().save(commit=commit)
 
     class Meta:
         model = Venta
         fields = '__all__'
-        exclude = ("status","insumos")
+        exclude = ("status",)
 
         widgets = {
             'fecha': forms.DateInput(
@@ -307,7 +334,8 @@ class VentaForm(forms.ModelForm):
                     'class': 'form-control',
                     'col': 'col-md-6',
                     'imputstyle': 'input-style-1',
-
+                    'id':'id_total_total',
+                    'disabled':'True',
 
 
                 }

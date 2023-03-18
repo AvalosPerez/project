@@ -2,6 +2,8 @@
 {% block title %}Insumos{% endblock %}
 {% block extra_head %}
     <script>
+
+
         function abrirFormularioModal(url) {
             $.ajax({
                 url: url,
@@ -46,10 +48,10 @@
 
                             // Agregar la información a la tabla principal
                             var filaPrincipal = $('<tr id=' + objeto.pk + '>');
-                            filaPrincipal.append($('<td>').text(objeto.fields.descripcion).addClass('min-width')).append($('<input class="insumos[]" type="hidden" value=' + objeto.pk + '>'));
+                            filaPrincipal.append($('<td>').text(objeto.fields.descripcion).addClass('min-width')).append($('<input class="" name="insumos[]" id="id_insumos" type="hidden" value=' + objeto.pk + '>'));
 
                             filaPrincipal.append($('<td>').text(objeto.fields.precio_venta));
-                            filaPrincipal.append($('<td>').append($('<input type="number" value="1" min=1 max=' + objeto.fields.cantidad + ' name = cantidad_' + objeto.pk + ' id = id_cantidad_' + objeto.pk + ' costo = ' + objeto.fields.precio_venta + ' pk = ' + objeto.pk + '  class="form-control cantidad"  >')));
+                            filaPrincipal.append($('<td>').append($('<input type="number" value="1" min=1 max=' + objeto.fields.cantidad + ' name = cantidad[] id = id_cantidad_' + objeto.pk + ' costo = ' + objeto.fields.precio_venta + ' pk = ' + objeto.pk + '  class="form-control cantidad"  >')));
                             filaPrincipal.append($('<td>').append($('<input type="text" name = total_' + objeto.pk + ' id = id_total_' + objeto.pk + ' value=' + objeto.fields.precio_venta + ' class="form-control " disabled  >')));
 
                             filaPrincipal.append($('<td>').html(' <div class="action justify-content-center"> <a href="Javascript:void(0);" class="text-danger eliminar"><i class="lni lni-trash-can"></i> </a>  </div>'));
@@ -101,11 +103,11 @@
         function obtener_total_subtotal() {
             acumulador = 0
             $('#tablaPrincipal tr').not(':first').each(function () {
-                acumulador= acumulador + parseFloat($(this).find('td').eq(3).find('input').val())
+                acumulador = acumulador + parseFloat($(this).find('td').eq(3).find('input').val())
 
             });
-
-            $('#id_total').val(acumulador)
+            $('#id_total_total').val(acumulador)
+            $('#id_total_hidden').val(acumulador)
 
         }
 
@@ -163,7 +165,7 @@
                 <form action="{% url 'inventario:add_venta' %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
-
+                        <input type="hidden" name="total_hidden" id="id_total_hidden">
                         {% for field in form %}
                             <div class="{{ field.field.widget.attrs.col| default:"col-md-12" }}">
                                 <fieldset id="id_{{ field.name }}"
@@ -285,3 +287,6 @@
 
 {% endblock %}
 
+<script>
+
+</script>

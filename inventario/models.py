@@ -12,11 +12,6 @@ TIPO_MOVIMIENTO = (
     (3, u"Salida"),
 )
 
-TIPO_METODO = (
-    (1, u"Promedio ponderado"),
-)
-
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -211,6 +206,8 @@ class Insumo(ModeloBase):
             transaction.set_rollback(True)
 
 
+
+
 class Kardex(ModeloBase):
     insumo = models.ForeignKey(Insumo, verbose_name="Insumo", on_delete=models.CASCADE)
 
@@ -223,7 +220,8 @@ class Kardex(ModeloBase):
         return f'{self.insumo}'
 
     def get_existencia(self):
-        return self.detallekardex_set.filter(status=True).order_by('-id')[0].cantidad_anterior
+        existencia = self.detallekardex_set.filter(status=True).order_by('-id')[0]
+        return existencia.kardex.insumo.cantidad
 
     def get_costo_existencia(self):
         return self.detallekardex_set.filter(status=True).order_by('-id')[0].costo_anterior
@@ -272,7 +270,7 @@ class DetalleKardex(ModeloBase):
 class Venta(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha venta")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
-    total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
+    total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2,blank=True)
 
     class Meta:
         verbose_name = "Venta"
@@ -295,6 +293,30 @@ class DetalleVenta(ModeloBase):
 
     def __str__(self):
         return f'{self.venta} - {self.insumo}'
+
+    def generar_inventario_movimiento_salida(self,cantidad):
+        try:
+            with transaction.atomic():
+                kardex = Kardex.objects.filter(status=True, insumo=self.insumo).first()
+                detalleKardex = DetalleKardex(
+                    fecha=datetime.now(),
+                    kardex=kardex,
+                    tipo_movimiento=3,
+                    detalle="Movimiento salida",
+                    cantidad=self.cantidad,
+                    costo_unitario = self.insumo.precio_venta,
+                    importe=(self.cantidad * self.insumo.precio_venta),
+                    cantidad_anterior=self.insumo.cantidad,
+                    costo_anterior=self.insumo.costo_unitario,
+                    import_anterior=((self.insumo.cantidad - self.cantidad) * self.insumo.costo_unitario)
+                )
+            detalleKardex.save()
+            insumo = Insumo.objects.get(pk=self.insumo.pk)
+            insumo.cantidad = insumo.cantidad - detalleKardex.cantidad
+            insumo.save()
+        except Exception as ex:
+            raise NameError("Error al generar el inventario salida")
+            transaction.set_rollback(True)
 
 class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")

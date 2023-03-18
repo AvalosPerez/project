@@ -79,7 +79,7 @@
                                 </th>
                                 <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Costo
+                                        Precio
                                     </h6>
                                 </th>
                                 <th class="min-width">
@@ -92,9 +92,15 @@
                                         Existencia
                                     </h6>
                                 </th>
+
+                                <th class="min-width">
+                                    <h6 class="text-sm text-medium">
+                                        Existencia Anterior
+                                    </h6>
+                                </th>
                                     <th class="min-width">
                                     <h6 class="text-sm text-medium">
-                                        Costo Existencia
+                                        Costo Existencia Anterior
                                     </h6>
                                 </th>
                                     <th class="min-width">
@@ -130,10 +136,13 @@
                                     <p class="text-sm">{{ foo.cantidad }}</p>
                                 </td>
                                 <td>
-                                    <p class="text-sm">{{ foo.costo_unitario }}</p>
+                                        <p class="text-sm">{{ foo.costo_unitario |floatformat:2 }}</p>
                                 </td>
                                 <td>
                                     <span class="text-sm">{{ foo.importe }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-sm">{{ foo.kardex.insumo.cantidad }}</span>
                                 </td>
                                 <td>
                                     <span class="text-sm">{{ foo.cantidad_anterior }}</span>

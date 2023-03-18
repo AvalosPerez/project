@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, FormView, TemplateView
 from inventario.forms import CategoriaForm, UnidadMedidaForm, InsumoForm, ProveedorForm, CompraForm, VentaForm
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra, Venta
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Kardex, Compra, Venta, DetalleVenta
 
 
 class Index(LoginRequiredMixin, ListView):
@@ -21,11 +21,12 @@ class Index(LoginRequiredMixin, ListView):
     context_object_name = "inventario"
 
     def get_queryset(self):
-        query=  Kardex.objects.filter(status=True)
+        query = Kardex.objects.filter(status=True)
         term = self.request.GET.get('buscar')
         if term:
             query = query.filter(insumo__descripcion__icontains=term) | query.filter(insumo__detalle__icontains=term)
         return query
+
 
 def reporte_inventario_xlsx(request):
     # Escribir los datos
@@ -59,6 +60,7 @@ def reporte_inventario_xlsx(request):
 
     workbook.close()
     return response
+
 
 def reporte_movimiento_insumo_xlsx(request, pk):
     insumo = Kardex.objects.get(pk=pk)
@@ -96,6 +98,7 @@ def reporte_movimiento_insumo_xlsx(request, pk):
     workbook.close()
     return response
 
+
 class MovimientoView(LoginRequiredMixin, View):
     template_name = "inventario/movimientoView.html"
 
@@ -108,7 +111,8 @@ class MovimientoView(LoginRequiredMixin, View):
         # action = request.GET['action']
         return render(request, self.template_name, context)
 
-class ViewInsumo(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+
+class ViewInsumo(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_insumo'
     template_name = "inventario/insumo/insumo_view.html"
     model = Insumo
@@ -116,11 +120,12 @@ class ViewInsumo(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     context_object_name = "insumos"
 
     def get_queryset(self):
-        query= Insumo.objects.filter(status=True)
+        query = Insumo.objects.filter(status=True)
         term = self.request.GET.get('buscar')
         if term:
             query = query.filter(descripcion__icontains=term) | query.filter(detalle__icontains=term)
         return query
+
 
 def reporte_insumos_xlsx(request):
     # Escribir los datos
@@ -165,7 +170,8 @@ def reporte_insumos_xlsx(request):
 
     return response
 
-class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+
+class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_insumo'
     model = Insumo
     # fields = ['nombre', 'apellido', 'cedula']
@@ -183,7 +189,8 @@ class AddInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+
+class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_insumo'
     model = Insumo
     template_name = "inventario/insumo/editInsumo.html"
@@ -191,12 +198,14 @@ class EditInsumo(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
     success_message = 'Registro modificado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
 
 class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_insumo'
@@ -205,7 +214,8 @@ class DeleteInsumo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:insumo')
     context_object_name = "insumos"
 
-class ViewProveedor(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+
+class ViewProveedor(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_proveedor'
     template_name = "inventario/proveedor/view.html"
     model = Proveedor
@@ -213,11 +223,12 @@ class ViewProveedor(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     context_object_name = "proveedores"
 
     def get_queryset(self):
-        query= Proveedor.objects.filter(status=True)
+        query = Proveedor.objects.filter(status=True)
         term = self.request.GET.get('buscar')
         if term:
             query = query.filter(razon_social__icontains=term) | query.filter(email__icontains=term)
         return query
+
 
 def reporte_proveedor_xlsx(request):
     # Escribir los datos
@@ -245,7 +256,8 @@ def reporte_proveedor_xlsx(request):
     workbook.close()
     return response
 
-class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+
+class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_proveedor'
     model = Proveedor
     # fields = ['nombre', 'apellido', 'cedula']
@@ -254,6 +266,7 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMix
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
     success_message = 'Registro guardado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
@@ -261,7 +274,8 @@ class AddProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMix
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+
+class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_proveedor'
     model = Proveedor
     template_name = "inventario/proveedor/editProveedor.html"
@@ -269,11 +283,14 @@ class EditProveedor(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMi
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
     success_message = 'Registro modificado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
 
 class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_proveedor'
@@ -282,6 +299,7 @@ class DeleteProveedor(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('inventario:proveedor')
     context_object_name = "proveedores"
 
+
 class EntradaInsumo(LoginRequiredMixin, ListView):
     template_name = "inventario/compras/entrada_insumo_view.html"
     model = Compra
@@ -289,10 +307,11 @@ class EntradaInsumo(LoginRequiredMixin, ListView):
     context_object_name = "compras"
 
     def get_queryset(self):
-        query= Compra.objects.filter(status=True)
+        query = Compra.objects.filter(status=True)
         return query
 
-class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+
+class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_compra'
     template_name = "inventario/compras/addCompra.html"
     form_class = CompraForm
@@ -303,7 +322,8 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
         context = super().get_context_data(**kwargs)
         return context
 
-class EditCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+
+class EditCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_compra'
     model = Compra
     template_name = "inventario/compras/editCompra.html"
@@ -319,7 +339,8 @@ class EditCompra(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
-class AddDetalleCompraModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
+
+class AddDetalleCompraModal(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, FormView):
     permission_required = 'inventario.add_compra'
     template_name = "inventario/compras/modal/compraFormModal.html"
     form_class = CompraForm
@@ -328,7 +349,7 @@ class AddDetalleCompraModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo_form']= 'Formulario adicionar compra'
+        context['titulo_form'] = 'Formulario adicionar compra'
         return context
 
     def form_valid(self, form):
@@ -344,12 +365,11 @@ class SalidaInsumo(LoginRequiredMixin, ListView):
     context_object_name = "ventas"
 
     def get_queryset(self):
-        query= Venta.objects.filter(status=True)
+        query = Venta.objects.filter(status=True)
         return query
 
 
-
-class AddVenta(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+class AddVenta(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_Venta'
     template_name = "inventario/ventas/addVenta.html"
     form_class = VentaForm
@@ -360,7 +380,23 @@ class AddVenta(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, 
         context = super().get_context_data(**kwargs)
         return context
 
-class EditVenta(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+    def post(self, request, *args, **kwargs):
+        my_input_hidden = request.POST.get('total_hidden', '')
+        id_insumos = request.POST.getlist('insumos[]')
+        cantidad = request.POST.getlist('cantidad[]')
+
+        form = self.get_form()
+        if my_input_hidden:
+            form.initial['total'] = my_input_hidden
+            form.initial['id_insumos'] = id_insumos
+            form.initial['cantidad'] = cantidad
+
+        return self.form_valid(form)
+        # hacer algo con el valor de my_input_hidden
+        return super().post(request, *args, **kwargs)
+
+
+class EditVenta(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_venta'
     model = Venta
     template_name = "inventario/ventas/editVenta.html"
@@ -376,7 +412,8 @@ class EditVenta(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin,
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
-class AddDetalleVentaModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, FormView):
+
+class AddDetalleVentaModal(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, FormView):
     permission_required = 'inventario.add_venta'
     template_name = "inventario/ventas/modal/ventaFormModal.html"
     form_class = VentaForm
@@ -385,7 +422,7 @@ class AddDetalleVentaModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessMe
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo_form']= 'Formulario adicionar compra'
+        context['titulo_form'] = 'Formulario adicionar compra'
         return context
 
     def form_valid(self, form):
@@ -394,7 +431,7 @@ class AddDetalleVentaModal(LoginRequiredMixin, PermissionRequiredMixin,SuccessMe
         return super().form_valid(form)
 
 
-class ViewCategoria(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+class ViewCategoria(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_Categoria'
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
@@ -407,6 +444,7 @@ class ViewCategoria(LoginRequiredMixin,PermissionRequiredMixin,ListView):
         if term:
             query = query.filter(descripcion__icontains=term)
         return query
+
 
 def reporte_categoria_xlsx(request):
     # Escribir los datos
@@ -432,7 +470,8 @@ def reporte_categoria_xlsx(request):
     workbook.close()
     return response
 
-class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+
+class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_categoria'
     model = Categoria
     # fields = ['nombre', 'apellido', 'cedula']
@@ -441,13 +480,16 @@ class AddCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMix
     success_url = reverse_lazy('inventario:categoria')
     context_object_name = "categorias"
     success_message = 'Registro guardado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+
+class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_categoria'
     model = Categoria
     template_name = "inventario/categoria/editCategoria.html"
@@ -455,11 +497,14 @@ class EditCategoria(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMi
     success_url = reverse_lazy('inventario:categoria')
     context_object_name = "categorias"
     success_message = 'Registro modificado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
 
 class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_categoria'
@@ -467,7 +512,8 @@ class DeleteCategoria(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Categoria
     success_url = reverse_lazy('inventario:categoria')
 
-class ViewUnidadMedida(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+
+class ViewUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_unidadmedida'
     template_name = "inventario/unidadMedida/unidad_medida_view.html"
     model = UnidadMedida
@@ -475,11 +521,12 @@ class ViewUnidadMedida(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     context_object_name = "unidades_medidas"
 
     def get_queryset(self):
-        query= UnidadMedida.objects.filter(status=True)
+        query = UnidadMedida.objects.filter(status=True)
         term = self.request.GET.get('buscar')
         if term:
-            query = query.filter(descripcion__icontains=term) |query.filter(alias__icontains=term)
+            query = query.filter(descripcion__icontains=term) | query.filter(alias__icontains=term)
         return query
+
 
 def reporte_unidad_medida_xlsx(request):
     # Escribir los datos
@@ -506,7 +553,8 @@ def reporte_unidad_medida_xlsx(request):
     workbook.close()
     return response
 
-class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, CreateView):
+
+class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'inventario.add_unidadmedida'
     model = UnidadMedida
     template_name = "inventario/unidadMedida/addUnidadMedida.html"
@@ -522,7 +570,8 @@ class AddUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessage
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessageMixin, UpdateView):
+
+class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_unidadmedida'
     model = UnidadMedida
     template_name = "inventario/unidadMedida/editUnidadMedida.html"
@@ -530,12 +579,14 @@ class EditUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin,SuccessMessag
     success_url = reverse_lazy('inventario:unidad_medida')
     context_object_name = "unidades_medidas"
     success_message = 'Registro modificado exitosamente'
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
+
 
 class DeleteUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_unidadmedida'
@@ -546,7 +597,7 @@ class DeleteUnidadMedida(LoginRequiredMixin, PermissionRequiredMixin, DeleteView
 
 
 class ViewBuscarInsumo(View):
-    def post(self,request):
+    def post(self, request):
         busqueda = request.POST.get('busqueda')
         pass
 

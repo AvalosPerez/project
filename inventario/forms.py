@@ -240,7 +240,7 @@ class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
         fields = '__all__'
-        exclude = ("status","insumos","total")
+        exclude = ("status","insumos",)
 
         widgets = {
             'fecha': forms.DateInput(
@@ -257,6 +257,17 @@ class CompraForm(forms.ModelForm):
                     'class': 'form-control',
                     'col': 'col-md-6',
                     'imputstyle': 'select-style-1'
+
+                }
+            ),
+            'total': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'col': 'col-md-6',
+                    'imputstyle': 'input-style-1',
+                    'id':'id_total_total',
+                    'disabled':'True',
+
 
                 }
             ),

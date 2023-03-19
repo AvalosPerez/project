@@ -1,7 +1,7 @@
 from django import forms
 from django.db import transaction
 
-from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra, Venta, DetalleVenta
+from inventario.models import Categoria, UnidadMedida, Insumo, Proveedor, Compra, Venta, DetalleVenta, CompraInsumo
 
 
 class CategoriaForm(forms.ModelForm):
@@ -236,6 +236,37 @@ class CompraForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CompraForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        if self.instance.pk is None:  # solo se ejecuta si es un objeto nuevo
+            try:
+                with transaction.atomic():
+                    compra= super().save(commit=False)
+                    compra.fecha = self.cleaned_data['fecha']
+                    compra.proveedor = self.cleaned_data['proveedor']
+                    compra.total = float(self.initial['total'])
+                    if commit:
+                        compra.save()
+                    lista_id_insumos =self.initial['id_insumos']
+                    lista_cantidad =self.initial['cantidad']
+                    lista_costo =self.initial['costo']
+                    for id_insumo, cant, cost in zip(lista_id_insumos, lista_cantidad,lista_costo):
+                        id= int(id_insumo)
+                        cost= float(cost)
+                        cantidad= int(cant)
+                        insumo= Insumo.objects.get(pk=id)
+                        importe = float(cantidad * cost)
+                        detalle_compra = CompraInsumo(compra = compra,insumo=insumo, cantidad=cantidad,costo=cost,importe=importe)
+                        detalle_compra.save()
+                        detalle_compra.generar_inventario_movimiento_entrada(cantidad)
+                    return compra
+
+            except Exception as ex:
+                raise NameError("Error al guardar la venta")
+                return None
+        else:
+            return super().save(commit=commit)
+
 
     class Meta:
         model = Compra

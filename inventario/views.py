@@ -322,6 +322,23 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin
         context = super().get_context_data(**kwargs)
         return context
 
+    def post(self, request, *args, **kwargs):
+        my_input_hidden = request.POST.get('total_hidden', '')
+        id_insumos = request.POST.getlist('insumos[]')
+        cantidad = request.POST.getlist('cantidad[]')
+        costo = request.POST.getlist('costo[]')
+
+        form = self.get_form()
+        if my_input_hidden:
+            form.initial['total'] = my_input_hidden
+            form.initial['id_insumos'] = id_insumos
+            form.initial['cantidad'] = cantidad
+            form.initial['costo'] = costo
+
+        return self.form_valid(form)
+        # hacer algo con el valor de my_input_hidden
+        return super().post(request, *args, **kwargs)
+
 
 class EditCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_compra'

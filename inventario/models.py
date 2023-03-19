@@ -321,7 +321,7 @@ class DetalleVenta(ModeloBase):
 class Compra(ModeloBase):
     fecha = models.DateField(verbose_name="Fecha Compra")
     proveedor = models.ForeignKey(Proveedor, verbose_name="Proveedor", on_delete=models.CASCADE)
-    total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2)
+    total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2, blank=True)
 
     class Meta:
         verbose_name = "Compra"
@@ -346,3 +346,30 @@ class CompraInsumo(ModeloBase):
 
     def __str__(self):
         return f'{self.compra} - {self.insumo}'
+
+
+    def generar_inventario_movimiento_entrada(self,cantidad):
+        try:
+            with transaction.atomic():
+                kardex = Kardex.objects.filter(status=True, insumo=self.insumo).first()
+                detalleKardex = DetalleKardex(
+                    fecha=datetime.now(),
+                    kardex=kardex,
+                    tipomovimiento=2,
+                    detalle="Movimiento entrada",
+                    cantidad=self.cantidad,
+                    costo_unitario = self.costo,
+                    importe=(self.cantidad * self.costo),
+                    cantidad_anterior=self.insumo.cantidad,
+                    costo_anterior=self.insumo.costo_unitario,
+                    import_anterior=((self.insumo.cantidad + self.cantidad) * self.insumo.costo_unitario)
+                )
+            detalleKardex.save()
+            insumo = Insumo.objects.get(pk=self.insumo.pk)
+            insumo.cantidad = insumo.cantidad + detalleKardex.cantidad
+            insumo.save()
+        except Exception as ex:
+            raise NameError("Error al generar el inventario entrada")
+            transaction.set_rollback(True)
+
+

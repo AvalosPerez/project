@@ -2,7 +2,7 @@ from django.urls import path
 
 from administracion.views import Index, ViewModulo, AddModulo, EditModulo, DeleteModulo, ViewUsuario, \
     ViewAccesoModulo, AddAccesoModulo, EditAccesoModulo, DeleteAccesoModulo, \
-    ViewCliente, AddCliente, EditCliente, DeleteCliente
+    ViewCliente, AddCliente, EditCliente, DeleteCliente, AddUsuario, EditUsuario
 
 app_name = 'administracion'
 urlpatterns = [
@@ -16,13 +16,12 @@ urlpatterns = [
     path('acceso_modulo/edit/<int:pk>', EditAccesoModulo.as_view(), name="edit_acceso_modulo"),
     path('acceso_modulo/delete/<int:pk>', DeleteAccesoModulo.as_view(), name="delete_acceso_modulo"),
     path('usuario/', ViewUsuario.as_view(), name="view_usuario"),
+    path('usuario/add', AddUsuario.as_view(), name="add_usuario"),
+    path('usuario/edit/<int:pk>', EditUsuario.as_view(), name="edit_usuario"),
     path('cliente/', ViewCliente.as_view(), name="view_cliente"),
     path('cliente/add', AddCliente.as_view(), name="add_cliente"),
     path('cliente/edit/<int:pk>', EditCliente.as_view(), name="edit_cliente"),
     path('cliente/delete/<int:pk>', DeleteCliente.as_view(), name="delete_cliente"),
-    # path('empresa/', ViewEmpresa.as_view(), name="view_empresa"),
-    # path('empresa/add', AddEmpresa.as_view(), name="add_empresa"),
-    # path('empresa/edit/<int:pk>', EditEmpresa.as_view(), name="edit_empresa"),
-    # path('empresa/delete/<int:pk>', DeleteEmpresa.as_view(), name="delete_empresa"),
+
 
 ]

@@ -67,65 +67,6 @@ class ModuloForm(forms.ModelForm):
         }
 
 
-class UsuarioForm(UserCreationForm):
-    class Meta:
-        model = Usuario
-        fields = ('email', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active')
-
-        widgets = {
-
-            'email': forms.EmailInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
-
-                }
-            ),
-
-            'is_staff': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                    'col': 'col-md-4',
-                    'imputstyle': 'form-check form-switch toggle-switch'
-
-                }
-            ),
-            'is_active': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                    'col': 'col-md-4',
-                    'imputstyle': 'form-check form-switch toggle-switch'
-
-                }
-            ),
-
-            'is_superuser': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                    'col': 'col-md-4',
-                    'imputstyle': 'form-check form-switch toggle-switch'
-
-                }
-            ),
-
-            'password': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'col': 'col-md-12',
-                    'imputstyle': 'input-style-1'
-
-                }
-            ),
-
-        }
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        if commit:
-            user.save()
-        return user
 
 
 class ClienteForm(forms.ModelForm):
@@ -227,6 +168,114 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ['nombres', 'apellidos', 'cedula', 'email', ]
+
+
+class UsuarioForm(forms.ModelForm):
+
+    nombres = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'col': 'col-md-12',
+            'imputstyle': 'input-style-1'
+
+        })
+    )
+    apellidos = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'col': 'col-md-12',
+            'imputstyle': 'input-style-1'
+
+        })
+
+    )
+    cedula = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'col': 'col-md-12',
+            'imputstyle': 'input-style-1'
+
+        })
+    )
+    email = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'col': 'col-md-12',
+            'imputstyle': 'input-style-1'
+
+        })
+    )
+
+    def save(self, commit=True):
+        if self.instance.pk is None:  # solo se ejecuta si es un objeto nuevo
+            try:
+                with transaction.atomic():
+                    usuario = super().save(commit=False)
+
+
+                    persona = Persona(
+                        nombres= self.cleaned_data['nombres'],
+                        apellidos =self.cleaned_data['apellidos'],
+                        cedula = self.cleaned_data['cedula'],
+                        email =self.cleaned_data['email'],
+                    )
+                    persona.save()
+                    if commit:
+                        usuario.save()
+                    persona.usuario = usuario
+                    persona.save()
+                    usuario.email =persona.email
+                    usuario.password =persona.cedula
+                    usuario.save()
+                    grupo = Group.objects.get(name='Administrador')
+                    usuario.groups.add(grupo)
+                    return usuario
+            except Exception as ex:
+                 raise NameError("Error al generar un nuevo usuario",ex)
+                 transaction.set_rollback(True)
+
+        else:
+
+            try:
+                with transaction.atomic():
+                    usuario = super().save(commit=False)
+                    persona = Persona.objects.get(usuario=usuario)
+                    persona.nombres = self.cleaned_data['nombres']
+                    persona.apellidos = self.cleaned_data['apellidos']
+                    # persona.cedula = self.cleaned_data['cedula']
+                    # persona.email = self.cleaned_data['email']
+                    persona.save()
+                    if commit:
+                        usuario.save()
+                    return usuario
+            except Exception as ex:
+                raise NameError("Error al editar un  usuario",ex)
+                transaction.set_rollback(True)
+
+
+
+    def clean_cedula(self):
+        cedula = self.cleaned_data['cedula']
+        if not self.instance.pk:
+            r = Persona.objects.filter(cedula=cedula)
+            if r.count():
+                raise ValidationError("cédula ya existe.")
+        return cedula
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not self.instance.pk:
+            r = Persona.objects.filter(email=email)
+            if r.count():
+                raise ValidationError("email ya existe.")
+        return email
+
+
+
+    class Meta:
+        model = Usuario
+        fields = ['nombres', 'apellidos', 'cedula', 'email', ]
+
 
 
 class GroupAccessForm(forms.ModelForm):

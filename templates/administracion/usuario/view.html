@@ -10,6 +10,8 @@
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Usuarios</h2>
+                       <a href="{% url 'administracion:add_usuario' %}" class="main-btn primary-btn btn-hover btn-sm">
+                        <i class="lni lni-plus mr-5"></i> Adicionar</a>
                 </div>
             </div>
             <!-- end col -->
@@ -154,6 +156,10 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
+                                                  <li class="dropdown-item">
+                                                    <a href="{% url 'administracion:edit_usuario' usuario.pk %}"
+                                                       class="text-gray">Editar</a>
+                                                </li>
 
 
                                             </ul>

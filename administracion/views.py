@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, UpdateView, CreateView, ListView
 
-from administracion.forms import ModuloForm, GroupAccessForm, ClienteForm
+from administracion.forms import ModuloForm, GroupAccessForm, ClienteForm, UsuarioForm
 from administracion.models import Modulo, GroupAccess
 from inventario.models import Usuario, Cliente, Persona
 
@@ -101,6 +101,40 @@ class ViewUsuario(LoginRequiredMixin, ListView):
                     query.filter(persona__cedula__icontains=term)
         return query
 
+class AddUsuario(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'inventario.add_usuario'
+    model = Usuario
+    template_name = "administracion/usuario/addUsuario.html"
+    form_class = UsuarioForm
+    success_url = reverse_lazy('administracion:view_usuario')
+    context_object_name = "usuario"
+
+
+class EditUsuario(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'inventario.change_usuario'
+    model = Usuario
+    template_name = "administracion/usuario/editUsuario.html"
+    form_class = UsuarioForm
+    success_url = reverse_lazy('administracion:view_usuario')
+    context_object_name = "usuario"
+
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Bloquear los campos "cedula" y "email" en el formulario
+        form.fields['cedula'].disabled = True
+        form.fields['email'].disabled = True
+        return form
+
+    def get_initial(self):
+        initial = super().get_initial()
+        persona = self.object.persona
+        initial['nombres'] = persona.nombres
+        initial['apellidos'] = persona.apellidos
+        initial['email'] = persona.email
+        initial['cedula'] = persona.cedula
+        return initial
+
 
 class ViewCliente(LoginRequiredMixin, ListView):
     permission_required = 'inventario.view_cliente'
@@ -159,8 +193,6 @@ class EditCliente(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
-
-
 
 
 class DeleteCliente(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):

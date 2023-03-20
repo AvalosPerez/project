@@ -44,7 +44,7 @@ class ViewModulo(LoginRequiredMixin, ListView):
 
 
 class AddModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'inventario.add_modulo'
+    permission_required = 'administracion.add_modulo'
     model = Modulo
     # fields = ['nombre', 'apellido', 'cedula']
     template_name = "administracion/modulo/addModulo.html"
@@ -61,7 +61,7 @@ class AddModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
 
 class EditModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'inventario.change_modulo'
+    permission_required = 'administracion.change_modulo'
     model = Modulo
     template_name = "administracion/modulo/editModulo.html"
     form_class = ModuloForm

@@ -455,7 +455,7 @@ class DeleteVenta(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     context_object_name = "venta"
 
 class ViewCategoria(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = 'inventario.view_Categoria'
+    permission_required = 'inventario.view_categoria'
     template_name = "inventario/categoria/categoria_view.html"
     model = Categoria
     paginate_by = 10

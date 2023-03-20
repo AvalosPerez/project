@@ -85,7 +85,7 @@ class DeleteModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     context_object_name = "modulos"
 
 
-class ViewUsuario(LoginRequiredMixin, ListView):
+class ViewUsuario(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     permission_required = 'inventario.view_usuario'
     template_name = "administracion/usuario/view.html"
     model = Usuario

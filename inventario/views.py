@@ -387,7 +387,7 @@ class SalidaInsumo(LoginRequiredMixin, ListView):
 
 
 class AddVenta(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
-    permission_required = 'inventario.add_Venta'
+    permission_required = 'inventario.add_venta'
     template_name = "inventario/ventas/addVenta.html"
     form_class = VentaForm
     success_url = reverse_lazy('inventario:salida_insumo')

@@ -2,7 +2,7 @@ from django.urls import path
 
 from administracion.views import Index, ViewModulo, AddModulo, EditModulo, DeleteModulo, ViewUsuario, \
     ViewAccesoModulo, AddAccesoModulo, EditAccesoModulo, DeleteAccesoModulo, \
-    ViewCliente, AddCliente, EditCliente, DeleteCliente, AddUsuario, EditUsuario
+    ViewCliente, AddCliente, EditCliente, DeleteCliente, AddUsuario, EditUsuario, ViewGrupo
 
 app_name = 'administracion'
 urlpatterns = [
@@ -22,6 +22,8 @@ urlpatterns = [
     path('cliente/add', AddCliente.as_view(), name="add_cliente"),
     path('cliente/edit/<int:pk>', EditCliente.as_view(), name="edit_cliente"),
     path('cliente/delete/<int:pk>', DeleteCliente.as_view(), name="delete_cliente"),
+    path('grupo/', ViewGrupo.as_view(), name="view_grupo"),
+
 
 
 ]

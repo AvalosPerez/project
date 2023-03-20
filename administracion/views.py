@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.forms import model_to_dict
@@ -109,7 +110,6 @@ class AddUsuario(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     success_url = reverse_lazy('administracion:view_usuario')
     context_object_name = "usuario"
 
-
 class EditUsuario(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_usuario'
     model = Usuario
@@ -135,7 +135,6 @@ class EditUsuario(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         initial['cedula'] = persona.cedula
         return initial
 
-
 class ViewCliente(LoginRequiredMixin, ListView):
     permission_required = 'inventario.view_cliente'
     template_name = "administracion/cliente/view.html"
@@ -150,7 +149,6 @@ class ViewCliente(LoginRequiredMixin, ListView):
             query = query.filter(persona__nombres__icontains=term) | query.filter(persona__apellidos__icontains=term) | query.filter(persona__cedula__icontains=term)| query.filter(persona__email__icontains=term)
         return query
 
-
 class AddCliente(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'inventario.add_cliente'
     model = Cliente
@@ -162,7 +160,6 @@ class AddCliente(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
-
 
 class EditCliente(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'inventario.change_cliente'
@@ -194,7 +191,6 @@ class EditCliente(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
-
 class DeleteCliente(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'inventario.delete_cliente'
     template_name = "administracion/cliente/deleteCliente.html"
@@ -203,7 +199,7 @@ class DeleteCliente(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     context_object_name = "clientes"
 
 class ViewAccesoModulo(LoginRequiredMixin, ListView):
-    permission_required = 'inventario.view_groupaccess'
+    permission_required = 'administracion.view_groupaccess'
     template_name = "administracion/acceso_modulo/view.html"
     model = GroupAccess
     paginate_by = 10
@@ -215,7 +211,7 @@ class ViewAccesoModulo(LoginRequiredMixin, ListView):
         return query
 
 class AddAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'inventario.add_groupaccess'
+    permission_required = 'administracion.add_groupaccess'
     model = GroupAccess
     template_name = "administracion/acceso_modulo/add_acceso_modulo.html"
     form_class = GroupAccessForm
@@ -226,9 +222,8 @@ class AddAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         form.instance.usuario_creacion = self.request.user
         return super().form_valid(form)
 
-
 class EditAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'inventario.change_groupaccess'
+    permission_required = 'administracion.change_groupaccess'
     model = GroupAccess
     template_name = "administracion/acceso_modulo/edit_acceso_modulo.html"
     form_class = GroupAccessForm
@@ -239,10 +234,15 @@ class EditAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         form.instance.usuario_modificacion = self.request.user
         return super().form_valid(form)
 
-
 class DeleteAccesoModulo(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'inventario.delete_groupaccess'
+    permission_required = 'administracion.delete_groupaccess'
     template_name = "administracion/acceso_modulo/delete_acceso_modulo.html"
     model = GroupAccess
     success_url = reverse_lazy('administracion:view_acceso_modulo')
     context_object_name = "acceso_modulo"
+
+class ViewGrupo(LoginRequiredMixin, ListView):
+    template_name = "administracion/grupos/view.html"
+    model = Group
+    paginate_by = 10
+    context_object_name = "grupo"

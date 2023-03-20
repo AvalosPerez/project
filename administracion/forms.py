@@ -225,7 +225,7 @@ class UsuarioForm(forms.ModelForm):
                     persona.usuario = usuario
                     persona.save()
                     usuario.email =persona.email
-                    usuario.password =persona.cedula
+                    usuario.set_password(persona.cedula)
                     usuario.save()
                     grupo = Group.objects.get(name='Administrador')
                     usuario.groups.add(grupo)

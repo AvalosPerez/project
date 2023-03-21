@@ -19,15 +19,35 @@
     <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
     <link rel="stylesheet" href={% static 'assets/css/fullcalendar.css' %}/>
     <link rel="stylesheet" href={% static 'assets/css/main.css' %}/>
+
+    <style>
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .h-custom {
+            height: calc(100% - 73px);
+        }
+
+        @media (max-width: 450px) {
+            .h-custom {
+                height: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
 
 <!-- ======== main-wrapper start =========== -->
-<main class="container-fluid">
-{% block content %}
+<main class="">
+    {% block content %}
 
-{% endblock %}
+    {% endblock %}
 </main>
 <!-- ======== main-wrapper end =========== -->
 

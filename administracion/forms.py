@@ -206,6 +206,16 @@ class UsuarioForm(forms.ModelForm):
         })
     )
 
+    grupo = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'col': 'col-md-12',
+            'imputstyle': 'select-style-1'
+
+        })
+    )
+
     def save(self, commit=True):
         if self.instance.pk is None:  # solo se ejecuta si es un objeto nuevo
             try:
@@ -252,8 +262,6 @@ class UsuarioForm(forms.ModelForm):
                 raise NameError("Error al editar un  usuario",ex)
                 transaction.set_rollback(True)
 
-
-
     def clean_cedula(self):
         cedula = self.cleaned_data['cedula']
         if not self.instance.pk:
@@ -274,7 +282,7 @@ class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['nombres', 'apellidos', 'cedula', 'email', ]
+        fields = ['nombres', 'apellidos', 'cedula', 'email','grupo', ]
 
 
 

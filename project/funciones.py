@@ -6,10 +6,14 @@ from django.template.loader import get_template, render_to_string
 from project import settings
 
 def enviar_correo(asunto, plantilla, destinatario, contexto):
-    cuerpo_correo = render_to_string(plantilla, contexto)
-    correo = EmailMessage(asunto, cuerpo_correo, to=[destinatario])
-    correo.content_subtype = 'html'
-    correo.send()
+    try:
+        cuerpo_correo = render_to_string(plantilla, contexto)
+        correo = EmailMessage(asunto, cuerpo_correo, to=[destinatario])
+        correo.content_subtype = 'html'
+        correo.send()
+    except Exception as ex:
+        pass
+
 
 
 def create_mail_simple(user_mail, subject, template_name, context):

@@ -156,7 +156,7 @@
                                 <tr>
                                     <td>{{ abastecer.descripcion }}</td>
                                     <td>{{ abastecer.cantidad }}</td>
-                                    <td><span class="status-btn close-btn">Reabastecer</span></td>
+                                    <td><a href="{% url 'inventario:insumo' %}"><span class="status-btn close-btn" >Reabastecer</span></a></td>
                                 </tr>
                             {% empty %}
                                 <tr>

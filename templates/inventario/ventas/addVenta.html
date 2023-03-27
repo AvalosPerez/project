@@ -78,6 +78,23 @@
             $('#tablaPrincipal').on('click', '.eliminar', function () {
                 $(this).closest('tr').remove();
             });
+            var formulario = document.getElementById("miFormulario");
+            formulario.addEventListener("submit", function (event) {
+
+                var tabla = document.getElementById("tablaPrincipal");
+                if (tabla.rows.length > 1) {
+                    // La tabla tiene datos
+                } else {
+                    // La tabla está vacía
+                    swal.fire("Ingrese los insumos")
+                    event.preventDefault(); // previene el envío del formulario
+
+                }
+
+
+                // Coloca aquí tu código de validación de tabla
+
+            });
 
 
         });
@@ -162,7 +179,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <form action="{% url 'inventario:add_venta' %}" method="POST">
+                <form id="miFormulario" action="{% url 'inventario:add_venta' %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
                         <input type="hidden" name="total_hidden" id="id_total_hidden">
@@ -287,6 +304,3 @@
 
 {% endblock %}
 
-<script>
-
-</script>

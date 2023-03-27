@@ -10,7 +10,7 @@
             <div class="col-md-6">
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Usuarios</h2>
-                       <a href="{% url 'administracion:add_usuario' %}" class="main-btn primary-btn btn-hover btn-sm">
+                    <a href="{% url 'administracion:add_usuario' %}" class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar</a>
                 </div>
             </div>
@@ -127,12 +127,12 @@
 
                                     <td>
                                         {% for grupo in usuario.obtener_grupos %}
-                                            <spam class="badge bg-primary" >{{ grupo }}</spam>
+                                            <spam class="badge bg-primary">{{ grupo }}</spam>
                                         {% empty %}
-                                            <spam class="badge bg-danger" >N/A</spam>
+                                            <spam class="badge bg-danger">N/A</spam>
                                         {% endfor %}
 
-                                        
+
                                     </td>
 
                                     <td>
@@ -156,16 +156,19 @@
                                                     class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="moreAction1"
                                             >
-                                                  <li class="dropdown-item">
-                                                    <a href="{% url 'administracion:edit_usuario' usuario.pk %}"
-                                                       class="text-gray">
-                                                        
-                                                        {% if usuario.persona %}
+                                                <li class="dropdown-item">
+
+
+                                                    {% if usuario.persona %}
+                                                        <a href="{% url 'administracion:edit_usuario' usuario.pk %}"
+                                                           class="text-gray">
                                                             editar
-                                                        {% else %}
-                                                            No se puede editar admin
-                                                        {% endif %}
-                                                    </a>
+
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="Javascript:void(0);">No se puede editar admin</a>
+                                                    {% endif %}
+
                                                 </li>
 
 

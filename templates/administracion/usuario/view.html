@@ -158,7 +158,14 @@
                                             >
                                                   <li class="dropdown-item">
                                                     <a href="{% url 'administracion:edit_usuario' usuario.pk %}"
-                                                       class="text-gray">Editar</a>
+                                                       class="text-gray">
+                                                        
+                                                        {% if usuario.persona %}
+                                                            editar
+                                                        {% else %}
+                                                            No se puede editar admin
+                                                        {% endif %}
+                                                    </a>
                                                 </li>
 
 

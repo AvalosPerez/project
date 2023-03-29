@@ -92,7 +92,12 @@
                                         {{ forloop.counter }}
                                     </td>
                                     <td>
-                                        <p class="text-sm">{{ compra.fecha }}</p>
+                                        <p class="text-sm">{{ compra.fecha }}<br>
+                                           <small><b>Usuario creación:</b> {{ compra.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
+                                            {% if compra.usuario_modificacion %}
+                                                 <b>Usuario modificación:</b> {{ compra.usuario_modificacion }}
+                                            {% endif %}</small>
+                                        </p>
                                     </td>
 
                                     <td>

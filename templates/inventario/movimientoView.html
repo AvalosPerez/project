@@ -109,7 +109,11 @@
                             <tr>
 
                                 <td>
-                                    <p class="text-sm">{{ forloop.counter }}</p>
+                                    <p class="text-sm">{{ forloop.counter }}<br>
+                                           <small><b>Usuario creación:</b> {{ foo.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
+                                            {% if foo.usuario_modificacion %}
+                                                 <b>Usuario modificación:</b> {{ foo.usuario_modificacion }}
+                                            {% endif %}</small></p>
                                 </td>
                                  <td>
                                     <p class="text-sm">{{ foo.fecha }}</p>

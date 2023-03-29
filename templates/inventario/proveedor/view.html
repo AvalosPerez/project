@@ -107,7 +107,11 @@
 
                         <tr>
                             <td>
-                                {{ forloop.counter }}
+                                {{ forloop.counter }}<br>
+                                           <small><b>Usuario creación:</b> {{ proveedor.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
+                                            {% if proveedor.usuario_modificacion %}
+                                                 <b>Usuario modificación:</b> {{ proveedor.usuario_modificacion }}
+                                            {% endif %}</small>
                             </td>
                             <td>
                                 <p class="text-sm">{{ proveedor.razon_social }}</p>

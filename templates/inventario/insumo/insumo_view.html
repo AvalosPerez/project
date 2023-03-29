@@ -134,7 +134,11 @@
                                 <tr>
 
                                     <td>
-                                        <p class="text-sm">{{ forloop.counter }}</p>
+                                        <p class="text-sm">{{ forloop.counter }}<br>
+                                           <small><b>Usuario creación:</b> {{ insumo.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
+                                            {% if insumo.usuario_modificacion %}
+                                                 <b>Usuario modificación:</b> {{ insumo.usuario_modificacion }}
+                                            {% endif %}</small></p>
                                     </td>
                                     <td>
                                         <p class="text-sm">{{ insumo.categoria }}</p>

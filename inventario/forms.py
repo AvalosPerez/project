@@ -245,6 +245,7 @@ class CompraForm(forms.ModelForm):
                     compra.fecha = self.cleaned_data['fecha']
                     compra.proveedor = self.cleaned_data['proveedor']
                     compra.total = float(self.initial['total'])
+
                     if commit:
                         compra.save()
                     lista_id_insumos =self.initial['id_insumos']
@@ -256,7 +257,7 @@ class CompraForm(forms.ModelForm):
                         cantidad= int(cant)
                         insumo= Insumo.objects.get(pk=id)
                         importe = float(cantidad * cost)
-                        detalle_compra = CompraInsumo(compra = compra,insumo=insumo, cantidad=cantidad,costo=cost,importe=importe)
+                        detalle_compra = CompraInsumo(compra = compra,insumo=insumo, cantidad=cantidad,costo=cost,importe=importe,usuario_creacion= compra.usuario_creacion)
                         detalle_compra.save()
                         detalle_compra.generar_inventario_movimiento_entrada(cantidad)
                     return compra
@@ -327,7 +328,7 @@ class VentaForm(forms.ModelForm):
                         cantidad= int(cant)
                         insumo= Insumo.objects.get(pk=id)
                         importe = float(cantidad * insumo.precio_venta)
-                        detalle_venta = DetalleVenta(venta = venta,insumo=insumo, cantidad=cantidad,importe=importe)
+                        detalle_venta = DetalleVenta(venta = venta,insumo=insumo, cantidad=cantidad,importe=importe,usuario_creacion=venta.usuario_creacion)
                         detalle_venta.save()
                         detalle_venta.generar_inventario_movimiento_salida(cantidad)
                     return venta

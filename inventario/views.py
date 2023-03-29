@@ -322,6 +322,10 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin
         context = super().get_context_data(**kwargs)
         return context
 
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
+
     def post(self, request, *args, **kwargs):
         my_input_hidden = request.POST.get('total_hidden', '')
         id_insumos = request.POST.getlist('insumos[]')
@@ -334,6 +338,7 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin
             form.initial['id_insumos'] = id_insumos
             form.initial['cantidad'] = cantidad
             form.initial['costo'] = costo
+            form.initial['usuario_log'] = request.user
 
         return self.form_valid(form)
         # hacer algo con el valor de my_input_hidden
@@ -399,6 +404,10 @@ class AddVenta(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin,
     form_class = VentaForm
     success_url = reverse_lazy('inventario:salida_insumo')
     success_message = 'Registro guardado exitosamente'
+
+    def form_valid(self, form):
+        form.instance.usuario_creacion = self.request.user
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

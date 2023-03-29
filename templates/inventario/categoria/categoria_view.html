@@ -96,7 +96,11 @@
 
                                 <tr>
                                     <td>
-                                        {{ forloop.counter }}
+                                        {{ forloop.counter }}<br>
+                                           <small><b>Usuario creación:</b> {{ categoria.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
+                                            {% if categoria.usuario_modificacion %}
+                                                 <b>Usuario modificación:</b> {{ categoria.usuario_modificacion }}
+                                            {% endif %}</small>
                                     </td>
                                     <td>
                                         <p class="text-sm">{{ categoria.descripcion }}</p>

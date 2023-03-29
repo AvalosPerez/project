@@ -42,6 +42,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def obtener_grupos(self):
         return self.groups.all()
 
+    def obtener_persona(self):
+        return self.persona
+
 class Persona(ModeloBase):
     nombres = models.CharField(verbose_name="Nombres", max_length=450)
     apellidos = models.CharField(verbose_name="Apellidos", max_length=450)
@@ -308,7 +311,8 @@ class DetalleVenta(ModeloBase):
                     importe=(self.cantidad * self.insumo.precio_venta),
                     cantidad_anterior=self.insumo.cantidad,
                     costo_anterior=self.insumo.costo_unitario,
-                    import_anterior=((self.insumo.cantidad - self.cantidad) * self.insumo.costo_unitario)
+                    import_anterior=((self.insumo.cantidad - self.cantidad) * self.insumo.costo_unitario),
+                    usuario_creacion = self.usuario_creacion
                 )
             detalleKardex.save()
             insumo = Insumo.objects.get(pk=self.insumo.pk)
@@ -362,11 +366,14 @@ class CompraInsumo(ModeloBase):
                     importe=(self.cantidad * self.costo),
                     cantidad_anterior=self.insumo.cantidad,
                     costo_anterior=self.insumo.costo_unitario,
-                    import_anterior=((self.insumo.cantidad + self.cantidad) * self.insumo.costo_unitario)
+                    import_anterior=((self.insumo.cantidad + self.cantidad) * self.insumo.costo_unitario),
+                    usuario_creacion=self.usuario_creacion
+
                 )
             detalleKardex.save()
             insumo = Insumo.objects.get(pk=self.insumo.pk)
             insumo.cantidad = insumo.cantidad + detalleKardex.cantidad
+            insumo.usuario_modificacion=self.usuario_creacion
             insumo.save()
         except Exception as ex:
             raise NameError("Error al generar el inventario entrada")

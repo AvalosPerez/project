@@ -339,6 +339,13 @@ class AddCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin
         # hacer algo con el valor de my_input_hidden
         return super().post(request, *args, **kwargs)
 
+class DeleteCompra(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'inventario.delete_compra'
+    template_name = "inventario/compras/deletecompra.html"
+    model = Compra
+    success_url = reverse_lazy('inventario:entrada_insumo')
+    context_object_name = "compras"
+
 
 class EditCompra(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'inventario.change_compra'

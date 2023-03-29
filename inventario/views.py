@@ -648,3 +648,14 @@ class ViewBuscarInsumo(View):
         objetos = Insumo.objects.filter(descripcion__icontains=busqueda, status=True)
         data = serializers.serialize('json', objetos)
         return HttpResponse(data, content_type='application/json')
+
+
+class factura(TemplateView):
+    template_name = "inventario/ventas/factura.html"
+
+
+
+
+
+
+

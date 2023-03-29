@@ -16,15 +16,15 @@
                 <div class="title d-flex align-items-center flex-wrap mb-30">
                     <h2 class="mr-40">Ventas de Insumos</h2>
                     <a type="button" id="d_button" href="{% url 'inventario:add_venta' %}"
-                            class="main-btn primary-btn btn-hover btn-sm">
+                       class="main-btn primary-btn btn-hover btn-sm">
                         <i class="lni lni-plus mr-5"></i> Adicionar
                     </a>
 
-{#                    <button type="button" id="d_button" data-bs-toggle="modal" data-bs-target="#exampleModal"#}
-{#                            onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');"#}
-{#                            class="main-btn primary-btn btn-hover btn-sm">#}
-{#                        <i class="lni lni-plus mr-5"></i> Adicionar#}
-{#                    </button>#}
+                    {#                    <button type="button" id="d_button" data-bs-toggle="modal" data-bs-target="#exampleModal"#}
+                    {#                            onclick="abrirFormularioModal('{% url 'inventario:add_compra' %}');"#}
+                    {#                            class="main-btn primary-btn btn-hover btn-sm">#}
+                    {#                        <i class="lni lni-plus mr-5"></i> Adicionar#}
+                    {#                    </button>#}
                 </div>
             </div>
             <!-- end col -->
@@ -93,10 +93,11 @@
                                     </td>
                                     <td>
                                         <p class="text-sm">{{ venta.fecha }}<br>
-                                           <small><b>Usuario creación:</b> {{ venta.usuario_creacion.obtener_persona | default:'Administrador'}}<br>
-                                            {% if venta.usuario_modificacion %}
-                                                 <b>Usuario modificación:</b> {{ venta.usuario_modificacion }}
-                                            {% endif %}</small>
+                                            <small><b>Usuario
+                                                creación:</b> {{ venta.usuario_creacion.obtener_persona | default:'Administrador' }}<br>
+                                                {% if venta.usuario_modificacion %}
+                                                    <b>Usuario modificación:</b> {{ venta.usuario_modificacion }}
+                                                {% endif %}</small>
                                         </p>
                                     </td>
 
@@ -127,10 +128,9 @@
 
                                                        class="text-gray">Eliminar</a>
                                                 </li>
-{#                                                <li class="dropdown-item">#}
-{#                                                    <a href="{% url 'inventario:edit_compra' venta.pk %}"#}
-{#                                                       class="text-gray">Editar</a>#}
-{#                                                </li>#}
+                                                <li class="dropdown-item">
+
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
@@ -150,7 +150,7 @@
                     </div>
                 </div>
                 <!-- end card -->
-              {% include "paginador_snippet.html" %}
+                {% include "paginador_snippet.html" %}
             </div>
             <!-- end col -->
         </div>
@@ -167,7 +167,7 @@
 
 {% block javascript %}
     <script>
-       function abrirFormularioModal(url) {
+        function abrirFormularioModal(url) {
             $.ajax({
                 url: url,
                 success: function (data) {
@@ -183,7 +183,7 @@
 
 
 {% block modals %}
-<div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div class="modal fade static" id="formularioModal" tabindex="-1" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content card-style">

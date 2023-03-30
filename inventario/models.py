@@ -271,7 +271,7 @@ class DetalleKardex(ModeloBase):
         return f'tipo: {self.tipomovimiento} - producto: {self.kardex}'
 
 class Venta(ModeloBase):
-    fecha = models.DateField(verbose_name="Fecha venta")
+    fecha = models.DateField(verbose_name="Fecha ")
     cliente = models.ForeignKey(Cliente, verbose_name="Cliente", on_delete=models.CASCADE)
     total = models.DecimalField(verbose_name="Total", max_digits=30, decimal_places=2,blank=True)
 
